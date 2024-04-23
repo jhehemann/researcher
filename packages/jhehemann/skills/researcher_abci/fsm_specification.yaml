@@ -5,22 +5,22 @@ alphabet_in:
 - ROUND_TIMEOUT
 default_start_state: RegistrationStartupRound
 final_states: []
-label: DemoChainedSkillAbciApp
+label: ResearcherAbciApp
 start_states:
 - RegistrationRound
 - RegistrationStartupRound
 states:
-- DemoRound
+- HelloRound
 - RegistrationRound
 - RegistrationStartupRound
 - ResetAndPauseRound
 transition_func:
-    (DemoRound, DONE): ResetAndPauseRound
-    (DemoRound, NO_MAJORITY): DemoRound
-    (DemoRound, ROUND_TIMEOUT): DemoRound
-    (RegistrationRound, DONE): DemoRound
+    (HelloRound, DONE): ResetAndPauseRound
+    (HelloRound, NO_MAJORITY): HelloRound
+    (HelloRound, ROUND_TIMEOUT): HelloRound
+    (RegistrationRound, DONE): HelloRound
     (RegistrationRound, NO_MAJORITY): RegistrationRound
-    (RegistrationStartupRound, DONE): DemoRound
-    (ResetAndPauseRound, DONE): DemoRound
+    (RegistrationStartupRound, DONE): HelloRound
+    (ResetAndPauseRound, DONE): HelloRound
     (ResetAndPauseRound, NO_MAJORITY): ResetAndPauseRound
     (ResetAndPauseRound, RESET_AND_PAUSE_TIMEOUT): ResetAndPauseRound

@@ -17,9 +17,9 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This package contains round behaviours of DemoChainedSkillAbciApp."""
+"""This package contains round behaviours of ResearcherSkillAbciApp."""
 
-import packages.jhehemann.skills.hello_abci.rounds as DemoAbci
+import packages.jhehemann.skills.hello_abci.rounds as HelloAbci
 import packages.valory.skills.registration_abci.rounds as RegistrationAbci
 import packages.valory.skills.reset_pause_abci.rounds as ResetAndPauseAbci
 from packages.valory.skills.abstract_round_abci.abci_app_chain import (
@@ -35,9 +35,9 @@ from packages.valory.skills.termination_abci.rounds import (
 
 
 abci_app_transition_mapping: AbciAppTransitionMapping = {
-    RegistrationAbci.FinishedRegistrationRound: DemoAbci.DemoRound,
-    DemoAbci.FinishedDemoRound: ResetAndPauseAbci.ResetAndPauseRound,
-    ResetAndPauseAbci.FinishedResetAndPauseRound: DemoAbci.DemoRound,
+    RegistrationAbci.FinishedRegistrationRound: HelloAbci.HelloRound,
+    HelloAbci.FinishedHelloRound: ResetAndPauseAbci.ResetAndPauseRound,
+    ResetAndPauseAbci.FinishedResetAndPauseRound: HelloAbci.HelloRound,
     ResetAndPauseAbci.FinishedResetAndPauseErrorRound: ResetAndPauseAbci.ResetAndPauseRound,
 }
 
@@ -47,10 +47,10 @@ termination_config = BackgroundAppConfig(
     abci_app=TerminationAbciApp,
 )
 
-DemoChainedSkillAbciApp = chain(
+ResearcherSkillAbciApp = chain(
     (
         RegistrationAbci.AgentRegistrationAbciApp,
-        DemoAbci.DemoAbciApp,
+        HelloAbci.HelloAbciApp,
         ResetAndPauseAbci.ResetPauseAbciApp,
     ),
     abci_app_transition_mapping,

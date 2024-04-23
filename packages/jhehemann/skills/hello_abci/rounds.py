@@ -17,12 +17,12 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This package contains the rounds of DemoAbciApp."""
+"""This package contains the rounds of HelloAbciApp."""
 
 from enum import Enum
 from typing import Dict, FrozenSet, Optional, Set
 
-from packages.jhehemann.skills.hello_abci.payloads import DemoPayload
+from packages.jhehemann.skills.hello_abci.payloads import HelloPayload
 from packages.valory.skills.abstract_round_abci.base import (
     AbciApp,
     AbciAppTransitionFunction,
@@ -38,7 +38,7 @@ from packages.valory.skills.abstract_round_abci.base import (
 
 
 class Event(Enum):
-    """DemoAbciApp Events"""
+    """HelloAbciApp Events"""
 
     DONE = "done"
     NO_MAJORITY = "no_majority"
@@ -58,56 +58,56 @@ class SynchronizedData(BaseSynchronizedData):
         return CollectionRound.deserialize_collection(serialized)
 
     @property
-    def demo_data(self) -> Optional[str]:
-        """Get the demo_data."""
-        return self.db.get("demo_data", None)
+    def hello_data(self) -> Optional[str]:
+        """Get the hello_data."""
+        return self.db.get("hello_data", None)
 
     @property
-    def participant_to_demo_round(self) -> DeserializedCollection:
-        """Get the participants to the demo round."""
-        return self._get_deserialized("participant_to_demo_round")
+    def participant_to_hello_round(self) -> DeserializedCollection:
+        """Get the participants to the hello round."""
+        return self._get_deserialized("participant_to_hello_round")
 
 
-class DemoRound(CollectSameUntilThresholdRound):
-    """DemoRound"""
+class HelloRound(CollectSameUntilThresholdRound):
+    """HelloRound"""
 
-    payload_class = DemoPayload
+    payload_class = HelloPayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
-    collection_key = get_name(SynchronizedData.participant_to_demo_round)
-    selection_key = get_name(SynchronizedData.demo_data)
+    collection_key = get_name(SynchronizedData.participant_to_hello_round)
+    selection_key = get_name(SynchronizedData.hello_data)
 
     # Event.ROUND_TIMEOUT  # this needs to be mentioned for static checkers
 
 
-class FinishedDemoRound(DegenerateRound):
-    """FinishedDemoRound"""
+class FinishedHelloRound(DegenerateRound):
+    """FinishedHelloRound"""
 
 
-class DemoAbciApp(AbciApp[Event]):
-    """DemoAbciApp"""
+class HelloAbciApp(AbciApp[Event]):
+    """HelloAbciApp"""
 
-    initial_round_cls: AppState = DemoRound
+    initial_round_cls: AppState = HelloRound
     initial_states: Set[AppState] = {
-        DemoRound,
+        HelloRound,
     }
     transition_function: AbciAppTransitionFunction = {
-        DemoRound: {
-            Event.NO_MAJORITY: DemoRound,
-            Event.ROUND_TIMEOUT: DemoRound,
-            Event.DONE: FinishedDemoRound,
+        HelloRound: {
+            Event.NO_MAJORITY: HelloRound,
+            Event.ROUND_TIMEOUT: HelloRound,
+            Event.DONE: FinishedHelloRound,
         },
-        FinishedDemoRound: {},
+        FinishedHelloRound: {},
     }
     final_states: Set[AppState] = {
-        FinishedDemoRound,
+        FinishedHelloRound,
     }
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
     db_pre_conditions: Dict[AppState, Set[str]] = {
-        DemoRound: set(),
+        HelloRound: set(),
     }
     db_post_conditions: Dict[AppState, Set[str]] = {
-        FinishedDemoRound: set(),
+        FinishedHelloRound: set(),
     }

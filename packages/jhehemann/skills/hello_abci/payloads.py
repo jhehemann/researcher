@@ -17,7 +17,7 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This module contains the transaction payloads of the DemoAbciApp."""
+"""This module contains the transaction payloads of the HelloAbciApp."""
 
 from dataclasses import dataclass
 
@@ -25,7 +25,7 @@ from packages.valory.skills.abstract_round_abci.base import BaseTxPayload
 
 
 @dataclass(frozen=True)
-class DemoPayload(BaseTxPayload):
-    """Represent a transaction payload for the DemoRound."""
+class HelloPayload(BaseTxPayload):
+    """Represent a transaction payload for the HelloRound."""
 
     content: str

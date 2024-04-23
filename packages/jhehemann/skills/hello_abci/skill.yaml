@@ -1,19 +1,19 @@
-name: demo_abci
-author: author
+name: hello_abci
+author: jhehemann
 version: 0.1.0
 type: skill
-description: A demo skill.
+description: A hello skill.
 license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeic7j5uouzatm6jcd5izcdgucm4yppu76s6iuczke6rzzhwbwbvgue
-  behaviours.py: bafybeief6s2s24nmvsm4fdxghi6eht52xpw244fm5hmsckjoug7kq6gc6q
-  dialogues.py: bafybeifs775q3j2ipnpzn4pwcom47hhgyg7czqqy5gvjo5ov7ijjrqzeju
-  fsm_specification.yaml: bafybeidfv2py64y2atghoe2kzgvtxtotk2srmfrvtg4tju4gdahqelfaau
-  handlers.py: bafybeibmjubpjicmnrkz7up4hbvpl3wowewr7naz7bvolsxnihzbsjjnxi
-  models.py: bafybeia3rbywe77d73q6lgvu2x7lfpzms54f7r3xh4hna5m6zeclwnnlvu
-  payloads.py: bafybeidrewrz5c4evdahnhf25z2txsqemlcoga4wnfj73yseqkvwcerf4u
-  rounds.py: bafybeib65fq7ywwmecv57qjm3kx6jx5hb3r6ikrlll66poqdxcnsinxnxq
+  behaviours.py: bafybeih2d32kd5ydcltpks34ff2guoht6cz5fdwgy2puwxorqmmam6o2ou
+  dialogues.py: bafybeigxwoti7yjbnijwmztkgn4n3sgk7x35jiso5dypaj4gbs55qmmgiq
+  fsm_specification.yaml: bafybeig2cna4tkkyol5bpl5w4oxy5cvyapxkkt5d3n4myptjclo7tx54ve
+  handlers.py: bafybeie27xt5dn55dcendwbeq77ht6nw2hjzrworcrcnyzz5qqpb6abyma
+  models.py: bafybeiawggj6367g7o5jhojpmstljug4ltv7sqlmc4w7tpvfqppdchsb5a
+  payloads.py: bafybeiapq52k53g2ugamgc7wq7jczzwk47t7rfn7gb4wmo4sacal625xya
+  rounds.py: bafybeichxddm4ybgiixj4e75xhr74dktxtvkrbcyqntdtu7lz22rj24agy
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -23,7 +23,7 @@ skills:
 behaviours:
   main:
     args: {}
-    class_name: DemoRoundBehaviour
+    class_name: HelloRoundBehaviour
 handlers:
   abci:
     args: {}

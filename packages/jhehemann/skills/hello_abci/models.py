@@ -17,9 +17,9 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This module contains the shared state for the abci skill of DemoAbciApp."""
+"""This module contains the shared state for the abci skill of HelloAbciApp."""
 
-from packages.jhehemann.skills.hello_abci.rounds import DemoAbciApp
+from packages.jhehemann.skills.hello_abci.rounds import HelloAbciApp
 from packages.valory.skills.abstract_round_abci.models import BaseParams
 from packages.valory.skills.abstract_round_abci.models import (
     BenchmarkTool as BaseBenchmarkTool,
@@ -33,7 +33,7 @@ from packages.valory.skills.abstract_round_abci.models import (
 class SharedState(BaseSharedState):
     """Keep the current shared state of the skill."""
 
-    abci_app_cls = DemoAbciApp
+    abci_app_cls = HelloAbciApp
 
 
 Requests = BaseRequests

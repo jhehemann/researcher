@@ -1,13 +1,13 @@
-name: demo_service
-author: author
+name: researcher_service
+author: jhehemann
 version: 0.1.0
-description: A demo service.
+description: A researcher agent service.
 aea_version: '>=1.0.0, <2.0.0'
 license: Apache-2.0
 fingerprint:
   README.md: bafybeicxq7czrb2v2mzpvytqc53eawd6kwe7vq2lh5kn63hhxrj3fqodne
 fingerprint_ignore_patterns: []
-agent: author/demo_agent:0.1.0:bafybeidtkcyw6kmsgjkut7qshgutg23dmcs4yf5wjlrek32smwe62m4g3i
+agent: jhehemann/researcher_agent:0.1.0:bafybeid77wirco545lb45oni7omitn62hk7nwcylsqvxnh4lm422vanjai
 number_of_agents: 1
 deployment:
   agent:
@@ -15,7 +15,7 @@ deployment:
       0:
         8000: 8000
 ---
-public_id: author/demo_chained_abci:0.1.0
+public_id: jhehemann/researcher_abci:0.1.0
 type: skill
 extra:
   params_args:
@@ -67,7 +67,7 @@ extra:
         request_retry_delay: 1.0
         request_timeout: 10.0
         round_timeout_seconds: 30.0
-        service_id: demo
+        service_id: researcher
         service_registry_address: ${SERVICE_REGISTRY_ADDRESS:str:0x48b6af7B12C71f09e2fC8aF4855De4Ff54e775cA}
         share_tm_config_on_startup: ${USE_ACN:bool:false}
         sleep_time: 1
@@ -75,7 +75,7 @@ extra:
         tendermint_com_url: ${TENDERMINT_COM_URL:str:http://localhost:8080}
         tendermint_max_retries: 5
         tendermint_url: ${TENDERMINT_URL:str:http://localhost:26657}
-        tendermint_p2p_url: ${TENDERMINT_P2P_URL_0:str:demo_tm_0:26656}
+        tendermint_p2p_url: ${TENDERMINT_P2P_URL_0:str:researcher_tm_0:26656}
         tx_timeout: 10.0
         use_termination: ${USE_TERMINATION:bool:true}
         validate_timeout: 1205

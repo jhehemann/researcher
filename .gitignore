@@ -12,9 +12,9 @@ leak_report
 /Pipfile.lock
 keys.json
 ethereum_private_key.txt
-demo_agent
-!packages/author/agents/demo_agent/
-demo_service
-!packages/author/services/demo_service/
+researcher_agent
+!packages/jhehemann/agents/researcher_agent/
+researcher_service
+!packages/jhehemann/services/researcher_service/
 __pycache__/
 .env

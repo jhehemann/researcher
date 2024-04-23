@@ -17,16 +17,16 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This package contains round behaviours of DemoAbciApp."""
+"""This package contains round behaviours of HelloAbciApp."""
 
 from abc import ABC
 from typing import Generator, Set, Type, cast
 
 from packages.jhehemann.skills.hello_abci.models import Params, SharedState
-from packages.jhehemann.skills.hello_abci.payloads import DemoPayload
+from packages.jhehemann.skills.hello_abci.payloads import HelloPayload
 from packages.jhehemann.skills.hello_abci.rounds import (
-    DemoAbciApp,
-    DemoRound,
+    HelloAbciApp,
+    HelloRound,
     SynchronizedData,
 )
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
@@ -36,8 +36,8 @@ from packages.valory.skills.abstract_round_abci.behaviours import (
 )
 
 
-class DemoBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
-    """Base behaviour for the demo_abci skill."""
+class HelloBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
+    """Base behaviour for the hello_abci skill."""
 
     @property
     def synchronized_data(self) -> SynchronizedData:
@@ -55,10 +55,10 @@ class DemoBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancesto
         return cast(SharedState, self.context.state)
 
 
-class DemoBehaviour(DemoBaseBehaviour):  # pylint: disable=too-many-ancestors
-    """DemoBehaviour"""
+class HelloBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-ancestors
+    """HelloBehaviour"""
 
-    matching_round: Type[AbstractRound] = DemoRound
+    matching_round: Type[AbstractRound] = HelloRound
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
@@ -67,7 +67,7 @@ class DemoBehaviour(DemoBaseBehaviour):  # pylint: disable=too-many-ancestors
             sender = self.context.agent_address
             payload_content = "Hello world!"
             self.context.logger.info(payload_content)
-            payload = DemoPayload(sender=sender, content=payload_content)
+            payload = HelloPayload(sender=sender, content=payload_content)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)
@@ -76,11 +76,11 @@ class DemoBehaviour(DemoBaseBehaviour):  # pylint: disable=too-many-ancestors
         self.set_done()
 
 
-class DemoRoundBehaviour(AbstractRoundBehaviour):
-    """DemoRoundBehaviour"""
+class HelloRoundBehaviour(AbstractRoundBehaviour):
+    """HelloRoundBehaviour"""
 
-    initial_behaviour_cls = DemoBehaviour
-    abci_app_cls = DemoAbciApp  # type: ignore
+    initial_behaviour_cls = HelloBehaviour
+    abci_app_cls = HelloAbciApp  # type: ignore
     behaviours: Set[Type[BaseBehaviour]] = [  # type: ignore
-        DemoBehaviour,
+        HelloBehaviour,
     ]

@@ -17,12 +17,12 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This module contains the shared state for the abci skill of DemoChainedSkillAbciApp."""
+"""This module contains the shared state for the abci skill of ResearcherSkillAbciApp."""
 
-from packages.jhehemann.skills.hello_abci.models import Params as DemoParams
+from packages.jhehemann.skills.hello_abci.models import Params as HelloParams
 from packages.jhehemann.skills.hello_abci.models import SharedState as BaseSharedState
-from packages.jhehemann.skills.hello_abci.rounds import Event as DemoEvent
-from packages.jhehemann.skills.researcher_abci.composition import DemoChainedSkillAbciApp
+from packages.jhehemann.skills.hello_abci.rounds import Event as HelloEvent
+from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
 from packages.valory.skills.abstract_round_abci.models import (
     BenchmarkTool as BaseBenchmarkTool,
 )
@@ -46,27 +46,27 @@ MULTIPLIER = 10
 class SharedState(BaseSharedState):
     """Keep the current shared state of the skill."""
 
-    abci_app_cls = DemoChainedSkillAbciApp  # type: ignore
+    abci_app_cls = ResearcherSkillAbciApp  # type: ignore
 
     def setup(self) -> None:
         """Set up."""
         super().setup()
 
-        DemoChainedSkillAbciApp.event_to_timeout[
+        ResearcherSkillAbciApp.event_to_timeout[
             ResetPauseEvent.ROUND_TIMEOUT
         ] = self.context.params.round_timeout_seconds
 
-        DemoChainedSkillAbciApp.event_to_timeout[
+        ResearcherSkillAbciApp.event_to_timeout[
             ResetPauseEvent.RESET_AND_PAUSE_TIMEOUT
         ] = (self.context.params.reset_pause_duration + MARGIN)
 
-        DemoChainedSkillAbciApp.event_to_timeout[DemoEvent.ROUND_TIMEOUT] = (
+        ResearcherSkillAbciApp.event_to_timeout[HelloEvent.ROUND_TIMEOUT] = (
             self.context.params.round_timeout_seconds * MULTIPLIER
         )
 
 
 class Params(  # pylint: disable=too-many-ancestors
     TerminationParams,
-    DemoParams,
+    HelloParams,
 ):
     """A model to represent params for multiple abci apps."""

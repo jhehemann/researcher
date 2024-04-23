@@ -1,18 +1,18 @@
-name: demo_chained_abci
-author: author
+name: researcher_abci
+author: jhehemann
 version: 0.1.0
 type: skill
-description: The chained abci for the demo skill.
+description: The chained abci for the researcher.
 license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
-  __init__.py: bafybeiggbkry57ijcu63gkab6bouthtcavxnyn2xvdwadrjirlq7klbrqe
-  behaviours.py: bafybeibmotius6yn5omqy6hl5ypwuvie6v6yec2nwgfwcmgvmgttqmg5aq
-  composition.py: bafybeidejzzpoij7mxsu4yau2x4nierafh2n5s4jbhxpzg54ydhyzfgmpy
+  __init__.py: bafybeiabpuj3ksuzmro5bnzgavcwnode34wfrkvf3apvgd6bzvs2j47azq
+  behaviours.py: bafybeiczuqdrptfdjnv5n3c36cf6geevutjr4fdcchnzlr7sfz74wy3qf4
+  composition.py: bafybeifebqwntc4xkt5xel5djx6zod6ajko7w4dexsxgcppsh73aot42jy
   dialogues.py: bafybeiakqfqcpg7yrxt4bsyernhy5p77tci4qhmgqqjqi3ttx7zk6sklca
-  fsm_specification.yaml: bafybeihxlefq4tdrdzhttuxeyml5tjjw73r5usgo5fgc2ig3a4sdahykdi
-  handlers.py: bafybeiekqhxy2cfr27ds4tw7btcd2fvl4eud2ohhqi7ura2vja7x557hpe
-  models.py: bafybeicb2edxyofacixzdtaqqbpzfechsoyvzzrcled5rhjs2x7tqep7di
+  fsm_specification.yaml: bafybeibzpyyjl2rakcrmgzf5yxgtlwwlhlenrji72q2zkh5jgsaxvwghka
+  handlers.py: bafybeih4bdudekau3li5qhibwqnhaexaclwlo4lwiqjk2buadsmsfdx5gi
+  models.py: bafybeie3rjukbp7b4xxb3h4x5hz4kpujvbskbftzhldu7j446hayu3xjyy
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -22,12 +22,12 @@ skills:
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
-- author/demo_abci:0.1.0:bafybeiezb2qjtas6n6fgfsmfrdgt6odolnloc7f74jliyjmwhdfwkizi4q
+- jhehemann/hello_abci:0.1.0:bafybeici6e246collc5pih44mgnoitbd2a4ax6cgumzskos7jlw4ppsw4a
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
 behaviours:
   main:
     args: {}
-    class_name: DemoChainedConsensusBehaviour
+    class_name: ResearcherConsensusBehaviour
 handlers:
   abci:
     args: {}
@@ -108,7 +108,7 @@ models:
       retry_attempts: 400
       retry_timeout: 3
       round_timeout_seconds: 30.0
-      service_id: demo
+      service_id: researcher
       service_registry_address: null
       setup:
         all_participants: []
