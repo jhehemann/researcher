@@ -78,4 +78,34 @@ common-checks-1:
 	tomte check-doc-links
 	tox -p -e check-hash -e check-packages -e check-doc-hashes
 
+.PHONY: all-linters
+all-linters:
+	gitleaks detect --report-format json --report-path leak_report
+	tox -e spell-check
+	tox -e check-doc-hashes
+	tox -e bandit
+	tox -e safety
+	tox -e check-packages
+	tox -e check-abciapp-specs
+	tox -e check-hash
+	tox -e black-check
+	tox -e isort-check
+	tox -e flake8
+	tox -e darglint
+	tox -e pylint
+	tox -e mypy
+
+.PHONY: fix-abci-app-specs
+fix-abci-app-specs:
+	export PYTHONPATH=${PYTHONPATH}:${PWD}
+	autonomy analyse fsm-specs --update --app-class DemoAbciApp --package packages/author/skills/demo_abci/ || (echo "Failed to check demo_abci abci consistency" && exit 1)
+	autonomy analyse fsm-specs --update --app-class DemoChainedSkillAbciApp --package packages/author/skills/demo_chained_abci/ || (echo "Failed to check demo_chained_abci abci consistency" && exit 1)
+
+
+.PHONY: tm
+tm:
+	rm -r ~/.tendermint
+	tendermint init
+	tendermint node --proxy_app=tcp://127.0.0.1:26658 --rpc.laddr=tcp://127.0.0.1:26657 --p2p.laddr=tcp://0.0.0.0:26656 --p2p.seeds= --consensus.create_empty_blocks=true
+
 v := $(shell pip -V | grep virtualenvs)

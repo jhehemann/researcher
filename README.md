@@ -23,20 +23,71 @@ docker container run -it valory/open-autonomy-user:latest
 
 ## This repository contains:
 
-- Empty directory `packages` which acts as the local registry
+- A directory, `packages`, which acts as the local registry
 
-- .env file with Python path updated to include packages directory
+- Pre-filled in third-party core packages
+
+- Basic example of a simple skill, a chained skill, an agent and a service
+
+- .env sample file with Python path updated to include packages directory
 
 ## How to use
 
-Create a virtual environment with all development dependencies:
+1. Create a virtual environment with all development dependencies:
 
-```bash
-poetry shell
-poetry install
-```
+    ```bash
+    poetry shell
+    poetry install
+    autonomy packages sync --update-packages
+    ```
 
-Get developing...
+2. Prepare an `ethereum_private_key.txt` (for agents) file and `keys.json` (for services) files containing wallet address and/or the private key for each of the agents. You can generate a new key by running `autonomy generate-key ethereum`. This is how those files hsould look like:
+
+    ethereum_private_key.txt (check that there are no newlines at the end)
+
+    ```
+    0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a
+    ```
+
+    keys.json
+    ```
+    [
+        {
+            "address": "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+            "private_key": "0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a"
+        }
+    ]
+    ```
+
+3. Modify `packages/author/agents/demo_agent/aea-config.yaml` so `all_participants` contains your agent's public address.
+
+
+5. Make a copy of the env file:
+
+    ```cp sample.env .env```
+
+5. Fill in the required environment variables in .env. You'll need a Ethereum RPC. `ALL_PARTICIPANTS` needs to contain your agent's public address.
+
+
+6. Test the agent
+
+    ```bash
+    bash run_agent.py
+    ```
+
+    and in other terminal run Tendermint:
+
+    ```bash
+    make tm
+    ```
+
+7. Test the service
+
+    ```bash
+    bash run_service.py
+    ```
+
+8. Get developing...
 
 ## Useful commands:
 

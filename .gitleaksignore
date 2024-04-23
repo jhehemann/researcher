@@ -1,0 +1,4 @@
+e66dafccf871ac460213be19e7790cbdbe2db6e4:packages/author/services/demo/service.yaml:generic-api-key:55
+e66dafccf871ac460213be19e7790cbdbe2db6e4:packages/author/agents/demo/aea-config.yaml:generic-api-key:123
+e66dafccf871ac460213be19e7790cbdbe2db6e4:packages/author/skills/demo_abci/skill.yaml:generic-api-key:78
+e66dafccf871ac460213be19e7790cbdbe2db6e4:packages/author/skills/demo_chained_abci/skill.yaml:generic-api-key:77
