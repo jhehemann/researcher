@@ -1,0 +1,17 @@
+alphabet_in:
+- DONE
+- NO_MAJORITY
+- ROUND_TIMEOUT
+default_start_state: HelloRound
+final_states:
+- FinishedHelloRound
+label: HelloAbciApp
+start_states:
+- HelloRound
+states:
+- HelloRound
+- FinishedHelloRound
+transition_func:
+    (HelloRound, DONE): FinishedHelloRound
+    (HelloRound, NO_MAJORITY): HelloRound
+    (HelloRound, ROUND_TIMEOUT): HelloRound
