@@ -17,7 +17,7 @@
 #
 # ------------------------------------------------------------------------------
 
-"""Package for author/demo_agent agent."""
+"""Package for jhehemann/researcher_agent agent."""
 from pathlib import Path
 
 

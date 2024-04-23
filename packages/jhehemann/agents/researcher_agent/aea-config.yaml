@@ -5,7 +5,7 @@ license: Apache-2.0
 description: A researcher agent.
 aea_version: '>=1.19.0, <2.0.0'
 fingerprint:
-  __init__.py: bafybeidhbmjkqmabkap33fzf4y2nay5ik5jstqunyh4llelrskwzrrxb2e
+  __init__.py: bafybeif5d7byvvi6a34ojbxpqatmnot3uwkq4n4b65i7ncm7xefcy5c6ru
 fingerprint_ignore_patterns: []
 connections:
 - valory/abci:0.1.0:bafybeiclexb6cnsog5yjz2qtvqyfnf7x5m7tpp56hblhk3pbocbvgjzhze
@@ -31,8 +31,8 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihat4giyc4bz6zopvahcj4iw53356pbtwfn7p4d5yflwly2qhahum
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/hello_abci:0.1.0:bafybeici6e246collc5pih44mgnoitbd2a4ax6cgumzskos7jlw4ppsw4a
-- jhehemann/researcher_abci:0.1.0:bafybeielk7u2765cynwxy7mz264hnc7fuw3s4h6dyh2acu6h4zktuy5iou
+- jhehemann/hello_abci:0.1.0:bafybeiddut25skohzc7vef44td2vgzbnmjwbw3duig6xmw66vteho34a3q
+- jhehemann/researcher_abci:0.1.0:bafybeidt5s223ige6fiwacmstdowdzwxpmt2y6cqrvxhj25rhnjvnm2b4a
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
@@ -182,4 +182,4 @@ public_id: valory/http_server:0.22.0:bafybeicblltx7ha3ulthg7bzfccuqqyjmihhrvfezt
 type: connection
 config:
   host: 0.0.0.0
-  target_skill_id: valory/researcher_abci:0.1.0
+  target_skill_id: jhehemann/researcher_abci:0.1.0
