@@ -29,3 +29,9 @@ class HelloPayload(BaseTxPayload):
     """Represent a transaction payload for the HelloRound."""
 
     content: str
+
+@dataclass(frozen=True)
+class SearchEnginePayload(BaseTxPayload):
+    """Represent a transaction payload for the SearchEngineRound."""
+
+    content: str

@@ -14,8 +14,9 @@ states:
 - RegistrationRound
 - RegistrationStartupRound
 - ResetAndPauseRound
+- SearchEngineRound
 transition_func:
-    (HelloRound, DONE): ResetAndPauseRound
+    (HelloRound, DONE): SearchEngineRound
     (HelloRound, NO_MAJORITY): HelloRound
     (HelloRound, ROUND_TIMEOUT): HelloRound
     (RegistrationRound, DONE): HelloRound
@@ -24,3 +25,6 @@ transition_func:
     (ResetAndPauseRound, DONE): HelloRound
     (ResetAndPauseRound, NO_MAJORITY): ResetAndPauseRound
     (ResetAndPauseRound, RESET_AND_PAUSE_TIMEOUT): ResetAndPauseRound
+    (SearchEngineRound, DONE): ResetAndPauseRound
+    (SearchEngineRound, NO_MAJORITY): SearchEngineRound
+    (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound

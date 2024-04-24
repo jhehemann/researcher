@@ -22,7 +22,11 @@
 from enum import Enum
 from typing import Dict, FrozenSet, Optional, Set
 
-from packages.jhehemann.skills.hello_abci.payloads import HelloPayload
+from packages.jhehemann.skills.hello_abci.payloads import (
+    HelloPayload,
+    SearchEnginePayload,
+)
+
 from packages.valory.skills.abstract_round_abci.base import (
     AbciApp,
     AbciAppTransitionFunction,
@@ -61,9 +65,19 @@ class SynchronizedData(BaseSynchronizedData):
     def hello_data(self) -> Optional[str]:
         """Get the hello_data."""
         return self.db.get("hello_data", None)
+    
+    @property
+    def search_engine_data(self) -> Optional[str]:
+        """Get the hello_data."""
+        return self.db.get("hello_data", None)
 
     @property
     def participant_to_hello_round(self) -> DeserializedCollection:
+        """Get the participants to the hello round."""
+        return self._get_deserialized("participant_to_hello_round")
+    
+    @property
+    def participant_to_search_engine_round(self) -> DeserializedCollection:
         """Get the participants to the hello round."""
         return self._get_deserialized("participant_to_hello_round")
 
@@ -81,6 +95,17 @@ class HelloRound(CollectSameUntilThresholdRound):
     # Event.ROUND_TIMEOUT  # this needs to be mentioned for static checkers
 
 
+class SearchEngineRound(CollectSameUntilThresholdRound):
+    """SearchEngineRound"""
+
+    payload_class = SearchEnginePayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_search_engine_round)
+    selection_key = get_name(SynchronizedData.search_engine_data)
+
+
 class FinishedHelloRound(DegenerateRound):
     """FinishedHelloRound"""
 
@@ -96,6 +121,11 @@ class HelloAbciApp(AbciApp[Event]):
         HelloRound: {
             Event.NO_MAJORITY: HelloRound,
             Event.ROUND_TIMEOUT: HelloRound,
+            Event.DONE: SearchEngineRound,
+        },
+        SearchEngineRound: {
+            Event.NO_MAJORITY: SearchEngineRound,
+            Event.ROUND_TIMEOUT: SearchEngineRound,
             Event.DONE: FinishedHelloRound,
         },
         FinishedHelloRound: {},

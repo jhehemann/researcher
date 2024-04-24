@@ -10,8 +10,13 @@ start_states:
 - HelloRound
 states:
 - HelloRound
+- SearchEngineRound
 - FinishedHelloRound
+
 transition_func:
-    (HelloRound, DONE): FinishedHelloRound
+    (HelloRound, DONE): SearchEngineRound
     (HelloRound, NO_MAJORITY): HelloRound
     (HelloRound, ROUND_TIMEOUT): HelloRound
+    (SearchEngineRound, DONE): FinishedHelloRound
+    (SearchEngineRound, NO_MAJORITY): SearchEngineRound
+    (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
