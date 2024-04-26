@@ -20,7 +20,7 @@
 """This package contains round behaviours of HelloAbciApp."""
 
 from abc import ABC
-from typing import Generator, Set, Type, cast
+from typing import Generator, List, Set, Type, cast
 
 from packages.jhehemann.skills.hello_abci.models import Params, SharedState
 from packages.jhehemann.skills.hello_abci.payloads import (
@@ -83,15 +83,46 @@ class HelloBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-ancestors
 class SearchEngineBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-ancestors
     """Behaviour to request URLs from search engine"""
 
-    matching_round: Type[AbstractRound] = SearchEngineRound
+    matching_round: Type[AbstractRound] = SearchEngineRound     
+
+    @property
+    def params(self) -> Params:
+        """Get the parameters."""
+        return cast(Params, self.context.params)
+
+
+    def get_payload_content(self, query: str) -> Generator:
+        """Search Google using a custom search engine."""
+        api_keys = self.params.api_keys
+        google_api_key = api_keys["google_api_key"]
+        google_engine_id = api_keys["google_engine_id"]
+        num = 1
+
+
+
+        method = "GET"
+        url = "https://www.googleapis.com/customsearch/v1"
+        parameters = {
+            "key": google_api_key,
+            "cx": google_engine_id,
+            "q": query,
+            "num": num,
+        }
+        response = yield from self.get_http_response(method, url, parameters)
+        search = response.json()
+        print(search)
+
+        
+        return [response["link"] for result in search.get("items", [])]
+
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
-            shout_data = self.synchronized_data.hello_data
-            payload_content = "Shouting: " + shout_data
+            search_query = self.synchronized_data.hello_data
+            payload_content = yield from self.get_payload_content(search_query)
             self.context.logger.info(payload_content)
             payload = SearchEnginePayload(sender=sender, content=payload_content)
 

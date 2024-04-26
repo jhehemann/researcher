@@ -18,12 +18,12 @@ connections: []
 contracts: []
 protocols: []
 skills:
-- valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
-- valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
-- valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
-- jhehemann/hello_abci:0.1.0:bafybeigxkesd466yc2hoy2hpzbszpyehl4paxleqlnrvcevvjajzgm5wau
-- valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
+- valory/abstract_round_abci:0.1.0:bafybeidmp6pirgqsh2lccafg76tdb6phybtc5mrptk7n2wqh2dc3txyoie
+- valory/registration_abci:0.1.0:bafybeigvb4kx67pv6qpjzvhznqtcyy25y535btwiwrg7egicrvbalytmia
+- valory/reset_pause_abci:0.1.0:bafybeiaygc2oppbpof2xlzfn6ye7s2pdvouh6bgliogjhxzluk4sk4s3vi
+- valory/termination_abci:0.1.0:bafybeiatmdcb45mkegujv2bggco6evjs7dzfa46eplmmpazx7ue4ihuljy
+- jhehemann/hello_abci:0.1.0:bafybeifaakidcqrroxiij3alhmhlgqpfgyovialaji2sumgzmwqvequyvq
+- valory/transaction_settlement_abci:0.1.0:bafybeiewvhqqhbxce5gy6mmnnfltr7hgjustibt4qayate7ihdsasblcei
 behaviours:
   main:
     args: {}
@@ -123,6 +123,22 @@ models:
       tendermint_url: http://localhost:26657
       use_termination: false
       validate_timeout: 1205
+      task_deadline: 240.0
+      api_keys_json: 
+      - - openai
+        - dummy_api_key
+      - - stabilityai
+        - dummy_api_key
+      - - google_api_key
+        - dummy_api_key
+      - - google_engine_id
+        - dummy_api_key
+      polling_interval: 30.0
+      agent_index: 0
+      num_agents: 1
+      from_block_range: 5000
+      timeout_limit: 3
+      max_block_window: 500
       finalize_timeout: 60.0
       history_check_timeout: 1205
       use_slashing: false
