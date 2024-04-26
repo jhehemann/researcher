@@ -11,6 +11,8 @@ fi
 # Push packages and fetch service
 make clean
 
+autonomy packages lock
+
 autonomy push-all
 
 autonomy fetch --local --service jhehemann/researcher_service && cd researcher_service

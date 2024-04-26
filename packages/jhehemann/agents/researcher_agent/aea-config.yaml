@@ -31,8 +31,8 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihat4giyc4bz6zopvahcj4iw53356pbtwfn7p4d5yflwly2qhahum
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/hello_abci:0.1.0:bafybeiewgrwr62ubyimqd34dber6exxskreq3f3ayqu4ddbundlnivhqki
-- jhehemann/researcher_abci:0.1.0:bafybeiasux5wk4tvm53eqbzhox4hakzrt3g6ygbsgjjtf6fq2tii3qdl2a
+- jhehemann/hello_abci:0.1.0:bafybeiangl4s2svjsyj3gb5tlyf7m5vnn5tvkucn4iakwv4ngnknkb4lta
+- jhehemann/researcher_abci:0.1.0:bafybeifacujgq6vsh4w3fmtrxpjjxjnqddqqpqan6okglzzkyui2qammoq
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
@@ -183,8 +183,7 @@ type: skill
 models:
   params:
     args:
-      api_keys_json: ${list:[["openai", "dummy_api_key"],["stabilityai", "dummy_api_key"],["google_api_key","dummy_api_key"],["google_engine_id",
-        "dummy_api_key"]]}
+      api_keys_json: ${API_KEYS:list:[]}
       task_deadline: ${float:240.0}
       polling_interval: ${float:30.0}
       agent_index: ${int:0}

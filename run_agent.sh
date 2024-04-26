@@ -8,6 +8,7 @@ autonomy packages lock
 autonomy fetch --local --agent jhehemann/researcher_agent && cd researcher_agent
 
 cp $PWD/../ethereum_private_key.txt .
+
 # Copy .env file
 # cp $PWD/../.env .
 autonomy add-key ethereum ethereum_private_key.txt

@@ -125,10 +125,6 @@ models:
         - dummy_api_key
       - - stabilityai
         - dummy_api_key
-      - - google_api_key
-        - dummy_api_key
-      - - google_engine_id
-        - dummy_api_key
       polling_interval: 30.0
       agent_index: 0
       num_agents: 1
