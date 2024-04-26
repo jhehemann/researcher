@@ -7,11 +7,11 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeia3hids57rhw42ue5aclnit5gjjfftqvwdsyw5cl2x3c775wr74m4
-  behaviours.py: bafybeihsphbguypksn7vigo7zuzwskqbydy7yxca2zw4c2sru4ln2vgv7a
+  behaviours.py: bafybeiezafwyb4a7ib4zhai6mxczj6nhyesckkfjyxg7vdnxr3b6numyuy
   dialogues.py: bafybeigxwoti7yjbnijwmztkgn4n3sgk7x35jiso5dypaj4gbs55qmmgiq
   fsm_specification.yaml: bafybeierviuk6mbhm3ev4xpbey72ruo4ge5fmcf6ce24yk7vhfmakyjkmu
   handlers.py: bafybeie27xt5dn55dcendwbeq77ht6nw2hjzrworcrcnyzz5qqpb6abyma
-  models.py: bafybeihn6hhprkvlnx46fzxy5p6xbrumvwkk6djlduvb6ytajxxlz7djwa
+  models.py: bafybeid3bjabo55ccb57cty6rg5s2b4woxjynp2vmvdjdkfzfg7pbfolmi
   payloads.py: bafybeihjjl7xxsazkaielmz4j2v6c4l4yeo64ylkzmgqiurqzqmliv257a
   rounds.py: bafybeibzn4zubnmgbhq2t7swaqro4g76obez7chh2u5i5fobs3v547gd6q
 fingerprint_ignore_patterns: []
@@ -120,7 +120,7 @@ models:
       tx_timeout: 10.0
       validate_timeout: 1205
       task_deadline: 240.0
-      api_keys_json: 
+      api_keys_json:
       - - openai
         - dummy_api_key
       - - stabilityai

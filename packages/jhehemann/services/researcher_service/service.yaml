@@ -7,7 +7,7 @@ license: Apache-2.0
 fingerprint:
   README.md: bafybeicxq7czrb2v2mzpvytqc53eawd6kwe7vq2lh5kn63hhxrj3fqodne
 fingerprint_ignore_patterns: []
-agent: jhehemann/researcher_agent:0.1.0:bafybeidhcvcouu5a767pjvsoahjki55oxfkvejfrcrao2rkqjtrvyfl2jm
+agent: jhehemann/researcher_agent:0.1.0:bafybeiaofuhvxcvb44cp4jlyoxxzrfif5ctepamaodkcqspdzx5z433pye
 number_of_agents: 1
 deployment:
   agent:
@@ -92,7 +92,9 @@ type: skill
   models:
     params:
       args:
-        api_keys_json: ${API_KEYS:list:[["openai", "dummy_api_key"],["stabilityai", "dummy_api_key"],["google_api_key","dummy_api_key"],["google_engine_id", "dummy_api_key"]]}
+        api_keys_json: ${API_KEYS:list:[["openai", "dummy_api_key"],["stabilityai",
+          "dummy_api_key"],["google_api_key","dummy_api_key"],["google_engine_id",
+          "dummy_api_key"]]}
         task_deadline: ${TASK_DEADLINE:float:240.0}
         polling_interval: ${POLLING_INTERVAL:float:30.0}
         agent_index: ${AGENT_INDEX_0:int:0}

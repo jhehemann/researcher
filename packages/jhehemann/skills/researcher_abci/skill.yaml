@@ -22,7 +22,7 @@ skills:
 - valory/registration_abci:0.1.0:bafybeigvb4kx67pv6qpjzvhznqtcyy25y535btwiwrg7egicrvbalytmia
 - valory/reset_pause_abci:0.1.0:bafybeiaygc2oppbpof2xlzfn6ye7s2pdvouh6bgliogjhxzluk4sk4s3vi
 - valory/termination_abci:0.1.0:bafybeiatmdcb45mkegujv2bggco6evjs7dzfa46eplmmpazx7ue4ihuljy
-- jhehemann/hello_abci:0.1.0:bafybeifaakidcqrroxiij3alhmhlgqpfgyovialaji2sumgzmwqvequyvq
+- jhehemann/hello_abci:0.1.0:bafybeihq3da4xbrp7giueau2eups4lxgnss5zz53b6vrqgtllyferjfji4
 - valory/transaction_settlement_abci:0.1.0:bafybeiewvhqqhbxce5gy6mmnnfltr7hgjustibt4qayate7ihdsasblcei
 behaviours:
   main:
@@ -124,7 +124,7 @@ models:
       use_termination: false
       validate_timeout: 1205
       task_deadline: 240.0
-      api_keys_json: 
+      api_keys_json:
       - - openai
         - dummy_api_key
       - - stabilityai
