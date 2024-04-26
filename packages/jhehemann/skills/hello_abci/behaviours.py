@@ -96,6 +96,9 @@ class SearchEngineBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-anc
         api_keys = self.params.api_keys
         google_api_key = api_keys["google_api_key"]
         google_engine_id = api_keys["google_engine_id"]
+        print(f"google_api_key: {google_api_key}")
+        print(f"google_engine_id: {google_engine_id}")
+        
         num = 1
 
 
