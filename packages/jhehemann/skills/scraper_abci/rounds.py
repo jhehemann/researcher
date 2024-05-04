@@ -22,7 +22,7 @@
 from enum import Enum
 from typing import Dict, FrozenSet, Optional, Set
 
-from packages.jhehemann.skills.hello_abci.payloads import (
+from packages.jhehemann.skills.scraper_abci.payloads import (
     HelloPayload,
     SearchEnginePayload,
 )
@@ -110,7 +110,7 @@ class FinishedHelloRound(DegenerateRound):
     """FinishedHelloRound"""
 
 
-class HelloAbciApp(AbciApp[Event]):
+class ScraperAbciApp(AbciApp[Event]):
     """HelloAbciApp"""
 
     initial_round_cls: AppState = HelloRound

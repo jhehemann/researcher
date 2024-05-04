@@ -1,19 +1,19 @@
-name: hello_abci
+name: scraper_abci
 author: jhehemann
 version: 0.1.0
 type: skill
-description: A hello skill.
+description: A scraper abci skill.
 license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
-  __init__.py: bafybeia3hids57rhw42ue5aclnit5gjjfftqvwdsyw5cl2x3c775wr74m4
-  behaviours.py: bafybeicdrzydf54mhoixzessitlpygc3ntcylz4cpi77c45jfyt2l5mrgy
-  dialogues.py: bafybeigxwoti7yjbnijwmztkgn4n3sgk7x35jiso5dypaj4gbs55qmmgiq
-  fsm_specification.yaml: bafybeierviuk6mbhm3ev4xpbey72ruo4ge5fmcf6ce24yk7vhfmakyjkmu
-  handlers.py: bafybeie27xt5dn55dcendwbeq77ht6nw2hjzrworcrcnyzz5qqpb6abyma
-  models.py: bafybeigipwx7euo3g4jkx6g4r3xpkkn25al5mmubihidkvtdmclfm6y224
-  payloads.py: bafybeihjjl7xxsazkaielmz4j2v6c4l4yeo64ylkzmgqiurqzqmliv257a
-  rounds.py: bafybeibzn4zubnmgbhq2t7swaqro4g76obez7chh2u5i5fobs3v547gd6q
+  __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
+  behaviours.py: bafybeiamv6sr5jm52nohtxwhc3aipmgndgoxyyykaoai7zu4psoswso6u4
+  dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
+  fsm_specification.yaml: bafybeicarbpkve5vtlnv5qtimie64qz52jzzjm7o75zf3gviblklebueae
+  handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
+  models.py: bafybeiajdhtegllznziibfjvzqbksen3wmyraj6vc6eln2xtw4m25x7cyu
+  payloads.py: bafybeibqrj5pkujvvxo6a7hitrssfzikzk3aizxeepnzcmxcwcrrs2u5my
+  rounds.py: bafybeic2x2h6kpbrv42htlnqrppsm6rb4cgvzoqs73bbgqtabqpcvwyqma
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -23,7 +23,7 @@ skills:
 behaviours:
   main:
     args: {}
-    class_name: HelloRoundBehaviour
+    class_name: ScraperRoundBehaviour
 handlers:
   abci:
     args: {}
@@ -103,7 +103,7 @@ models:
       retry_attempts: 400
       retry_timeout: 3
       round_timeout_seconds: 30.0
-      service_id: demo
+      service_id: scraper
       service_registry_address: null
       setup:
         all_participants:
@@ -121,7 +121,7 @@ models:
       validate_timeout: 1205
       task_deadline: 240.0
       api_keys_json:
-      - - openai
+      - - scraper_skill
         - dummy_api_key
       - - stabilityai
         - dummy_api_key

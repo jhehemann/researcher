@@ -22,13 +22,13 @@
 from abc import ABC
 from typing import Generator, List, Set, Type, cast
 
-from packages.jhehemann.skills.hello_abci.models import Params, SharedState
-from packages.jhehemann.skills.hello_abci.payloads import (
+from packages.jhehemann.skills.scraper_abci.models import Params, SharedState
+from packages.jhehemann.skills.scraper_abci.payloads import (
     HelloPayload,
     SearchEnginePayload,
 )
-from packages.jhehemann.skills.hello_abci.rounds import (
-    HelloAbciApp,
+from packages.jhehemann.skills.scraper_abci.rounds import (
+    ScraperAbciApp,
     HelloRound,
     SearchEngineRound,
     SynchronizedData,
@@ -136,11 +136,11 @@ class SearchEngineBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-anc
         self.set_done()
 
 
-class HelloRoundBehaviour(AbstractRoundBehaviour):
-    """HelloRoundBehaviour"""
+class ScraperRoundBehaviour(AbstractRoundBehaviour):
+    """ScraperRoundBehaviour"""
 
     initial_behaviour_cls = HelloBehaviour
-    abci_app_cls = HelloAbciApp  # type: ignore
+    abci_app_cls = ScraperAbciApp  # type: ignore
     behaviours: Set[Type[BaseBehaviour]] = [  # type: ignore
         HelloBehaviour,
         SearchEngineBehaviour,

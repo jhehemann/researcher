@@ -18,3 +18,4 @@ researcher_service
 !packages/jhehemann/services/researcher_service/
 __pycache__/
 .env
+.1env

@@ -21,12 +21,11 @@
 
 from typing import Set, Type
 
-from packages.jhehemann.skills.hello_abci.behaviours import HelloRoundBehaviour
-from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
     BaseBehaviour,
 )
+from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
 from packages.valory.skills.registration_abci.behaviours import (
     AgentRegistrationRoundBehaviour,
     RegistrationStartupBehaviour,
@@ -34,6 +33,7 @@ from packages.valory.skills.registration_abci.behaviours import (
 from packages.valory.skills.reset_pause_abci.behaviours import (
     ResetPauseABCIConsensusBehaviour,
 )
+from packages.jhehemann.skills.scraper_abci.behaviours import ScraperRoundBehaviour
 from packages.valory.skills.termination_abci.behaviours import (
     BackgroundBehaviour,
     TerminationAbciBehaviours,
@@ -53,6 +53,6 @@ class ResearcherConsensusBehaviour(AbstractRoundBehaviour):
         *ResetPauseABCIConsensusBehaviour.behaviours,
         *TransactionSettlementRoundBehaviour.behaviours,
         *TerminationAbciBehaviours.behaviours,
-        *HelloRoundBehaviour.behaviours,
+        *ScraperRoundBehaviour.behaviours,
     }
     background_behaviours_cls = {BackgroundBehaviour}

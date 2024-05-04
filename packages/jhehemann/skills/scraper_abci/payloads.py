@@ -17,7 +17,7 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This module contains the transaction payloads of the HelloAbciApp."""
+"""This module contains the transaction payloads of the ScraperAbciApp."""
 
 from dataclasses import dataclass
 

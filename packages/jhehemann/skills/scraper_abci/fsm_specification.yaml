@@ -5,14 +5,13 @@ alphabet_in:
 default_start_state: HelloRound
 final_states:
 - FinishedHelloRound
-label: HelloAbciApp
+label: ScraperAbciApp
 start_states:
 - HelloRound
 states:
 - HelloRound
 - SearchEngineRound
 - FinishedHelloRound
-
 transition_func:
     (HelloRound, DONE): SearchEngineRound
     (HelloRound, NO_MAJORITY): HelloRound

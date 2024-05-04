@@ -19,9 +19,9 @@
 
 """This module contains the shared state for the abci skill of ResearcherSkillAbciApp."""
 
-from packages.jhehemann.skills.hello_abci.models import Params as HelloParams
-from packages.jhehemann.skills.hello_abci.models import SharedState as BaseSharedState
-from packages.jhehemann.skills.hello_abci.rounds import Event as HelloEvent
+from packages.jhehemann.skills.scraper_abci.models import Params as HelloParams
+from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSharedState
+from packages.jhehemann.skills.scraper_abci.rounds import Event as HelloEvent
 from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
 from packages.valory.skills.abstract_round_abci.models import (
     BenchmarkTool as BaseBenchmarkTool,
@@ -66,7 +66,6 @@ class SharedState(BaseSharedState):
 
 
 class Params(  # pylint: disable=too-many-ancestors
-    TerminationParams,
-    HelloParams,
+    TerminationParams
 ):
     """A model to represent params for multiple abci apps."""

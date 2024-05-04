@@ -7,12 +7,12 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeiabpuj3ksuzmro5bnzgavcwnode34wfrkvf3apvgd6bzvs2j47azq
-  behaviours.py: bafybeiczuqdrptfdjnv5n3c36cf6geevutjr4fdcchnzlr7sfz74wy3qf4
-  composition.py: bafybeifebqwntc4xkt5xel5djx6zod6ajko7w4dexsxgcppsh73aot42jy
+  behaviours.py: bafybeifqmhkaufa2u3a6nvxqxfzenno7ly7gwtt4d3c6gfxgoe255soynq
+  composition.py: bafybeifgp3wrvuhm2c7zntbm3e3n7kfjmbaxdtyaektqbxw62wnzzirvga
   dialogues.py: bafybeiakqfqcpg7yrxt4bsyernhy5p77tci4qhmgqqjqi3ttx7zk6sklca
   fsm_specification.yaml: bafybeieaehaudq5szfsp6hefooh3ebk4lwass6z2htand3ph3hrrm76rty
-  handlers.py: bafybeih4bdudekau3li5qhibwqnhaexaclwlo4lwiqjk2buadsmsfdx5gi
-  models.py: bafybeie3rjukbp7b4xxb3h4x5hz4kpujvbskbftzhldu7j446hayu3xjyy
+  handlers.py: bafybeiet4vvrjm35rsuqvym52q5bfyglrvffunnxvui2nkjir746ndm2zm
+  models.py: bafybeid4decmuismffmnhrob37kyuvjvuy5t3wtx3drbkeplovtuatxeaq
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -22,7 +22,7 @@ skills:
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
-- jhehemann/hello_abci:0.1.0:bafybeiangl4s2svjsyj3gb5tlyf7m5vnn5tvkucn4iakwv4ngnknkb4lta
+- jhehemann/scraper_abci:0.1.0:bafybeib4a2xve54wyfh25olwighi3k4fjkorlpggto7ncf6duzaifck3um
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
 behaviours:
   main:
@@ -125,7 +125,7 @@ models:
       validate_timeout: 1205
       task_deadline: 240.0
       api_keys_json:
-      - - openai
+      - - researcher_skill
         - dummy_api_key
       - - stabilityai
         - dummy_api_key

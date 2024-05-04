@@ -17,7 +17,7 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This module contains the handlers for the skill of HelloAbciApp."""
+"""This module contains the handlers for the skill of ScraperAbciApp."""
 
 from packages.valory.skills.abstract_round_abci.handlers import (
     ABCIRoundHandler as BaseABCIRoundHandler,
