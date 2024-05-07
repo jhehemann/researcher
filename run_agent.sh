@@ -13,4 +13,5 @@ cp $PWD/../ethereum_private_key.txt .
 # cp $PWD/../.env .
 autonomy add-key ethereum ethereum_private_key.txt
 autonomy issue-certificates
+# aea -s -v DEBUG run
 aea -s run

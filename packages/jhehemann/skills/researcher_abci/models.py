@@ -18,8 +18,9 @@
 # ------------------------------------------------------------------------------
 
 """This module contains the shared state for the abci skill of ResearcherSkillAbciApp."""
+# from typing import Any
 
-from packages.jhehemann.skills.scraper_abci.models import Params as HelloParams
+from packages.jhehemann.skills.scraper_abci.models import Params as ScraperParams
 from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSharedState
 from packages.jhehemann.skills.scraper_abci.rounds import Event as HelloEvent
 from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
@@ -48,6 +49,11 @@ class SharedState(BaseSharedState):
 
     abci_app_cls = ResearcherSkillAbciApp  # type: ignore
 
+    # def __init__(self, *args: Any, **kwargs: Any) -> None:
+    #     """Initialize the shared state."""
+    #     self.last_processed_request_block_number: int = 0
+    #     super().__init__(*args, **kwargs)
+
     def setup(self) -> None:
         """Set up."""
         super().setup()
@@ -66,6 +72,7 @@ class SharedState(BaseSharedState):
 
 
 class Params(  # pylint: disable=too-many-ancestors
-    TerminationParams
+    TerminationParams,
+    ScraperParams
 ):
     """A model to represent params for multiple abci apps."""

@@ -41,7 +41,7 @@ from packages.valory.skills.abstract_round_abci.behaviours import (
 
 
 class HelloBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
-    """Base behaviour for the hello_abci skill."""
+    """Base behaviour for the scraper_abci skill."""
 
     @property
     def synchronized_data(self) -> SynchronizedData:
