@@ -33,7 +33,7 @@ from packages.valory.skills.abstract_round_abci.tests.data.dummy_abci.models imp
 )
 from packages.valory.skills.reset_pause_abci.rounds import Event as ResetPauseEvent
 from packages.valory.skills.termination_abci.models import TerminationParams
-
+from packages.jhehemann.skills.scraper_abci.models import Params as ScraperParams
 
 Requests = BaseRequests
 BenchmarkTool = BaseBenchmarkTool
@@ -72,7 +72,7 @@ class SharedState(BaseSharedState):
 
 
 class Params(  # pylint: disable=too-many-ancestors
-    TerminationParams,
-    ScraperParams
+    ScraperParams,
+    TerminationParams
 ):
     """A model to represent params for multiple abci apps."""
