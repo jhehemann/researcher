@@ -111,7 +111,7 @@ class FinishedHelloRound(DegenerateRound):
 
 
 class ScraperAbciApp(AbciApp[Event]):
-    """HelloAbciApp"""
+    """ScraperAbciApp"""
 
     initial_round_cls: AppState = HelloRound
     initial_states: Set[AppState] = {

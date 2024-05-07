@@ -11,7 +11,7 @@ fingerprint:
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   fsm_specification.yaml: bafybeicarbpkve5vtlnv5qtimie64qz52jzzjm7o75zf3gviblklebueae
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeigwrrty65yafeodnke5j4kkm6qa4x2h3d2nlexw4hoxupeghumnvm
+  models.py: bafybeibl4f3aah77spwvwxgr264trqei7ceh7fic3l6pnxrbi7g6ivaefi
   payloads.py: bafybeibqrj5pkujvvxo6a7hitrssfzikzk3aizxeepnzcmxcwcrrs2u5my
   rounds.py: bafybeic2x2h6kpbrv42htlnqrppsm6rb4cgvzoqs73bbgqtabqpcvwyqma
 fingerprint_ignore_patterns: []
@@ -118,6 +118,7 @@ models:
       tendermint_p2p_url: localhost:26656
       tendermint_url: http://localhost:26657
       tx_timeout: 10.0
+      use_termination: false
       validate_timeout: 1205
       task_deadline: 240.0
       api_keys_json:
@@ -131,6 +132,11 @@ models:
       from_block_range: 5000
       timeout_limit: 3
       max_block_window: 500
+      use_slashing: false
+      slash_cooldown_hours: 3
+      slash_threshold_amount: 10000000000000000
+      light_slash_unit_amount: 5000000000000000
+      serious_slash_unit_amount: 8000000000000000
       service_endpoint_base: https://demo.staging.autonolas.tech/
     class_name: Params
   requests:
@@ -146,5 +152,5 @@ models:
     args: {}
     class_name: TendermintDialogues
 dependencies: {}
-is_abstract: true
+is_abstract: false
 customs: []
