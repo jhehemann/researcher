@@ -1,9 +1,9 @@
 {
     "dev": {
-        "skill/jhehemann/researcher_abci/0.1.0": "bafybeig36v35bcccfc7z53svxlkcqg5pfdprckwyi5qcuxjkuj3sdfrgwi",
+        "skill/jhehemann/researcher_abci/0.1.0": "bafybeihsn5xnhtgjehhmlgthzrkfya2gpgd7uv3ms5edjh7nnjoxbsobhu",
         "skill/jhehemann/scraper_abci/0.1.0": "bafybeiavslu3aivs5b6clyjparvq3bs3tktpjuw7uhgx65umt43vcz5qb4",
-        "agent/jhehemann/researcher_agent/0.1.0": "bafybeif26cxcqgj2emsedbiinsum37ghzqoc3wtnnmv6tupav6j6mmn5ra",
-        "service/jhehemann/researcher_service/0.1.0": "bafybeigyxofb32hsy5xwmq6sqtlkkh7oi336flyvtvpjenqpx2uscbflei"
+        "agent/jhehemann/researcher_agent/0.1.0": "bafybeif2rwww6imawiwgofeeds5uiivy4pctivowfnyx47gkffa6nvzmii",
+        "service/jhehemann/researcher_service/0.1.0": "bafybeibtmjndjktv5luwwzmdu5vljw2nngsiucgujq7q6p423jjvrrihbe"
     },
     "third_party": {
         "protocol/open_aea/signing/1.0.0": "bafybeihv62fim3wl2bayavfcg3u5e5cxu3b7brtu4cn5xoxd6lqwachasi",
