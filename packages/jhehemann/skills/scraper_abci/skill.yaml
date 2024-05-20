@@ -11,7 +11,7 @@ fingerprint:
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   fsm_specification.yaml: bafybeicarbpkve5vtlnv5qtimie64qz52jzzjm7o75zf3gviblklebueae
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeibl4f3aah77spwvwxgr264trqei7ceh7fic3l6pnxrbi7g6ivaefi
+  models.py: bafybeibwlyuk25f3rdgepjv5w6bjdc4pslbxnr2wb2arrtce37u7qwxjri
   payloads.py: bafybeibqrj5pkujvvxo6a7hitrssfzikzk3aizxeepnzcmxcwcrrs2u5my
   rounds.py: bafybeicvg7d3t52ayuxgzbo3rurz27b7gdgvreaq7brs4cpcbjhssobje4
 fingerprint_ignore_patterns: []
@@ -121,11 +121,7 @@ models:
       use_termination: false
       validate_timeout: 1205
       task_deadline: 240.0
-      api_keys_json:
-      - - scraper_skill
-        - dummy_api_key
-      - - stabilityai
-        - dummy_api_key
+      api_keys_json: '{}'
       polling_interval: 30.0
       agent_index: 0
       num_agents: 1

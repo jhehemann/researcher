@@ -2,6 +2,8 @@
 
 REPO_PATH=$PWD
 
+source .env
+
 # Remove previous service build
 if test -d researcher_service; then
   echo "Removing previous service build"

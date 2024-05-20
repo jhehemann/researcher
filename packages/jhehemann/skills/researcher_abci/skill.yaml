@@ -22,7 +22,7 @@ skills:
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
-- jhehemann/scraper_abci:0.1.0:bafybeigf4k7zky3fqid5feepaynoho2xjpo2ai2jigzojd47qixzfx7tve
+- jhehemann/scraper_abci:0.1.0:bafybeidra4o2e6bvy3pbpireeab55doqcyasifqlgrg57cjmpcsookxehi
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
 behaviours:
   main:
@@ -125,11 +125,7 @@ models:
       use_termination: false
       validate_timeout: 1205
       task_deadline: 240.0
-      api_keys_json:
-      - - researcher_skill
-        - dummy_api_key
-      - - stabilityai
-        - dummy_api_key
+      api_keys_json: '{}'
       polling_interval: 30.0
       agent_index: 0
       num_agents: 1
