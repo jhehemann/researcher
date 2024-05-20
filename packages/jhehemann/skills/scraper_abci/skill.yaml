@@ -103,7 +103,7 @@ models:
       retry_attempts: 400
       retry_timeout: 3
       round_timeout_seconds: 30.0
-      service_id: researcher
+      service_id: scraper
       service_registry_address: null
       setup:
         all_participants:
@@ -152,5 +152,5 @@ models:
     args: {}
     class_name: TendermintDialogues
 dependencies: {}
-is_abstract: false
+is_abstract: true
 customs: []
