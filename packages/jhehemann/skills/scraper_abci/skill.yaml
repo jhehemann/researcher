@@ -13,7 +13,7 @@ fingerprint:
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
   models.py: bafybeibl4f3aah77spwvwxgr264trqei7ceh7fic3l6pnxrbi7g6ivaefi
   payloads.py: bafybeibqrj5pkujvvxo6a7hitrssfzikzk3aizxeepnzcmxcwcrrs2u5my
-  rounds.py: bafybeic2x2h6kpbrv42htlnqrppsm6rb4cgvzoqs73bbgqtabqpcvwyqma
+  rounds.py: bafybeicvg7d3t52ayuxgzbo3rurz27b7gdgvreaq7brs4cpcbjhssobje4
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -152,5 +152,5 @@ models:
     args: {}
     class_name: TendermintDialogues
 dependencies: {}
-is_abstract: false
+is_abstract: true
 customs: []
