@@ -3,6 +3,8 @@ if test -d researcher_agent; then
   rm -r researcher_agent
 fi
 
+source .env
+
 find . -empty -type d -delete  # remove empty directories to avoid wrong hashes
 autonomy packages lock
 autonomy fetch --local --agent jhehemann/researcher_agent && cd researcher_agent

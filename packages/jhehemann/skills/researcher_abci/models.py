@@ -20,7 +20,12 @@
 """This module contains the shared state for the abci skill of ResearcherSkillAbciApp."""
 # from typing import Any
 
+from packages.valory.skills.abstract_round_abci.models import ApiSpecs
+
 from packages.jhehemann.skills.scraper_abci.models import Params as ScraperParams
+from packages.jhehemann.skills.scraper_abci.models import (
+    SearchEngineResponseSpecs as ScraperSearchEngineResponseSpecs
+)
 from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSharedState
 from packages.jhehemann.skills.scraper_abci.rounds import Event as HelloEvent
 from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
@@ -37,6 +42,7 @@ from packages.jhehemann.skills.scraper_abci.models import Params as ScraperParam
 
 Requests = BaseRequests
 BenchmarkTool = BaseBenchmarkTool
+SearchEngineResponseSpecs = ScraperSearchEngineResponseSpecs
 
 RandomnessApi = BaseRandomnessApi
 

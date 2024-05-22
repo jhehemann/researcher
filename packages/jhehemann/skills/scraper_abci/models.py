@@ -19,8 +19,12 @@
 
 """This module contains the shared state for the abci skill of ScraperAbciApp."""
 
+import json
+from dataclasses import dataclass
+
 from packages.jhehemann.skills.scraper_abci.rounds import ScraperAbciApp
 from packages.valory.skills.abstract_round_abci.models import BaseParams
+from packages.valory.skills.abstract_round_abci.models import ApiSpecs
 from packages.valory.skills.abstract_round_abci.models import (
     BenchmarkTool as BaseBenchmarkTool,
 )
@@ -33,7 +37,6 @@ from typing import Any, Callable, Dict, List, Optional, cast
 
 from aea.exceptions import enforce
 from aea.skills.base import Model
-import json
 
 class SharedState(BaseSharedState):
     """Keep the current shared state of the skill."""
@@ -61,13 +64,11 @@ class Params(BaseParams):
         # self.in_flight_req: bool = False
         # self.from_block: Optional[int] = None
         # self.req_to_callback: Dict[str, Callable] = {}
-        print()
-        print("Params args: ", args)
-        print()
-        print("Params kwargs: ", kwargs)
-        self.api_keys: Dict = json.loads(kwargs.get("api_keys_json", "{}"))
-        print("\nParams api_keys: ", self.api_keys)
-        print()
+       
+        self.api_keys: Dict = self._nested_list_todict_workaround(
+            kwargs, "api_keys_json"
+        )
+        # print("API KEYS: ", self.api_keys)
 
         # self.file_hash_to_tools: Dict[
         #     str, List[str]
@@ -105,22 +106,28 @@ class Params(BaseParams):
             raise ValueError(f"No {key} specified!")
         return {value[0]: value[1] for value in values}
 
-    # def _parse_mech_configs(self, kwargs: Dict) -> Dict[str, MechConfig]:
-    #     """Parse the mech configs."""
-    #     mech_configs_json = self._nested_list_todict_workaround(
-    #         kwargs, "mech_to_config"
-    #     )
-    #     mech_configs_json = {
-    #         key: {value[0]: value[1]} for key, value in mech_configs_json.items()
-    #     }
+class SearchEngineResponseSpecs(ApiSpecs):
+    """A model that wraps ApiSpecs for the search engines's response specifications."""
 
-    #     mech_configs = {
-    #         mech: MechConfig.from_dict(config)
-    #         for mech, config in mech_configs_json.items()
-    #     }
-    #     for address in self.agent_mech_contract_addresses:
-    #         enforce(
-    #             address in mech_configs,
-    #             f"agent_mech_contract_addresses {address} must be in mech_configs!",
-    #         )
-    #     return mech_configs
+@dataclass(init=False)
+class SearchEngineInteractionResponse:
+    """A structure for the response of a search engine interaction task."""
+
+    kind: str
+    url: dict
+    queries: dict
+    search_context: dict
+    search_information: dict
+    items: List[dict]
+
+    def __init__(self, **kwargs: Any) -> None:
+        """Initialize the search engine's response ignoring extra keys."""
+        self.kind = kwargs.pop("kind", "Unknown")
+        self.url = kwargs.pop("url", {})
+        self.queries = kwargs.pop("queries", {})
+        self.search_context = kwargs.pop("context", {})
+        self.search_information = kwargs.pop("searchInformation", {})
+        self.items = kwargs.pop("items", [])
+
+
+

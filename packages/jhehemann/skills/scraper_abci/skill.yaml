@@ -7,11 +7,11 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
-  behaviours.py: bafybeiekc7u2myook5n752apitjsainm36zf6rhmtk3fg63dtawemv7gua
+  behaviours.py: bafybeiedwtdrjzdlxlwixlv7crtmlvr2bzy7acgutjihrcb5brociwjmta
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   fsm_specification.yaml: bafybeicarbpkve5vtlnv5qtimie64qz52jzzjm7o75zf3gviblklebueae
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeibwlyuk25f3rdgepjv5w6bjdc4pslbxnr2wb2arrtce37u7qwxjri
+  models.py: bafybeicd3krpz73ak5yepr3nm7ihiv4hbmio2jhfszsijexygmplp2xjhm
   payloads.py: bafybeibqrj5pkujvvxo6a7hitrssfzikzk3aizxeepnzcmxcwcrrs2u5my
   rounds.py: bafybeicvg7d3t52ayuxgzbo3rurz27b7gdgvreaq7brs4cpcbjhssobje4
 fingerprint_ignore_patterns: []
@@ -121,7 +121,7 @@ models:
       use_termination: false
       validate_timeout: 1205
       task_deadline: 240.0
-      api_keys_json: '{}'
+      api_keys_json: []
       polling_interval: 30.0
       agent_index: 0
       num_agents: 1
@@ -135,6 +135,18 @@ models:
       serious_slash_unit_amount: 8000000000000000
       service_endpoint_base: https://demo.staging.autonolas.tech/
     class_name: Params
+  search_engine_response:
+    args:
+      api_id: search_engine_response
+      headers:
+        Content-Type: application/json
+      method: GET
+      parameters: {}
+      response_key: null
+      response_type: dict
+      retries: 5
+      url: https://www.googleapis.com/customsearch/v1
+    class_name: SearchEngineResponseSpecs
   requests:
     args: {}
     class_name: Requests
