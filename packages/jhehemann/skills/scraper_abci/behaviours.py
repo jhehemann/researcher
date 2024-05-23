@@ -24,15 +24,17 @@ from abc import ABC
 from datetime import datetime, timedelta
 from typing import Any, Callable, Generator, Optional, Set, Type, cast
 
-from packages.jhehemann.skills.scraper_abci.models import Params, SharedState
+from packages.jhehemann.skills.scraper_abci.models import ScraperParams, SharedState
 from packages.jhehemann.skills.scraper_abci.payloads import (
     HelloPayload,
     SearchEnginePayload,
+    WebScrapePayload
 )
 from packages.jhehemann.skills.scraper_abci.rounds import (
     ScraperAbciApp,
     HelloRound,
     SearchEngineRound,
+    WebScrapeRound,
     SynchronizedData,
 )
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
@@ -44,71 +46,31 @@ from packages.valory.skills.abstract_round_abci.behaviour_utils import TimeoutEx
 # from packages.valory.skills.decision_maker_abci.io_.loader import ComponentPackageLoader
 from packages.jhehemann.skills.scraper_abci.models import (
     SearchEngineInteractionResponse,
+    WebScrapeInteractionResponse,
     SearchEngineResponseSpecs,
+    WebScrapeResponseSpecs,
 )
 
 WaitableConditionType = Generator[None, None, bool]
 
 
-class HelloBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
+class ScraperBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
     """Base behaviour for the scraper_abci skill."""
 
     @property
     def synchronized_data(self) -> SynchronizedData:
         """Return the synchronized data."""
         return cast(SynchronizedData, super().synchronized_data)
-
+    
     @property
-    def params(self) -> Params:
-        """Return the params."""
-        return cast(Params, super().params)
-
+    def params(self) -> ScraperParams:
+        """Get the parameters."""
+        return cast(ScraperParams, self.context.params)
+    
     @property
     def local_state(self) -> SharedState:
         """Return the state."""
         return cast(SharedState, self.context.state)
-
-
-class HelloBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-ancestors
-    """HelloBehaviour"""
-
-    matching_round: Type[AbstractRound] = HelloRound
-
-    def async_act(self) -> Generator:
-        """Do the act, supporting asynchronous execution."""
-
-        with self.context.benchmark_tool.measure(self.behaviour_id).local():
-            sender = self.context.agent_address
-            payload_content = "Hello world!"
-            self.context.logger.info(payload_content)
-            payload = HelloPayload(sender=sender, content=payload_content)
-
-        with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
-            yield from self.send_a2a_transaction(payload)
-            yield from self.wait_until_round_end()
-
-        self.set_done()
-
-
-class SearchEngineBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-ancestors
-    """Behaviour to request URLs from search engine"""
-
-    matching_round: Type[AbstractRound] = SearchEngineRound     
-
-    def __init__(self, **kwargs: Any) -> None:
-        """Initialize behaviour."""
-        super().__init__(**kwargs)
-        self._search_engine_response: Optional[SearchEngineInteractionResponse] = None
-
-    @property
-    def params(self) -> Params:
-        """Get the parameters."""
-        return cast(Params, self.context.params)
-    
-    @property
-    def search_engine_response_api(self) -> SearchEngineResponseSpecs:
-        """Get the search engine response api specs."""
-        return self.context.search_engine_response
     
     def wait_for_condition_with_sleep(
         self,
@@ -140,6 +102,44 @@ class SearchEngineBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-anc
                 raise TimeoutException()
             self.context.logger.info(f"Retrying in {self.params.sleep_time} seconds.")
             yield from self.sleep(self.params.sleep_time)
+
+
+class HelloBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
+    """HelloBehaviour"""
+
+    matching_round: Type[AbstractRound] = HelloRound
+
+    def async_act(self) -> Generator:
+        """Do the act, supporting asynchronous execution."""
+
+        with self.context.benchmark_tool.measure(self.behaviour_id).local():
+            sender = self.context.agent_address
+            payload_content = self.params.input_query
+            self.context.logger.info(payload_content)
+            payload = HelloPayload(sender=sender, content=payload_content)
+
+        with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
+            yield from self.send_a2a_transaction(payload)
+            yield from self.wait_until_round_end()
+
+        self.set_done()
+
+
+class SearchEngineBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
+    """Behaviour to request URLs from search engine"""
+
+    matching_round: Type[AbstractRound] = SearchEngineRound     
+
+    def __init__(self, **kwargs: Any) -> None:
+        """Initialize behaviour."""
+        super().__init__(**kwargs)
+        self._search_engine_response: Optional[SearchEngineInteractionResponse] = None
+    
+    @property
+    def search_engine_response_api(self) -> SearchEngineResponseSpecs:
+        """Get the search engine response api specs."""
+        return self.context.search_engine_response
+    
     
     def set_search_engine_response_specs(self) -> None:
         """Set the search engine's response specs."""
@@ -189,15 +189,13 @@ class SearchEngineBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-anc
         res = self._handle_response(res)
 
         if self.search_engine_response_api.is_retries_exceeded():
-            error = "Retries were exceeded while trying to get the mech's response."
+            error = "Retries were exceeded while trying to get the search engines's response."
             self._search_engine_response = SearchEngineInteractionResponse(error=error)
             return True
 
         if res is None:
             return False
         
-        print(f"PRETTY SE RESPONSE:\n{json.dumps(res, indent=4)}")
-
         try:
             self._search_engine_response = SearchEngineInteractionResponse(**res)
         except (ValueError, TypeError, KeyError):
@@ -228,8 +226,109 @@ class SearchEngineBehaviour(HelloBaseBehaviour):  # pylint: disable=too-many-anc
             sender = self.context.agent_address
             search_query = self.synchronized_data.hello_data
             payload_content = yield from self.get_payload_content(search_query)
-            self.context.logger.info(f"PAYLOAD CONTENT: {payload_content}")
             payload = SearchEnginePayload(sender=sender, content=payload_content)
+
+        with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
+            yield from self.send_a2a_transaction(payload)
+            yield from self.wait_until_round_end()
+
+        self.set_done()
+
+
+class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
+    """Behaviour to request URLs from search engine"""
+
+    matching_round: Type[AbstractRound] = WebScrapeRound     
+
+    def __init__(self, **kwargs: Any) -> None:
+        """Initialize behaviour."""
+        super().__init__(**kwargs)
+        self._web_scrape_response: Optional[WebScrapeInteractionResponse] = None
+    
+    @property
+    def web_scrape_response_api(self) -> WebScrapeResponseSpecs:
+        """Get the search engine response api specs."""
+        return self.context.web_scrape_response
+    
+    def set_web_scrape_response_specs(self, url) -> None:
+        """Set the search engine's response specs."""        
+        self.web_scrape_response_api.__dict__["_frozen"] = False
+        self.web_scrape_response_api.url = url
+        self.web_scrape_response_api.__dict__["_frozen"] = True
+
+    def _handle_response(
+        self,
+        res: Optional[str],
+    ) -> Optional[Any]:
+        """Handle the response from the search engine.
+
+        :param res: the response to handle.
+        :return: the response's result, using the given keys. `None` if response is `None` (has failed).
+        """
+        if res is None:
+            msg = f"Could not get the search engine's response from {self.web_scrape_response_api.api_id}"
+            self.context.logger.error(msg)
+            self.web_scrape_response_api.increment_retries()
+            return None
+
+        self.context.logger.info(f"Retrieved the search engine's response: {res}.")
+        self.web_scrape_response_api.reset_retries()
+        return res
+
+    def _get_response(self) -> WaitableConditionType:
+        """Get the response data from search engine."""
+        urls = self.synchronized_data.search_engine_data.split('|')
+        for url in urls:
+            self.set_web_scrape_response_specs(url)
+            specs = self.web_scrape_response_api.get_spec()
+            res_raw = yield from self.get_http_response(**specs)    
+            res = self.web_scrape_response_api.process_response(res_raw)
+            res = self._handle_response(res)
+            print(f"PRETTY HTTP RESPONSE:\n{json.dumps(res, indent=4)}")
+           
+
+            if self.web_scrape_response_api.is_retries_exceeded():
+                error = "Retries were exceeded while trying to get the web site's response."
+                self._search_engine_response = WebScrapeInteractionResponse(error=error)
+                return True
+        exit()
+        if res is None:
+            return False
+        
+        print(f"PRETTY SE RESPONSE:\n{json.dumps(res, indent=4)}")
+
+        try:
+            self._search_engine_response = WebScrapeInteractionResponse(**res)
+        except (ValueError, TypeError, KeyError):
+            self._search_engine_response = WebScrapeInteractionResponse.incorrect_format(res)
+
+        return True
+
+    def get_payload_content(self) -> Generator:
+        """Search Google using a custom search engine."""
+        # convert urls string to list of strings
+       
+        yield from self.wait_for_condition_with_sleep(self._get_response)
+
+        search_response_items = self._search_engine_response.items
+        links_list = [
+            item['link'] for item in search_response_items if 'link' in item
+        ]
+        
+        # Use a pipe as a separator for joining as it is not a valid character in a URL
+        links_string = '|'.join(links_list)
+        self.context.logger.info(f"Response links: {links_string}")
+                
+        return links_string
+
+
+    def async_act(self) -> Generator:
+        """Do the act, supporting asynchronous execution."""
+
+        with self.context.benchmark_tool.measure(self.behaviour_id).local():
+            sender = self.context.agent_address
+            payload_content = yield from self.get_payload_content()
+            payload = WebScrapePayload(sender=sender, content=payload_content)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)
@@ -246,4 +345,5 @@ class ScraperRoundBehaviour(AbstractRoundBehaviour):
     behaviours: Set[Type[BaseBehaviour]] = [  # type: ignore
         HelloBehaviour,
         SearchEngineBehaviour,
+        WebScrapeBehaviour,
     ]

@@ -12,7 +12,7 @@ fingerprint:
   dialogues.py: bafybeiakqfqcpg7yrxt4bsyernhy5p77tci4qhmgqqjqi3ttx7zk6sklca
   fsm_specification.yaml: bafybeieaehaudq5szfsp6hefooh3ebk4lwass6z2htand3ph3hrrm76rty
   handlers.py: bafybeiet4vvrjm35rsuqvym52q5bfyglrvffunnxvui2nkjir746ndm2zm
-  models.py: bafybeig3rz3o7hu24d5g3yjmba4fdaphwiti7vypbaab6ekoihgcnu5w3q
+  models.py: bafybeieooe3z7yte5ok7r6sbaygvx4ezy5qem7d3fblncfxinzqjcptxqq
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -22,7 +22,7 @@ skills:
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
-- jhehemann/scraper_abci:0.1.0:bafybeih627t5myyk4jusc64sy6ssma2rfslkxnojle57433zl7myrausve
+- jhehemann/scraper_abci:0.1.0:bafybeidzjspeg4rvtk3cgjdhichs3uezjqo6gnfqsijwxtjl6dtuqskk5q
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
 behaviours:
   main:
@@ -72,6 +72,8 @@ models:
     class_name: HttpDialogues
   params:
     args:
+      input_query: Search for relevant information about current topics of interest.
+      api_keys_json: []
       cleanup_history_depth: 1
       cleanup_history_depth_current: null
       drand_public_key: 868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31
@@ -125,7 +127,6 @@ models:
       use_termination: false
       validate_timeout: 1205
       task_deadline: 240.0
-      api_keys_json: []
       polling_interval: 30.0
       agent_index: 0
       num_agents: 1
@@ -143,7 +144,7 @@ models:
       tx_timeout: 10.0
       ipfs_address: https://gateway.autonolas.tech/ipfs/
       service_endpoint_base: https://demo.staging.autonolas.tech/
-    class_name: Params
+    class_name: ResearcherParams
   randomness_api:
     args:
       api_id: cloudflare
@@ -167,6 +168,18 @@ models:
       retries: 5
       url: https://www.googleapis.com/customsearch/v1
     class_name: SearchEngineResponseSpecs
+  web_scrape_response:
+    args:
+      api_id: web_scrape_response
+      headers:
+        Content-Type: application/json
+      method: GET
+      parameters: {}
+      response_key: null
+      response_type: dict
+      retries: 5
+      url: ''
+    class_name: WebScrapeResponseSpecs
   requests:
     args: {}
     class_name: Requests

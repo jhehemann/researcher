@@ -4,6 +4,9 @@ REPO_PATH=$PWD
 
 source .env
 
+export INPUT_QUERY="Who will be the next president of the United States?"
+
+
 # Remove previous service build
 if test -d researcher_service; then
   echo "Removing previous service build"

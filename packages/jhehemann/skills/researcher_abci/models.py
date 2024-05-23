@@ -22,9 +22,9 @@
 
 from packages.valory.skills.abstract_round_abci.models import ApiSpecs
 
-from packages.jhehemann.skills.scraper_abci.models import Params as ScraperParams
 from packages.jhehemann.skills.scraper_abci.models import (
-    SearchEngineResponseSpecs as ScraperSearchEngineResponseSpecs
+    SearchEngineResponseSpecs as ScraperSearchEngineResponseSpecs,
+    WebScrapeResponseSpecs as ScraperWebScrapeResponseSpecs
 )
 from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSharedState
 from packages.jhehemann.skills.scraper_abci.rounds import Event as HelloEvent
@@ -38,11 +38,12 @@ from packages.valory.skills.abstract_round_abci.tests.data.dummy_abci.models imp
 )
 from packages.valory.skills.reset_pause_abci.rounds import Event as ResetPauseEvent
 from packages.valory.skills.termination_abci.models import TerminationParams
-from packages.jhehemann.skills.scraper_abci.models import Params as ScraperParams
+from packages.jhehemann.skills.scraper_abci.models import ScraperParams
 
 Requests = BaseRequests
 BenchmarkTool = BaseBenchmarkTool
 SearchEngineResponseSpecs = ScraperSearchEngineResponseSpecs
+WebScrapeResponseSpecs = ScraperWebScrapeResponseSpecs
 
 RandomnessApi = BaseRandomnessApi
 
@@ -77,7 +78,7 @@ class SharedState(BaseSharedState):
         )
 
 
-class Params(  # pylint: disable=too-many-ancestors
+class ResearcherParams(  # pylint: disable=too-many-ancestors
     ScraperParams,
     TerminationParams
 ):

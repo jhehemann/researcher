@@ -48,34 +48,18 @@ Requests = BaseRequests
 BenchmarkTool = BaseBenchmarkTool
 #Params = BaseParams
 
-class Params(BaseParams):
+class ScraperParams(BaseParams):
     """A model to represent params for multiple abci apps."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the parameters object."""
-        # self.agent_mech_contract_addresses = kwargs.get(
-        #     "agent_mech_contract_addresses", None
-        # )
-        # enforce(
-        #     self.agent_mech_contract_addresses is not None,
-        #     "agent_mech_contract_addresses must be set!",
-        # )
-
-        # self.in_flight_req: bool = False
-        # self.from_block: Optional[int] = None
-        # self.req_to_callback: Dict[str, Callable] = {}
        
         self.api_keys: Dict = self._nested_list_todict_workaround(
             kwargs, "api_keys_json"
         )
-        # print("API KEYS: ", self.api_keys)
 
-        # self.file_hash_to_tools: Dict[
-        #     str, List[str]
-        # ] = self._nested_list_todict_workaround(
-        #     kwargs,
-        #     "file_hash_to_tools_json",
-        # )
+        self.input_query = kwargs.get("input_query", None)
+        enforce(self.input_query is not None, "input_query must be set!")
         self.polling_interval = kwargs.get("polling_interval", 30.0)
         self.task_deadline = kwargs.get("task_deadline", 240.0)
         self.num_agents = kwargs.get("num_agents", None)
@@ -109,8 +93,31 @@ class Params(BaseParams):
 class SearchEngineResponseSpecs(ApiSpecs):
     """A model that wraps ApiSpecs for the search engines's response specifications."""
 
+class WebScrapeResponseSpecs(ApiSpecs):
+    """A model that wraps ApiSpecs for the web scraping response specifications."""
+
 @dataclass(init=False)
 class SearchEngineInteractionResponse:
+    """A structure for the response of a search engine interaction task."""
+
+    kind: str
+    url: dict
+    queries: dict
+    search_context: dict
+    search_information: dict
+    items: List[dict]
+
+    def __init__(self, **kwargs: Any) -> None:
+        """Initialize the search engine's response ignoring extra keys."""
+        self.kind = kwargs.pop("kind", "Unknown")
+        self.url = kwargs.pop("url", {})
+        self.queries = kwargs.pop("queries", {})
+        self.search_context = kwargs.pop("context", {})
+        self.search_information = kwargs.pop("searchInformation", {})
+        self.items = kwargs.pop("items", [])
+
+@dataclass(init=False)
+class WebScrapeInteractionResponse:
     """A structure for the response of a search engine interaction task."""
 
     kind: str

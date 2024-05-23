@@ -25,6 +25,7 @@ from typing import Dict, FrozenSet, Optional, Set
 from packages.jhehemann.skills.scraper_abci.payloads import (
     HelloPayload,
     SearchEnginePayload,
+    WebScrapePayload,
 )
 
 from packages.valory.skills.abstract_round_abci.base import (
@@ -68,8 +69,13 @@ class SynchronizedData(BaseSynchronizedData):
     
     @property
     def search_engine_data(self) -> Optional[str]:
-        """Get the hello_data."""
-        return self.db.get("hello_data", None)
+        """Get the search_engine_data."""
+        return self.db.get("search_engine_data", None)
+    
+    @property
+    def web_scrape_data(self) -> Optional[str]:
+        """Get the web_scrape_data."""
+        return self.db.get("web_texts", None)
 
     @property
     def participant_to_hello_round(self) -> DeserializedCollection:
@@ -79,7 +85,12 @@ class SynchronizedData(BaseSynchronizedData):
     @property
     def participant_to_search_engine_round(self) -> DeserializedCollection:
         """Get the participants to the hello round."""
-        return self._get_deserialized("participant_to_hello_round")
+        return self._get_deserialized("participant_to_search_engine_round")
+    
+    @property
+    def participant_to_web_scrape_round(self) -> DeserializedCollection:
+        """Get the participants to the hello round."""
+        return self._get_deserialized("participant_to_web_scrape_round")
 
 
 class HelloRound(CollectSameUntilThresholdRound):
@@ -106,6 +117,17 @@ class SearchEngineRound(CollectSameUntilThresholdRound):
     selection_key = get_name(SynchronizedData.search_engine_data)
 
 
+class WebScrapeRound(CollectSameUntilThresholdRound):
+    """SearchEngineRound"""
+
+    payload_class = WebScrapePayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_web_scrape_round)
+    selection_key = get_name(SynchronizedData.web_scrape_data)
+
+
 class FinishedHelloRound(DegenerateRound):
     """FinishedHelloRound"""
 
@@ -126,6 +148,11 @@ class ScraperAbciApp(AbciApp[Event]):
         SearchEngineRound: {
             Event.NO_MAJORITY: SearchEngineRound,
             Event.ROUND_TIMEOUT: SearchEngineRound,
+            Event.DONE: WebScrapeRound,
+        },
+        WebScrapeRound: {
+            Event.NO_MAJORITY: WebScrapeRound,
+            Event.ROUND_TIMEOUT: WebScrapeRound,
             Event.DONE: FinishedHelloRound,
         },
         FinishedHelloRound: {},

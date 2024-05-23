@@ -35,3 +35,9 @@ class SearchEnginePayload(BaseTxPayload):
     """Represent a transaction payload for the SearchEngineRound."""
 
     content: str
+
+@dataclass(frozen=True)
+class WebScrapePayload(BaseTxPayload):
+    """Represent a transaction payload for the WebScrapeRound."""
+
+    content: str
