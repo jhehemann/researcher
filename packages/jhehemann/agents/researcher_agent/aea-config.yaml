@@ -31,8 +31,8 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihat4giyc4bz6zopvahcj4iw53356pbtwfn7p4d5yflwly2qhahum
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/scraper_abci:0.1.0:bafybeicyih3ywzvzlwjrmn32yexljkyzrynoviiz6iwc5uvgvbeu4qticu
-- jhehemann/researcher_abci:0.1.0:bafybeiea2j2hlg27vdzjokctiqo6afrl4fi7l3rq7oyqzk2xfm47r2xbtq
+- jhehemann/scraper_abci:0.1.0:bafybeidmfmr6dilrh7g4pcz6gv3h2umjo4pkhmwss6kecjf4jatdveto3m
+- jhehemann/researcher_abci:0.1.0:bafybeifev5zskqzm53ispwoscpcw25jmw3vumaqrwirszpfiv45rbknfi4
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
@@ -69,6 +69,12 @@ skill_exception_policy: stop_and_exit
 dependencies:
   open-aea-ledger-ethereum:
     version: ==1.50.0
+  readability-lxml:
+    version: ==0.8.1
+  markdownify:
+    version: ==0.12.1
+  beautifulsoup4:
+    version: ==4.12.3
 default_connection: null
 ---
 public_id: valory/abci:0.1.0

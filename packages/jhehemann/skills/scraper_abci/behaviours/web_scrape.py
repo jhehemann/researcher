@@ -74,7 +74,6 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
     def _get_response(self) -> WaitableConditionType:
         """Get the response data from web page."""
         url = self.synchronized_data.search_engine_data.split('|')[0]
-        web_texts = None
         self.set_web_scrape_response_specs(url)
         specs = self.web_scrape_response_api.get_spec()
         res_raw = yield from self.get_http_response(**specs)

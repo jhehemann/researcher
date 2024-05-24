@@ -138,7 +138,7 @@ class WebScrapeInteractionResponse:
         self.error = kwargs.pop("error", "Unknown")
 
     @classmethod
-    def incorrect_format(cls, res: Any) -> "SearchEngineInteractionResponse":
+    def incorrect_format(cls, res: Any) -> "WebScrapeInteractionResponse":
         """Return an incorrect format response."""
         response = cls()
         response.error = f"The response's format was unexpected: {res}"

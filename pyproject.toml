@@ -31,4 +31,7 @@ py-ecc = "==6.0.0"
 pytz = "==2022.2.1"
 openapi-core = "==0.15.0"
 openapi-spec-validator = "<0.5.0,>=0.4.0"
-bs4 = "^0.0.2"
+markdownify = "=0.12.1"
+beautifulsoup4 = "=4.12.3"
+readability-lxml = "=0.8.1"
+lxml = {extras = ["html-clean"], version = "^5.1.0"}
