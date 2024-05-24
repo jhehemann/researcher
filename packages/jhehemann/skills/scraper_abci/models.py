@@ -106,6 +106,7 @@ class SearchEngineInteractionResponse:
     search_context: dict
     search_information: dict
     items: List[dict]
+    error: str
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize the search engine's response ignoring extra keys."""
@@ -115,26 +116,33 @@ class SearchEngineInteractionResponse:
         self.search_context = kwargs.pop("context", {})
         self.search_information = kwargs.pop("searchInformation", {})
         self.items = kwargs.pop("items", [])
+        self.error = kwargs.pop("error", "Unknown")
+
+    @classmethod
+    def incorrect_format(cls, res: Any) -> "SearchEngineInteractionResponse":
+        """Return an incorrect format response."""
+        response = cls()
+        response.error = f"The response's format was unexpected: {res}"
+        return response
 
 @dataclass(init=False)
 class WebScrapeInteractionResponse:
     """A structure for the response of a search engine interaction task."""
 
-    kind: str
-    url: dict
-    queries: dict
-    search_context: dict
-    search_information: dict
-    items: List[dict]
+    html: str
+    error: str
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize the search engine's response ignoring extra keys."""
-        self.kind = kwargs.pop("kind", "Unknown")
-        self.url = kwargs.pop("url", {})
-        self.queries = kwargs.pop("queries", {})
-        self.search_context = kwargs.pop("context", {})
-        self.search_information = kwargs.pop("searchInformation", {})
-        self.items = kwargs.pop("items", [])
+        self.html = kwargs.pop("html", "Unknown")
+        self.error = kwargs.pop("error", "Unknown")
+
+    @classmethod
+    def incorrect_format(cls, res: Any) -> "SearchEngineInteractionResponse":
+        """Return an incorrect format response."""
+        response = cls()
+        response.error = f"The response's format was unexpected: {res}"
+        return response
 
 
 

@@ -7,11 +7,11 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
-  behaviours.py: bafybeibjqa53pctb5z23jtjau3rddisrzkjycyif6zmimprmjnra2ohvy4
+  behaviours.py: bafybeihpxlb25f34wthufkpvbo4xm2syrmyf6jwnmqwcab2zk5fexz7qpm
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   fsm_specification.yaml: bafybeicarbpkve5vtlnv5qtimie64qz52jzzjm7o75zf3gviblklebueae
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeifrctcjhkctj4m3k75a4fdm4d3b4dcav3r2mk2mcczencc2lqt6eu
+  models.py: bafybeic6zl22ervpfdzfuubtw5a774uaj36fyfldsg7wzbrrcyojvlqzhi
   payloads.py: bafybeie2tbtvqdqxskququ5xifeq2kikbgb2pyvnauwvkqdmb24jjbxnma
   rounds.py: bafybeih6ki6bwohha4gubo5nzqpp2a2qogobykp2u2reyp7z2jao553kru
 fingerprint_ignore_patterns: []
@@ -152,7 +152,7 @@ models:
     args:
       api_id: web_scrape_response
       headers:
-        Content-Type: application/json
+        Content-Type: text/html
       method: GET
       parameters: {}
       response_key: null

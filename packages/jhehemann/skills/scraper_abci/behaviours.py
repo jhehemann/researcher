@@ -72,6 +72,7 @@ class ScraperBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ance
         """Return the state."""
         return cast(SharedState, self.context.state)
     
+        
     def wait_for_condition_with_sleep(
         self,
         condition_gen: Callable[[], WaitableConditionType],
@@ -147,7 +148,7 @@ class SearchEngineBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-a
         google_api_key = api_keys["google_api_key"]
         google_engine_id = api_keys["google_engine_id"]
         query = self.synchronized_data.hello_data
-        num = 2
+        num = 1
 
         parameters = {
             "key": google_api_key,
@@ -175,16 +176,17 @@ class SearchEngineBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-a
             self.search_engine_response_api.increment_retries()
             return None
 
-        self.context.logger.info(f"Retrieved the search engine's response: {res}.")
+        self.context.logger.info(f"Retrieved the search engine's response.")
         self.search_engine_response_api.reset_retries()
         return res
+
 
     def _get_response(self) -> WaitableConditionType:
         """Get the response data from search engine."""
         self.set_search_engine_response_specs()
         specs = self.search_engine_response_api.get_spec()
         
-        res_raw = yield from self.get_http_response(**specs)        
+        res_raw = yield from self.get_http_response(**specs)  
         res = self.search_engine_response_api.process_response(res_raw)
         res = self._handle_response(res)
 
@@ -236,7 +238,7 @@ class SearchEngineBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-a
 
 
 class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
-    """Behaviour to request URLs from search engine"""
+    """Behaviour to get content from web pages"""
 
     matching_round: Type[AbstractRound] = WebScrapeRound     
 
@@ -247,11 +249,11 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
     
     @property
     def web_scrape_response_api(self) -> WebScrapeResponseSpecs:
-        """Get the search engine response api specs."""
+        """Get the web page's response api specs."""
         return self.context.web_scrape_response
     
     def set_web_scrape_response_specs(self, url) -> None:
-        """Set the search engine's response specs."""        
+        """Set the web page's response specs."""        
         self.web_scrape_response_api.__dict__["_frozen"] = False
         self.web_scrape_response_api.url = url
         self.web_scrape_response_api.__dict__["_frozen"] = True
@@ -260,66 +262,55 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         self,
         res: Optional[str],
     ) -> Optional[Any]:
-        """Handle the response from the search engine.
+        """Handle the response from the web page.
 
         :param res: the response to handle.
         :return: the response's result, using the given keys. `None` if response is `None` (has failed).
         """
         if res is None:
-            msg = f"Could not get the search engine's response from {self.web_scrape_response_api.api_id}"
+            msg = f"Could not get the web page's response from {self.web_scrape_response_api.api_id}"
             self.context.logger.error(msg)
             self.web_scrape_response_api.increment_retries()
             return None
 
-        self.context.logger.info(f"Retrieved the search engine's response: {res}.")
+        self.context.logger.info(f"Retrieved the web page's response. Number of characters: {len(res)}")
         self.web_scrape_response_api.reset_retries()
         return res
+    
 
     def _get_response(self) -> WaitableConditionType:
-        """Get the response data from search engine."""
-        urls = self.synchronized_data.search_engine_data.split('|')
-        for url in urls:
-            self.set_web_scrape_response_specs(url)
-            specs = self.web_scrape_response_api.get_spec()
-            res_raw = yield from self.get_http_response(**specs)    
-            res = self.web_scrape_response_api.process_response(res_raw)
-            res = self._handle_response(res)
-            print(f"PRETTY HTTP RESPONSE:\n{json.dumps(res, indent=4)}")
-           
+        """Get the response data from web page."""
+        url = self.synchronized_data.search_engine_data.split('|')[0]
+        web_texts = None
+        self.set_web_scrape_response_specs(url)
+        specs = self.web_scrape_response_api.get_spec()
+        res_raw = yield from self.get_http_response(**specs)
+        
+        # Decode response body from bytes to html string
+        res = res_raw.body.decode()
+        res = self._handle_response(res)
 
-            if self.web_scrape_response_api.is_retries_exceeded():
-                error = "Retries were exceeded while trying to get the web site's response."
-                self._search_engine_response = WebScrapeInteractionResponse(error=error)
-                return True
-        exit()
+        if self.web_scrape_response_api.is_retries_exceeded():
+            error = "Retries were exceeded while trying to get the web page's response."
+            self._web_scrape_response = WebScrapeInteractionResponse(error=error)
+            return True
+        
         if res is None:
             return False
         
-        print(f"PRETTY SE RESPONSE:\n{json.dumps(res, indent=4)}")
-
         try:
-            self._search_engine_response = WebScrapeInteractionResponse(**res)
+            self._web_scrape_response = WebScrapeInteractionResponse(html=res)
         except (ValueError, TypeError, KeyError):
-            self._search_engine_response = WebScrapeInteractionResponse.incorrect_format(res)
+            self._web_scrape_response = WebScrapeInteractionResponse.incorrect_format(res)
 
         return True
 
     def get_payload_content(self) -> Generator:
-        """Search Google using a custom search engine."""
-        # convert urls string to list of strings
-       
+        """Extract html text from website"""
         yield from self.wait_for_condition_with_sleep(self._get_response)
-
-        search_response_items = self._search_engine_response.items
-        links_list = [
-            item['link'] for item in search_response_items if 'link' in item
-        ]
-        
-        # Use a pipe as a separator for joining as it is not a valid character in a URL
-        links_string = '|'.join(links_list)
-        self.context.logger.info(f"Response links: {links_string}")
-                
-        return links_string
+        html = self._web_scrape_response.html
+    
+        return html
 
 
     def async_act(self) -> Generator:
