@@ -26,6 +26,7 @@ from packages.jhehemann.skills.scraper_abci.payloads import (
     HelloPayload,
     SearchEnginePayload,
     WebScrapePayload,
+    ProcessHtmlPayload,
 )
 
 from packages.valory.skills.abstract_round_abci.base import (
@@ -75,7 +76,12 @@ class SynchronizedData(BaseSynchronizedData):
     @property
     def web_scrape_data(self) -> Optional[str]:
         """Get the web_scrape_data."""
-        return self.db.get("web_texts", None)
+        return self.db.get("web_scrape_data", None)
+
+    @property
+    def process_html_data(self) -> Optional[str]:
+        """Get the web_scrape_data."""
+        return self.db.get("process_html_data", None)
 
     @property
     def participant_to_hello_round(self) -> DeserializedCollection:
@@ -84,13 +90,18 @@ class SynchronizedData(BaseSynchronizedData):
     
     @property
     def participant_to_search_engine_round(self) -> DeserializedCollection:
-        """Get the participants to the hello round."""
+        """Get the participants to the search_engine round."""
         return self._get_deserialized("participant_to_search_engine_round")
     
     @property
     def participant_to_web_scrape_round(self) -> DeserializedCollection:
-        """Get the participants to the hello round."""
+        """Get the participants to the web_scrape round."""
         return self._get_deserialized("participant_to_web_scrape_round")
+    
+    @property
+    def participant_to_process_html_round(self) -> DeserializedCollection:
+        """Get the participants to the participant_to_process_html round."""
+        return self._get_deserialized("participant_to_process_html_round")
 
 
 class HelloRound(CollectSameUntilThresholdRound):
@@ -127,6 +138,16 @@ class WebScrapeRound(CollectSameUntilThresholdRound):
     collection_key = get_name(SynchronizedData.participant_to_web_scrape_round)
     selection_key = get_name(SynchronizedData.web_scrape_data)
 
+class ProcessHtmlRound(CollectSameUntilThresholdRound):
+    """ProcessHtmlRound"""
+
+    payload_class = ProcessHtmlPayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_process_html_round)
+    selection_key = get_name(SynchronizedData.process_html_data)
+
 
 class FinishedHelloRound(DegenerateRound):
     """FinishedHelloRound"""
@@ -153,6 +174,11 @@ class ScraperAbciApp(AbciApp[Event]):
         WebScrapeRound: {
             Event.NO_MAJORITY: WebScrapeRound,
             Event.ROUND_TIMEOUT: WebScrapeRound,
+            Event.DONE: ProcessHtmlRound,
+        },
+        ProcessHtmlRound: {
+            Event.NO_MAJORITY: ProcessHtmlRound,
+            Event.ROUND_TIMEOUT: ProcessHtmlRound,
             Event.DONE: FinishedHelloRound,
         },
         FinishedHelloRound: {},

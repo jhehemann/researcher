@@ -7,13 +7,18 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
-  behaviours.py: bafybeihpxlb25f34wthufkpvbo4xm2syrmyf6jwnmqwcab2zk5fexz7qpm
+  behaviours/base.py: bafybeigq4w36szut2ikqrz6szzs62ip5xtrhcneyphaccrhb4mmccxrmea
+  behaviours/hello.py: bafybeif3o5ncbklo67gdztd464jaz757fkdbt63tqazv3sc6fugvmvvehm
+  behaviours/process_html.py: bafybeibev76b3sqxcotgkndgc4dzzjmbqd4flm54kzjj5bebpgkdtgzeii
+  behaviours/search_engine.py: bafybeigzoefkc4wrnwoguf677rczc7sdyw3xe722nrswxf5eqchskwlevu
+  behaviours/web_scrape.py: bafybeifkqaunayhy2qcqmdvp72bkkvkuw4pwreombmslt6uicydx5nhrgu
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   fsm_specification.yaml: bafybeicarbpkve5vtlnv5qtimie64qz52jzzjm7o75zf3gviblklebueae
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
   models.py: bafybeic6zl22ervpfdzfuubtw5a774uaj36fyfldsg7wzbrrcyojvlqzhi
-  payloads.py: bafybeie2tbtvqdqxskququ5xifeq2kikbgb2pyvnauwvkqdmb24jjbxnma
-  rounds.py: bafybeih6ki6bwohha4gubo5nzqpp2a2qogobykp2u2reyp7z2jao553kru
+  payloads.py: bafybeicro2n6bxfqt6lskqewa3vjzxfseo26prlnflpopakpljqgcjntim
+  round_behaviour.py: bafybeida35cnu5ahtieuntr4nuwtvk3juv7ouguij7f2enareh7vsmqaku
+  rounds.py: bafybeibekev7apgm26s6k6365tcuknrwyax7emmu5bszyekwi35hyeusne
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []

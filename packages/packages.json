@@ -1,9 +1,9 @@
 {
     "dev": {
-        "skill/jhehemann/researcher_abci/0.1.0": "bafybeicglmccvxblt4gp7zyrvkxn4hbklcdwm2ixfhczx2rki3dvxxemk4",
-        "skill/jhehemann/scraper_abci/0.1.0": "bafybeic3epicqhp3ci4cp73rgbpzv66b664uug2vx5kidtsu6je4vch5xm",
-        "agent/jhehemann/researcher_agent/0.1.0": "bafybeihgqz2wdr4nlzrzcea7ouuism3hzbin4jzgqrjol6yn7mj6vkofdq",
-        "service/jhehemann/researcher_service/0.1.0": "bafybeiao72mhuztmuqxmdhog33p6vu5xzrcptg5ve5a4q6meu7w64b6xk4"
+        "skill/jhehemann/researcher_abci/0.1.0": "bafybeiea2j2hlg27vdzjokctiqo6afrl4fi7l3rq7oyqzk2xfm47r2xbtq",
+        "skill/jhehemann/scraper_abci/0.1.0": "bafybeicyih3ywzvzlwjrmn32yexljkyzrynoviiz6iwc5uvgvbeu4qticu",
+        "agent/jhehemann/researcher_agent/0.1.0": "bafybeigvebbv7gspsv33bjzvcpk6rbpjk5b3kfwbkx5zixmtj2mi7sjzma",
+        "service/jhehemann/researcher_service/0.1.0": "bafybeifybwkpw44boohqjizfd2p6qagyl5fioz6tm2kjapglqh4pkjjd3y"
     },
     "third_party": {
         "protocol/open_aea/signing/1.0.0": "bafybeihv62fim3wl2bayavfcg3u5e5cxu3b7brtu4cn5xoxd6lqwachasi",

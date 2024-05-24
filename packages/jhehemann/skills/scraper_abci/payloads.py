@@ -41,3 +41,9 @@ class WebScrapePayload(BaseTxPayload):
     """Represent a transaction payload for the WebScrapeRound."""
 
     content: str
+
+@dataclass(frozen=True)
+class ProcessHtmlPayload(BaseTxPayload):
+    """Represent a transaction payload for the ProcessHtmlRound."""
+
+    content: str

@@ -33,7 +33,7 @@ from packages.valory.skills.registration_abci.behaviours import (
 from packages.valory.skills.reset_pause_abci.behaviours import (
     ResetPauseABCIConsensusBehaviour,
 )
-from packages.jhehemann.skills.scraper_abci.behaviours import ScraperRoundBehaviour
+from packages.jhehemann.skills.scraper_abci.round_behaviour import ScraperRoundBehaviour
 from packages.valory.skills.termination_abci.behaviours import (
     BackgroundBehaviour,
     TerminationAbciBehaviours,
