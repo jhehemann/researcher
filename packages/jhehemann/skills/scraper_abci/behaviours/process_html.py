@@ -57,37 +57,35 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         # create readability document and extract main content
         doc_html2str = Document(html)
         doc_sum = doc_html2str.summary()
-        print(f"DOC_SUM: {doc_sum}")
         
         # remove irrelevant tags and convert to markdown
         text = md(doc_sum, strip=['a', 'b', 'strong', 'em', 'img', 'i', 'mark', 'small', 'u'], heading_style="ATX")
         text = "  ".join([x.strip() for x in text.split("\n")])
         text = re.sub(r'\s+', ' ', text)
-        print(f"TEXT: {text}")
 
         # split text into chunks and join with separator for 
         text_chunks = self.recursive_character_text_splitter(text)
+        len_text_chunks = len(text_chunks)
+        self.context.logger.info(f"Generated {len_text_chunks} text chunks.")
         chunks_str_with_separator = "\n\n#####\n\n".join(text_chunks)
-
         self._process_html_response = chunks_str_with_separator
         
-        return chunks_str_with_separator
+        return self._process_html_response
  
     
     def get_payload_content(self) -> str:
         """Process html text."""
-        text_chunks = self._process_html()
+        text_chunks_str = self._process_html()
         #text_chunks = self._process_html_response
     
-        return text_chunks
+        return text_chunks_str
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
-            payload_content = yield from self.get_payload_content()
-            print(f"PAYLOAD_CONTENT: {payload_content}")
+            payload_content = self.get_payload_content()
             payload = ProcessHtmlPayload(sender=sender, content=payload_content)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
