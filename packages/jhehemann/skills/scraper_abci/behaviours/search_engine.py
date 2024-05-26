@@ -26,7 +26,6 @@ from packages.jhehemann.skills.scraper_abci.payloads import SearchEnginePayload
 from packages.jhehemann.skills.scraper_abci.rounds import SearchEngineRound
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 
-
 class SearchEngineBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
     """Behaviour to request URLs from search engine"""
 

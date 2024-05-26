@@ -19,7 +19,11 @@
 
 """This package contains round behaviours of HelloAbciApp."""
 
-from typing import Any, Generator, Type
+import os.path
+from abc import ABC
+from json import JSONDecodeError
+from typing import Any, Generator, Iterator, List, Set, Tuple, Type
+
 from packages.jhehemann.skills.scraper_abci.payloads import HelloPayload
 from packages.jhehemann.skills.scraper_abci.rounds import HelloRound
 from packages.valory.skills.abstract_round_abci.base import AbstractRound

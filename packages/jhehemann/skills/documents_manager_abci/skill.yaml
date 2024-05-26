@@ -1,0 +1,190 @@
+name: scraper_abci
+author: jhehemann
+version: 0.1.0
+type: skill
+description: A scraper abci skill.
+license: Apache-2.0
+aea_version: '>=1.0.0, <2.0.0'
+fingerprint:
+  __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
+  behaviours/base.py: bafybeigq4w36szut2ikqrz6szzs62ip5xtrhcneyphaccrhb4mmccxrmea
+  behaviours/hello.py: bafybeif3o5ncbklo67gdztd464jaz757fkdbt63tqazv3sc6fugvmvvehm
+  behaviours/process_html.py: bafybeiehjyhkqwnp7ivvyffo5lldrlunfhcwhrmq6wlg3555qdvfy4ypt4
+  behaviours/search_engine.py: bafybeigzoefkc4wrnwoguf677rczc7sdyw3xe722nrswxf5eqchskwlevu
+  behaviours/web_scrape.py: bafybeibznio2uowswp2s4axx4bblm3m2c6oy6v5qsekmpxfcvc4scptz2q
+  dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
+  fsm_specification.yaml: bafybeicarbpkve5vtlnv5qtimie64qz52jzzjm7o75zf3gviblklebueae
+  handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
+  models.py: bafybeid73bcqox3r6ycz3erj4xq5px4pc3tkppeu3ppaknypyyedu27zwu
+  payloads.py: bafybeicro2n6bxfqt6lskqewa3vjzxfseo26prlnflpopakpljqgcjntim
+  round_behaviour.py: bafybeida35cnu5ahtieuntr4nuwtvk3juv7ouguij7f2enareh7vsmqaku
+  rounds.py: bafybeibekev7apgm26s6k6365tcuknrwyax7emmu5bszyekwi35hyeusne
+fingerprint_ignore_patterns: []
+connections: []
+contracts: []
+protocols: []
+skills:
+- valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
+behaviours:
+  main:
+    args: {}
+    class_name: ScraperRoundBehaviour
+handlers:
+  abci:
+    args: {}
+    class_name: ABCIHandler
+  contract_api:
+    args: {}
+    class_name: ContractApiHandler
+  http:
+    args: {}
+    class_name: HttpHandler
+  ipfs:
+    args: {}
+    class_name: IpfsHandler
+  ledger_api:
+    args: {}
+    class_name: LedgerApiHandler
+  signing:
+    args: {}
+    class_name: SigningHandler
+  tendermint:
+    args: {}
+    class_name: TendermintHandler
+models:
+  abci_dialogues:
+    args: {}
+    class_name: AbciDialogues
+  benchmark_tool:
+    args:
+      log_dir: /logs
+    class_name: BenchmarkTool
+  contract_api_dialogues:
+    args: {}
+    class_name: ContractApiDialogues
+  http_dialogues:
+    args: {}
+    class_name: HttpDialogues
+  ipfs_dialogues:
+    args: {}
+    class_name: IpfsDialogues
+  ledger_api_dialogues:
+    args: {}
+    class_name: LedgerApiDialogues
+  params:
+    args:
+      input_query: Search for relevant information about current topics of interest.
+      api_keys_json: []
+      cleanup_history_depth: 1
+      cleanup_history_depth_current: null
+      drand_public_key: 868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31
+      finalize_timeout: 60.0
+      genesis_config:
+        chain_id: chain-c4daS1
+        consensus_params:
+          block:
+            max_bytes: '22020096'
+            max_gas: '-1'
+            time_iota_ms: '1000'
+          evidence:
+            max_age_duration: '172800000000000'
+            max_age_num_blocks: '100000'
+            max_bytes: '1048576'
+          validator:
+            pub_key_types:
+            - ed25519
+          version: {}
+        genesis_time: '2022-05-20T16:00:21.735122717Z'
+        voting_power: '10'
+      history_check_timeout: 1205
+      ipfs_domain_name: null
+      keeper_allowed_retries: 3
+      keeper_timeout: 30.0
+      max_attempts: 10
+      max_healthcheck: 120
+      on_chain_service_id: null
+      request_retry_delay: 1.0
+      request_timeout: 10.0
+      reset_pause_duration: 10
+      reset_tendermint_after: 2
+      retry_attempts: 400
+      retry_timeout: 3
+      round_timeout_seconds: 30.0
+      service_id: researcher
+      service_registry_address: null
+      setup:
+        all_participants:
+        - '0x0000000000000000000000000000000000000000'
+        consensus_threshold: null
+        safe_contract_address: '0x0000000000000000000000000000000000000000'
+      share_tm_config_on_startup: false
+      sleep_time: 1
+      tendermint_check_sleep_delay: 3
+      tendermint_com_url: http://localhost:8080
+      tendermint_max_retries: 5
+      tendermint_p2p_url: localhost:26656
+      tendermint_url: http://localhost:26657
+      tx_timeout: 10.0
+      use_termination: false
+      validate_timeout: 1205
+      task_deadline: 240.0
+      polling_interval: 30.0
+      agent_index: 0
+      num_agents: 1
+      from_block_range: 5000
+      timeout_limit: 3
+      max_block_window: 500
+      use_slashing: false
+      slash_cooldown_hours: 3
+      slash_threshold_amount: 10000000000000000
+      light_slash_unit_amount: 5000000000000000
+      serious_slash_unit_amount: 8000000000000000
+      service_endpoint_base: https://demo.staging.autonolas.tech/
+    class_name: ScraperParams
+  search_engine_response:
+    args:
+      api_id: search_engine_response
+      headers:
+        Content-Type: application/json
+      method: GET
+      parameters: {}
+      response_key: null
+      response_type: dict
+      retries: 5
+      url: https://www.googleapis.com/customsearch/v1
+    class_name: SearchEngineResponseSpecs
+  web_scrape_response:
+    args:
+      api_id: web_scrape_response
+      headers:
+        Content-Type: text/html
+      method: GET
+      parameters: {}
+      response_key: null
+      response_type: dict
+      retries: 5
+      url: ''
+    class_name: WebScrapeResponseSpecs
+  requests:
+    args: {}
+    class_name: Requests
+  signing_dialogues:
+    args: {}
+    class_name: SigningDialogues
+  state:
+    args: {}
+    class_name: SharedState
+  tendermint_dialogues:
+    args: {}
+    class_name: TendermintDialogues
+dependencies:
+  readability-lxml:
+    version: ==0.8.1
+  lxml:
+    version: ==5.1.0
+  markdownify:
+    version: ==0.12.1
+  beautifulsoup4:
+    version: ==4.12.3
+is_abstract: true
+customs: []
