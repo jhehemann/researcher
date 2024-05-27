@@ -20,15 +20,17 @@
 """This module contains the transaction payloads of the ScraperAbciApp."""
 
 from dataclasses import dataclass
+from typing import Optional
 
 from packages.valory.skills.abstract_round_abci.base import BaseTxPayload
+from packages.jhehemann.skills.documents_manager_abci.payloads import UpdateDocumentsPayload
 
 
 @dataclass(frozen=True)
-class SamplingPayload(BaseTxPayload):
+class SamplingPayload(UpdateDocumentsPayload):
     """Represent a transaction payload for the SamplingRound."""
 
-    content: str
+    index: Optional[int]
 
 @dataclass(frozen=True)
 class SearchEnginePayload(BaseTxPayload):

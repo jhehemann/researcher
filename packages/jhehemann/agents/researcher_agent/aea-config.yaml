@@ -31,9 +31,9 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihat4giyc4bz6zopvahcj4iw53356pbtwfn7p4d5yflwly2qhahum
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeibauyvpn6ivet2ncxomvghm5rhlrbl4dxngqppl2ygxjxlpefc4m4
-- jhehemann/scraper_abci:0.1.0:bafybeiebmaxk4b2nnuaxelp7ft3oy7gpdxbbr6kmywvp6ykfunrkxm7oeq
-- jhehemann/researcher_abci:0.1.0:bafybeifw4zkl3lzxoonk2dkuwqzbtzofgxhhd2fq3pkxtvxxnu22tint6y
+- jhehemann/documents_manager_abci:0.1.0:bafybeiaipgcb2r3numh7zwt5nenmktnvsitelngh6hyxornjn5r7yka6yy
+- jhehemann/scraper_abci:0.1.0:bafybeifzt2xs6tbjqmqoirtvtmgreqle7liue5ugkmtybqhtsmqd4wo7zi
+- jhehemann/researcher_abci:0.1.0:bafybeibuzv4nx4cl7jhhcjaawjlkgmfm4ytqdmrkji3k2xygtmzs6564em
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44

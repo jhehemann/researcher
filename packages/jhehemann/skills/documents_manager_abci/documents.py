@@ -73,11 +73,11 @@ class Document:
         self._cast()
         self._convert_dates()
 
-    def __ot__(self, other: "Document") -> bool:
+    def __lt__(self, other: "Document") -> bool:
         """Implements older than operator."""
         if self.publication_date and other.publication_date:
             return self.publication_date < other.publication_date
-        self.context.logger.warning(f"Cannot compare {self.publication_date} and {other.publication_date}")
+        # self.context.logger.warning(f"Cannot compare {self.publication_date} and {other.publication_date}")
         return None
 
     def _blacklist_forever(self) -> None:
@@ -110,8 +110,8 @@ class Document:
             date = getattr(self, date_attribute)
             if date:
                 setattr(self, date_attribute, parse_date(date))
-                if getattr(self, date_attribute) is None:
-                    self.context.logger.warning(f"Cannot convert {date} to datetime object.")
+                # if getattr(self, date_attribute) is None:
+                #     self.context.logger.warning(f"Cannot convert {date} to datetime object.")
 
 
 class DocumentsEncoder(json.JSONEncoder):

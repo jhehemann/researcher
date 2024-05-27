@@ -22,7 +22,7 @@
 import os.path
 from abc import ABC
 from json import JSONDecodeError
-from typing import Any, Generator, Iterator, List, Set, Tuple, Type
+from typing import Any, Generator, Iterator, List, Set, Tuple, Type, Optional
 
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.jhehemann.skills.scraper_abci.payloads import SamplingPayload
@@ -35,16 +35,55 @@ class SamplingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ances
 
     matching_round: Type[AbstractRound] = SamplingRound
 
+
+    def _sampled_doc_idx(self, documents: List[Document]) -> int:
+        """
+        Sample a document and return its id.
+
+        The sampling logic is relatively simple at the moment.
+        It simply selects the unprocessed document with the newest date.
+
+        :param documents: the documents' values to compare for the sampling.
+        :return: the id of the sampled document, out of all the available documents, not only the given ones.
+        """
+        return self.documents.index(max(documents))
+
+    def _sample(self) -> Optional[int]:
+        """Sample a bet, mark it as processed, and return its index."""
+        unprocessed_documents = list(self.unprocessed_documents)
+
+        if len(unprocessed_documents) == 0:
+            msg = "There were no unprocessed bets available to sample from!"
+            self.context.logger.warning(msg)
+            return None
+
+        idx = self._sampled_doc_idx(unprocessed_documents)
+
+        # if self.documents[idx].publication_date == :
+        #     msg = "There were no unprocessed document with non-zero liquidity!"
+        #     self.context.logger.warning(msg)
+        #     return None
+
+        # update the document's status for the given id to `PROCESSED`
+        self.documents[idx].status = DocumentStatus.PROCESSED
+        msg = f"Sampled document: {self.documents[idx]}"
+        self.context.logger.info(msg)
+        return idx
+
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
             self.read_documents()
+            idx = self._sample()
+            self.store_documents()
+            if idx is None:
+                documents_hash = None
+            else:
+                documents_hash = self.hash_stored_documents()
 
-            payload_content = self.params.input_query
-            self.context.logger.info(payload_content)
-            payload = SamplingPayload(sender=sender, content=payload_content)
+            payload = SamplingPayload(sender=sender, documents_hash=documents_hash, index=idx)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

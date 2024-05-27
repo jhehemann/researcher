@@ -62,6 +62,7 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         super().__init__(**kwargs)
         self.documents: List[Document] = []
         self.documents_filepath: str = os.path.join(self.context.data_dir, DOCUMENTS_FILENAME)
+        
     # @property
     # def synchronized_data(self) -> SynchronizedData:
     #     """Return the synchronized data."""
