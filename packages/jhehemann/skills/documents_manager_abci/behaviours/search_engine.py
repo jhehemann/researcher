@@ -19,15 +19,13 @@
 
 """This module contains the behaviour for getting links from a search engine."""
 
-import json
 import os.path
-from abc import ABC
-from json import JSONDecodeError
 from typing import Any, Generator, Optional, Type, Iterator, List, Set, Tuple
 
-from aea.helpers.ipfs.base import IPFSHashOnly
-
-from packages.jhehemann.skills.documents_manager_abci.behaviours.base import DocumentsManagerBaseBehaviour, WaitableConditionType
+from packages.jhehemann.skills.documents_manager_abci.behaviours.base import (
+    DocumentsManagerBaseBehaviour,
+    WaitableConditionType,
+)
 from packages.jhehemann.skills.documents_manager_abci.models import SearchEngineInteractionResponse, SearchEngineResponseSpecs
 from packages.jhehemann.skills.documents_manager_abci.payloads import SearchEnginePayload
 from packages.jhehemann.skills.documents_manager_abci.rounds import SearchEngineRound
@@ -35,74 +33,10 @@ from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.jhehemann.skills.documents_manager_abci.documents import (
     Document,
     DocumentStatus,
-    DocumentsDecoder,
-    serialize_documents,
 )
 
 
-DOCUMENTS_FILENAME = "documents.json"
-READ_MODE = "r"
-WRITE_MODE = "w"
-
-
-class DocumentsManagerBehaviour(DocumentsManagerBaseBehaviour, ABC):
-    """Abstract behaviour responsible for documents management, such as storing, hashing, reading."""
-
-    def __init__(self, **kwargs: Any) -> None:
-        """Initialize `DocumentsManagerBehaviour`."""
-        super().__init__(**kwargs)
-        self.documents: List[Document] = []
-        self.documents_filepath: str = os.path.join(self.context.data_dir, DOCUMENTS_FILENAME)
-
-    def store_documents(self) -> None:
-        """Store the documents to the agent's data dir as JSON."""
-        serialized = serialize_documents(self.documents)
-        if serialized is None:
-            self.context.logger.warning("No documents to store.")
-            return
-
-        try:
-            with open(self.documents_filepath, WRITE_MODE) as documents_file:
-                try:
-                    documents_file.write(serialized)
-                    return
-                except (IOError, OSError):
-                    err = f"Error writing to file {self.documents_filepath!r}!"
-        except (FileNotFoundError, PermissionError, OSError):
-            err = f"Error opening file {self.documents_filepath!r} in write mode!"
-
-        self.context.logger.error(err)
-
-    def read_documents(self) -> None:
-        """Read the documents from the agent's data dir as JSON."""
-        self.documents = []
-
-        if not os.path.isfile(self.documents_filepath):
-            self.context.logger.warning(
-                f"No stored documents file was detected in {self.documents_filepath}. Assuming documents are empty."
-            )
-            return
-
-        try:
-            with open(self.documents_filepath, READ_MODE) as documents_file:
-                try:
-                    self.documents = json.load(documents_file, cls=DocumentsDecoder)
-                    return
-                except (JSONDecodeError, TypeError):
-                    err = (
-                        f"Error decoding file {self.documents_filepath!r} to a list of documents!"
-                    )
-        except (FileNotFoundError, PermissionError, OSError):
-            err = f"Error opening file {self.documents_filepath!r} in read mode!"
-
-        self.context.logger.error(err)
-
-    def hash_stored_documents(self) -> str:
-        """Get the hash of the stored documents' file."""
-        return IPFSHashOnly.hash_file(self.documents_filepath)
-
-
-class SearchEngineBehaviour(DocumentsManagerBehaviour):  # pylint: disable=too-many-ancestors
+class SearchEngineBehaviour(DocumentsManagerBaseBehaviour):  # pylint: disable=too-many-ancestors
     """Behaviour to request URLs from search engine"""
 
     matching_round: Type[AbstractRound] = SearchEngineRound     
@@ -110,9 +44,6 @@ class SearchEngineBehaviour(DocumentsManagerBehaviour):  # pylint: disable=too-m
     def __init__(self, **kwargs: Any) -> None:
         """Initialize behaviour."""
         super().__init__(**kwargs)
-        self._search_engine_response: Optional[SearchEngineInteractionResponse] = None
-        self.documents: List[Document] = []
-        self.documents_filepath: str = os.path.join(self.context.data_dir, DOCUMENTS_FILENAME)
     
     @property
     def search_engine_response_api(self) -> SearchEngineResponseSpecs:
@@ -241,54 +172,3 @@ class SearchEngineBehaviour(DocumentsManagerBehaviour):  # pylint: disable=too-m
             yield from self.wait_until_round_end()
 
         self.set_done()
-
-
-# class UpdateDocumentsBehaviour(DocumentsManagerBehaviour, QueryingBehaviour):
-#     """Behaviour that fetches and updates the documents."""
-
-#     matching_round = UpdateDocumentsRound
-
-#     def __init__(self, **kwargs: Any) -> None:
-#         """Initialize `UpdateDocumentsBehaviour`."""
-#         super().__init__(**kwargs)
-
-    
-
-#     def _update_documents(
-#         self,
-#     ) -> Generator:
-#         """Fetch the questions from all the prediction markets and update the local copy of the documents."""
-#         self.documents, existing_ids = self.frozen_documents_and_urls
-
-#         while True:
-#             can_proceed = self._prepare_fetching()
-#             if not can_proceed:
-#                 break
-
-#             documents_market_chunk = yield from self._fetch_documents()
-#             if documents_market_chunk is not None:
-#                 documents_updates = (
-#                     Document(**document, market=self._current_market)
-#                     for document in documents_market_chunk
-#                     if document.get("id", "") not in existing_ids
-#                 )
-#                 self.documents.extend(documents_updates)
-
-#         if self._fetch_status != FetchStatus.SUCCESS:
-#             self.documents = []
-
-#         self.context.logger.info(f"Updated documents: {self.documents}")
-
-#     def async_act(self) -> Generator:
-#         """Do the action."""
-#         with self.context.benchmark_tool.measure(self.behaviour_id).local():
-#             self.read_documents()
-#             yield from self._update_documents()
-#             self.store_documents()
-#             documents_hash = self.hash_stored_documents()
-#             payload = UpdateDocumentsPayload(self.context.agent_address, documents_hash)
-
-#         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
-#             yield from self.send_a2a_transaction(payload)
-#             yield from self.wait_until_round_end()
-#             self.set_done()

@@ -21,9 +21,8 @@
 
 from typing import Set, Type
 
-from packages.jhehemann.skills.scraper_abci.behaviours.hello import HelloBehaviour
+from packages.jhehemann.skills.scraper_abci.behaviours.sampling import SamplingBehaviour
 from packages.jhehemann.skills.scraper_abci.behaviours.process_html import ProcessHtmlBehaviour
-# from packages.jhehemann.skills.scraper_abci.behaviours.search_engine import SearchEngineBehaviour
 from packages.jhehemann.skills.scraper_abci.behaviours.web_scrape import WebScrapeBehaviour
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
@@ -35,11 +34,10 @@ from packages.jhehemann.skills.scraper_abci.rounds import ScraperAbciApp
 class ScraperRoundBehaviour(AbstractRoundBehaviour):
     """This behaviour manages the consensus stages for the scraping."""
 
-    initial_behaviour_cls = HelloBehaviour
+    initial_behaviour_cls = SamplingBehaviour
     abci_app_cls = ScraperAbciApp  # type: ignore
     behaviours: Set[Type[BaseBehaviour]] = [  # type: ignore
-        HelloBehaviour,
-        #SearchEngineBehaviour,
+        SamplingBehaviour,
         WebScrapeBehaviour,
         ProcessHtmlBehaviour,
     ]

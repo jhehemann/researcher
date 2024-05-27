@@ -2,20 +2,20 @@ alphabet_in:
 - DONE
 - NO_MAJORITY
 - ROUND_TIMEOUT
-default_start_state: HelloRound
+default_start_state: SamplingRound
 final_states:
-- FinishedHelloRound
+- FinishedScraperRound
 label: ScraperAbciApp
 start_states:
-- HelloRound
+- SamplingRound
 states:
-- HelloRound
+- SamplingRound
 - WebScrapeRound
-- FinishedHelloRound
+- FinishedScraperRound
 transition_func:
-    (HelloRound, DONE): WebScrapeRound
-    (HelloRound, NO_MAJORITY): HelloRound
-    (HelloRound, ROUND_TIMEOUT): HelloRound
-    (WebScrapeRound, DONE): FinishedHelloRound
+    (SamplingRound, DONE): WebScrapeRound
+    (SamplingRound, NO_MAJORITY): SamplingRound
+    (SamplingRound, ROUND_TIMEOUT): SamplingRound
+    (WebScrapeRound, DONE): FinishedScraperRound
     (WebScrapeRound, NO_MAJORITY): SearchEngineRound
     (WebScrapeRound, ROUND_TIMEOUT): SearchEngineRound

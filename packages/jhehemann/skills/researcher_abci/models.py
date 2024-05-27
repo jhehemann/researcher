@@ -27,7 +27,7 @@ from packages.jhehemann.skills.scraper_abci.models import (
     WebScrapeResponseSpecs as ScraperWebScrapeResponseSpecs
 )
 from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSharedState
-from packages.jhehemann.skills.scraper_abci.rounds import Event as HelloEvent
+from packages.jhehemann.skills.scraper_abci.rounds import Event as SamplingEvent
 from packages.jhehemann.skills.documents_manager_abci.models import DocumentsManagerParams
 from packages.jhehemann.skills.documents_manager_abci.rounds import Event as DocumentsManagerEvent
 from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
@@ -75,7 +75,7 @@ class SharedState(BaseSharedState):
             ResetPauseEvent.RESET_AND_PAUSE_TIMEOUT
         ] = (self.context.params.reset_pause_duration + MARGIN)
 
-        ResearcherSkillAbciApp.event_to_timeout[HelloEvent.ROUND_TIMEOUT] = (
+        ResearcherSkillAbciApp.event_to_timeout[SamplingEvent.ROUND_TIMEOUT] = (
             self.context.params.round_timeout_seconds * MULTIPLIER
         )
         ResearcherSkillAbciApp.event_to_timeout[DocumentsManagerEvent.ROUND_TIMEOUT] = (

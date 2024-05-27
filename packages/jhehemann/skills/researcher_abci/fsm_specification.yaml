@@ -12,7 +12,7 @@ start_states:
 - RegistrationRound
 - RegistrationStartupRound
 states:
-- HelloRound
+- SamplingRound
 - RegistrationRound
 - RegistrationStartupRound
 - ResetAndPauseRound
@@ -20,20 +20,24 @@ states:
 - UpdateDocumentsRound
 - WebScrapeRound
 transition_func:
-    (UpdateDocumentsRound, DONE): UpdateDocumentsRound
-    (UpdateDocumentsRound, NO_UPDATES): HelloRound
-    (UpdateDocumentsRound, TO_UPDATE): SearchEngineRound
-    (UpdateDocumentsRound, NO_MAJORITY): HelloRound
-    (UpdateDocumentsRound, ROUND_TIMEOUT): HelloRound
-    (RegistrationRound, DONE): HelloRound
+    (RegistrationRound, DONE): UpdateDocumentsRound
     (RegistrationRound, NO_MAJORITY): RegistrationRound
-    (RegistrationStartupRound, DONE): HelloRound
+    (RegistrationStartupRound, DONE): UpdateDocumentsRound
     (ResetAndPauseRound, DONE): UpdateDocumentsRound
     (ResetAndPauseRound, NO_MAJORITY): ResetAndPauseRound
     (ResetAndPauseRound, RESET_AND_PAUSE_TIMEOUT): ResetAndPauseRound
-    (SearchEngineRound, DONE): WebScrapeRound
+    (SamplingRound, DONE): WebScrapeRound
+    (SamplingRound, NO_MAJORITY): SamplingRound
+    (SamplingRound, ROUND_TIMEOUT): SamplingRound
+    (SearchEngineRound, DONE): SamplingRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
+    (UpdateDocumentsRound, DONE): UpdateDocumentsRound
+    (UpdateDocumentsRound, NO_UPDATES): SamplingRound
+    (UpdateDocumentsRound, TO_UPDATE): SearchEngineRound
+    (UpdateDocumentsRound, NO_MAJORITY): UpdateDocumentsRound
+    (UpdateDocumentsRound, ROUND_TIMEOUT): UpdateDocumentsRound
     (WebScrapeRound, DONE): ResetAndPauseRound
     (WebScrapeRound, NO_MAJORITY): WebScrapeRound
     (WebScrapeRound, ROUND_TIMEOUT): WebScrapeRound
+

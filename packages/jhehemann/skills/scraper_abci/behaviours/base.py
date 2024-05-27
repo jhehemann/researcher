@@ -27,10 +27,11 @@ from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
     BaseBehaviour,
 )
+from packages.jhehemann.skills.documents_manager_abci.behaviours.base import DocumentsManagerBaseBehaviour
 from packages.jhehemann.skills.scraper_abci.models import ScraperParams, SharedState
 from packages.jhehemann.skills.scraper_abci.rounds import (
     ScraperAbciApp,
-    HelloRound,
+    SamplingRound,
     WebScrapeRound,
     SynchronizedData,
 )
@@ -38,7 +39,7 @@ from packages.valory.skills.abstract_round_abci.behaviour_utils import TimeoutEx
 
 WaitableConditionType = Generator[None, None, bool]
 
-class ScraperBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
+class ScraperBaseBehaviour(DocumentsManagerBaseBehaviour, ABC):  # pylint: disable=too-many-ancestors
     """Base behaviour for the scraper_abci skill."""
 
     @property

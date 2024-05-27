@@ -8,11 +8,11 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeiabpuj3ksuzmro5bnzgavcwnode34wfrkvf3apvgd6bzvs2j47azq
   behaviours.py: bafybeifraurfnxwmgc73iyrpqhimo3rtmq4adonvs6m4plkq47umapgbpq
-  composition.py: bafybeigw3nbajfdn3wgljmep7le5uehxdy4xxr2uwfzdulg4eroxnstb4q
+  composition.py: bafybeiaxlwo2ot5jrznqgoyqvkubs33nimzknnmekih65mmrtlht3546xy
   dialogues.py: bafybeiakqfqcpg7yrxt4bsyernhy5p77tci4qhmgqqjqi3ttx7zk6sklca
-  fsm_specification.yaml: bafybeiggsr4m64fkaug2sc3xfuujrk6hapelv4aic7xvopvqmydiddijti
+  fsm_specification.yaml: bafybeiff2vme6akuuyqzfplfsq753leto2ylvend3743nuuhpeiw3mrdra
   handlers.py: bafybeiet4vvrjm35rsuqvym52q5bfyglrvffunnxvui2nkjir746ndm2zm
-  models.py: bafybeidztguiacccjmtczd7jmjmnjhmo3ascdexjlrmrul3ze6gdyvacj4
+  models.py: bafybeialfglovzlieh7brio6lc7647l7ks3lsniouiltwcu2orstp43pne
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -22,8 +22,8 @@ skills:
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
-- jhehemann/scraper_abci:0.1.0:bafybeif23i7t44s4zoctggpz5wvry3dh7d2xaapdbfoow7xq5jcjz7ityi
-- jhehemann/documents_manager_abci:0.1.0:bafybeiblecoaflqujj7u44tgvhc6vb6fvm3ybsjo34brhg5suayl32pcim
+- jhehemann/scraper_abci:0.1.0:bafybeiebmaxk4b2nnuaxelp7ft3oy7gpdxbbr6kmywvp6ykfunrkxm7oeq
+- jhehemann/documents_manager_abci:0.1.0:bafybeibauyvpn6ivet2ncxomvghm5rhlrbl4dxngqppl2ygxjxlpefc4m4
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
 behaviours:
   main:

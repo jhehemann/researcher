@@ -7,24 +7,24 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
-  behaviours/base.py: bafybeidkfaff3nvw3igy7o5sa2baohnzmhzyo5tlbto6znmhavgg5yxvqy
-  behaviours/hello.py: bafybeidaaxg6mtdo3m7s7lbq2afmhvbh5xtwq322ih45qlgm2jxgm2bfue
+  behaviours/base.py: bafybeidxhbcaglem3c3rg55aqdb6bvgonylomii3aazcc4jjotprxjjxje
   behaviours/process_html.py: bafybeiehjyhkqwnp7ivvyffo5lldrlunfhcwhrmq6wlg3555qdvfy4ypt4
-  behaviours/search_engine.py: bafybeidfqrhiaig3e5ojsh4dt2vyvctehhfg4xlei7hjnebn352n5raqbi
-  behaviours/web_scrape.py: bafybeibznio2uowswp2s4axx4bblm3m2c6oy6v5qsekmpxfcvc4scptz2q
+  behaviours/sampling.py: bafybeiglidmyxtpdtnadclyb6l2e4snnvciidqxmp36wm7cgzojpavlzw4
+  behaviours/web_scrape.py: bafybeigyetrxrikb3o7oewupdrvnwnhxpdvjpuibktr7nusfqomf74vlq4
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  fsm_specification.yaml: bafybeifustaazaa4vcka4cmivr4hm5pfm6rx2ihbv6i2amqyemscz5gnka
+  fsm_specification.yaml: bafybeignqrtrlcapbyb7c4dof7qr6jwq5psq2pb7igfsd7zq4aawsasbmy
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
   models.py: bafybeid73bcqox3r6ycz3erj4xq5px4pc3tkppeu3ppaknypyyedu27zwu
-  payloads.py: bafybeicro2n6bxfqt6lskqewa3vjzxfseo26prlnflpopakpljqgcjntim
-  round_behaviour.py: bafybeibkrs3fqhrxmauybrdusecgfrk6o3vwppyi4jxwcj6lijlpz5deni
-  rounds.py: bafybeiakgnw76qpzkqdhisybtxhhx46e3wzqbxi5724nz5bd7jmppaclpu
+  payloads.py: bafybeiehf6yndeazxds54ojktz6r6x5ajhqljqwqy5utgacfcshz6rsul4
+  round_behaviour.py: bafybeih3zbpaatlkxvqf2tuqsbexmlqdxrahdwovf4sg75c3tnrd25vejm
+  rounds.py: bafybeigkduk6h37sprhzxbfquo2g75rczzo7hql4evqiicdbkebujgp43u
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
 protocols: []
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
+- jhehemann/documents_manager_abci:0.1.0:bafybeibauyvpn6ivet2ncxomvghm5rhlrbl4dxngqppl2ygxjxlpefc4m4
 behaviours:
   main:
     args: {}

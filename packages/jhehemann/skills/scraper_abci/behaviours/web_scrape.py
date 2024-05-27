@@ -67,6 +67,7 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
             return None
 
         self.context.logger.info(f"Retrieved the web page's response. Number of characters: {len(res)}")
+        self.context.logger.info(f"Response: {res}")
         self.web_scrape_response_api.reset_retries()
         return res
     
@@ -74,6 +75,8 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
     def _get_response(self) -> WaitableConditionType:
         """Get the response data from web page."""
         url = self.synchronized_data.search_engine_data.split('|')[0]
+        self.context.logger.info(f"SEARCH ENGINE DATA [0]: {url}")
+        exit()
         self.set_web_scrape_response_specs(url)
         specs = self.web_scrape_response_api.get_spec()
         res_raw = yield from self.get_http_response(**specs)

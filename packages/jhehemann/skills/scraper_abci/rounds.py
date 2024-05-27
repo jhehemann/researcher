@@ -17,14 +17,13 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This package contains the rounds of HelloAbciApp."""
+"""This package contains the rounds of ScraperAbciApp."""
 
 from enum import Enum
 from typing import Dict, FrozenSet, Optional, Set
 
 from packages.jhehemann.skills.scraper_abci.payloads import (
-    HelloPayload,
-    SearchEnginePayload,
+    SamplingPayload,
     WebScrapePayload,
     ProcessHtmlPayload,
 )
@@ -44,7 +43,7 @@ from packages.valory.skills.abstract_round_abci.base import (
 
 
 class Event(Enum):
-    """HelloAbciApp Events"""
+    """ScraperAbciApp Events"""
 
     DONE = "done"
     NO_MAJORITY = "no_majority"
@@ -64,9 +63,9 @@ class SynchronizedData(BaseSynchronizedData):
         return CollectionRound.deserialize_collection(serialized)
 
     @property
-    def hello_data(self) -> Optional[str]:
-        """Get the hello_data."""
-        return self.db.get("hello_data", None)
+    def sampling_data(self) -> Optional[str]:
+        """Get the sampling_data."""
+        return self.db.get("sampling_data", None)
     
     @property
     def search_engine_data(self) -> Optional[str]:
@@ -84,14 +83,9 @@ class SynchronizedData(BaseSynchronizedData):
         return self.db.get("process_html_data", None)
 
     @property
-    def participant_to_hello_round(self) -> DeserializedCollection:
-        """Get the participants to the hello round."""
-        return self._get_deserialized("participant_to_hello_round")
-    
-    @property
-    def participant_to_search_engine_round(self) -> DeserializedCollection:
-        """Get the participants to the search_engine round."""
-        return self._get_deserialized("participant_to_search_engine_round")
+    def participant_to_sampling_round(self) -> DeserializedCollection:
+        """Get the participants to the sampling round."""
+        return self._get_deserialized("participant_to_sampling_round")
     
     @property
     def participant_to_web_scrape_round(self) -> DeserializedCollection:
@@ -104,15 +98,15 @@ class SynchronizedData(BaseSynchronizedData):
         return self._get_deserialized("participant_to_process_html_round")
 
 
-class HelloRound(CollectSameUntilThresholdRound):
-    """HelloRound"""
+class SamplingRound(CollectSameUntilThresholdRound):
+    """SamplingRound"""
 
-    payload_class = HelloPayload
+    payload_class = SamplingPayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
-    collection_key = get_name(SynchronizedData.participant_to_hello_round)
-    selection_key = get_name(SynchronizedData.hello_data)
+    collection_key = get_name(SynchronizedData.participant_to_sampling_round)
+    selection_key = get_name(SynchronizedData.sampling_data)
 
     # Event.ROUND_TIMEOUT  # this needs to be mentioned for static checkers
 
@@ -149,28 +143,23 @@ class ProcessHtmlRound(CollectSameUntilThresholdRound):
     selection_key = get_name(SynchronizedData.process_html_data)
 
 
-class FinishedHelloRound(DegenerateRound):
-    """FinishedHelloRound"""
+class FinishedScraperRound(DegenerateRound):
+    """FinishedScraperRound"""
 
 
 class ScraperAbciApp(AbciApp[Event]):
     """ScraperAbciApp"""
 
-    initial_round_cls: AppState = HelloRound
+    initial_round_cls: AppState = SamplingRound
     initial_states: Set[AppState] = {
-        HelloRound,
+        SamplingRound,
     }
     transition_function: AbciAppTransitionFunction = {
-        HelloRound: {
-            Event.NO_MAJORITY: HelloRound,
-            Event.ROUND_TIMEOUT: HelloRound,
+        SamplingRound: {
+            Event.NO_MAJORITY: SamplingRound,
+            Event.ROUND_TIMEOUT: SamplingRound,
             Event.DONE: WebScrapeRound,
         },
-        # SearchEngineRound: {
-        #     Event.NO_MAJORITY: SearchEngineRound,
-        #     Event.ROUND_TIMEOUT: SearchEngineRound,
-        #     Event.DONE: WebScrapeRound,
-        # },
         WebScrapeRound: {
             Event.NO_MAJORITY: WebScrapeRound,
             Event.ROUND_TIMEOUT: WebScrapeRound,
@@ -179,18 +168,18 @@ class ScraperAbciApp(AbciApp[Event]):
         ProcessHtmlRound: {
             Event.NO_MAJORITY: ProcessHtmlRound,
             Event.ROUND_TIMEOUT: ProcessHtmlRound,
-            Event.DONE: FinishedHelloRound,
+            Event.DONE: FinishedScraperRound,
         },
-        FinishedHelloRound: {},
+        FinishedScraperRound: {},
     }
     final_states: Set[AppState] = {
-        FinishedHelloRound,
+        FinishedScraperRound,
     }
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
     db_pre_conditions: Dict[AppState, Set[str]] = {
-        HelloRound: set(),
+        SamplingRound: set(),
     }
     db_post_conditions: Dict[AppState, Set[str]] = {
-        FinishedHelloRound: set(),
+        FinishedScraperRound: set(),
     }

@@ -25,8 +25,8 @@ from packages.valory.skills.abstract_round_abci.base import BaseTxPayload
 
 
 @dataclass(frozen=True)
-class HelloPayload(BaseTxPayload):
-    """Represent a transaction payload for the HelloRound."""
+class SamplingPayload(BaseTxPayload):
+    """Represent a transaction payload for the SamplingRound."""
 
     content: str
 
