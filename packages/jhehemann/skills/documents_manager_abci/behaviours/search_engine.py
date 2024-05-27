@@ -124,8 +124,10 @@ class SearchEngineBehaviour(DocumentsManagerBehaviour):  # pylint: disable=too-m
         api_keys = self.params.api_keys
         google_api_key = api_keys["google_api_key"]
         google_engine_id = api_keys["google_engine_id"]
-        query = self.synchronized_data.hello_data
-        num = 1
+        query = self.params.input_query
+        self.context.logger.info(f"Search query: {query}")
+
+        num = 2
 
         parameters = {
             "key": google_api_key,
@@ -180,7 +182,7 @@ class SearchEngineBehaviour(DocumentsManagerBehaviour):  # pylint: disable=too-m
         return res
 
 
-    def _get_response(self) -> WaitableConditionType:
+    def _fetch_documents(self) -> WaitableConditionType:
         """Get the response data from search engine."""
         self.set_search_engine_response_specs()
         specs = self.search_engine_response_api.get_spec()
@@ -204,32 +206,35 @@ class SearchEngineBehaviour(DocumentsManagerBehaviour):  # pylint: disable=too-m
 
         return True
 
-    def get_payload_content(self, query: str) -> Generator:
+    def _update_documents(self) -> Generator:
         """Search Google using a custom search engine."""
-        yield from self.wait_for_condition_with_sleep(self._get_response)
+        self.documents, existing_urls = self.frozen_documents_and_urls
+
+        yield from self.wait_for_condition_with_sleep(self._fetch_documents)
 
         search_response_items = self._search_engine_response.items
-        links_list = [
-            item['link'] for item in search_response_items if 'link' in item
-        ]
-        
-        # Use a pipe as a separator for joining as it is not a valid character in a URL
-        links_string = '|'.join(links_list)
-        self.context.logger.info(f"Response links: {links_string}")
-                
-        return links_string
+        # print the search response items in pretty format
+        # self.context.logger.info(f"Search response items: {json.dumps(search_response_items, indent=4)}")
 
+        if search_response_items is not None:
+            documents_updates = (
+                Document(url=doc['link'], title=doc['title'])
+                for doc in search_response_items
+                if doc.get("link", "") not in existing_urls
+            )
+            self.documents.extend(documents_updates)
+        self.context.logger.info(f"Updated documents: {self.documents}")
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
-            self.read_documents()
-            
             sender = self.context.agent_address
-            search_query = self.synchronized_data.hello_data
-            payload_content = yield from self.get_payload_content(search_query)
-            payload = SearchEnginePayload(sender=sender, content=payload_content)
+            yield from self._update_documents()
+            self.store_documents()
+            documents_hash = self.hash_stored_documents()
+            self.context.logger.info(f"Documents hash: {documents_hash}")
+            payload = SearchEnginePayload(sender=sender, content=documents_hash)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

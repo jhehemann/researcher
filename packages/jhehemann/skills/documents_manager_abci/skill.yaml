@@ -8,7 +8,7 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
   behaviours/base.py: bafybeidmobp3u57uop2wi6634eaf5pljn6ttwhdesevtyicmpg5fgyeiny
-  behaviours/search_engine.py: bafybeiaxlsjuss7zqezdddxxgvpcewxlevo5e77v3buel7ccfslnkopvmu
+  behaviours/search_engine.py: bafybeielejxt43oh3gp6ekjtosdpjllx5sqjwdjzinpylkmpqbn5dxjddy
   behaviours/update_documents.py: bafybeibpaubh4elj2nlh3sm6lgaqi4wbjnr6tgapziwsqv4lrxg2wi44ym
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   documents.py: bafybeiegypqsndwrbwjeyrizpgjk5hka77n3qos4na545a5wmsn6yuhxaq
@@ -139,7 +139,7 @@ models:
       light_slash_unit_amount: 5000000000000000
       serious_slash_unit_amount: 8000000000000000
       service_endpoint_base: https://demo.staging.autonolas.tech/
-    class_name: ScraperParams
+    class_name: DocumentsManagerParams
   search_engine_response:
     args:
       api_id: search_engine_response
