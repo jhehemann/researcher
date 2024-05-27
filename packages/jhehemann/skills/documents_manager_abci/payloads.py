@@ -30,6 +30,7 @@ class UpdateDocumentsPayload(BaseTxPayload):
     """Represent a transaction payload for the UpdateDocumentsRound."""
 
     documents_hash: Optional[str]
+    num_unprocessed: Optional[int]
 
 @dataclass(frozen=True)
 class SearchEnginePayload(BaseTxPayload):

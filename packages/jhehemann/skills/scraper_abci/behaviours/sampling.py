@@ -49,11 +49,11 @@ class SamplingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ances
         return self.documents.index(max(documents))
 
     def _sample(self) -> Optional[int]:
-        """Sample a bet, mark it as processed, and return its index."""
+        """Sample a document, mark it as processed, and return its index."""
         unprocessed_documents = list(self.unprocessed_documents)
 
         if len(unprocessed_documents) == 0:
-            msg = "There were no unprocessed bets available to sample from!"
+            msg = "There were no unprocessed documents available to sample from!"
             self.context.logger.warning(msg)
             return None
 
@@ -83,7 +83,7 @@ class SamplingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ances
             else:
                 documents_hash = self.hash_stored_documents()
 
-            payload = SamplingPayload(sender=sender, documents_hash=documents_hash, index=idx)
+            payload = SamplingPayload(sender=sender, documents_hash=documents_hash, num_unprocessed=None, sampled_doc_index=idx)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

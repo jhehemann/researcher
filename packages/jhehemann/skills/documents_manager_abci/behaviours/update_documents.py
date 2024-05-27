@@ -84,7 +84,16 @@ class UpdateDocumentsBehaviour(DocumentsManagerBaseBehaviour):
             unprocessed_docs = list(self.unprocessed_documents)
             num_unprocessed = len(unprocessed_docs)
             self.context.logger.info(f"Number of unprocessed documents: {num_unprocessed}")
-            payload = UpdateDocumentsPayload(self.context.agent_address, num_unprocessed)
+            if not self.documents:
+                documents_hash = None
+            else:
+                documents_hash = self.hash_stored_documents()
+
+            payload = UpdateDocumentsPayload(
+                self.context.agent_address,
+                num_unprocessed=num_unprocessed,
+                documents_hash=documents_hash
+            )
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

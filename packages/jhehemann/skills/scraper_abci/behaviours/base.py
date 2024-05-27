@@ -28,6 +28,7 @@ from packages.valory.skills.abstract_round_abci.behaviours import (
     BaseBehaviour,
 )
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import DocumentsManagerBaseBehaviour
+from packages.jhehemann.skills.documents_manager_abci.documents import Document
 from packages.jhehemann.skills.scraper_abci.models import ScraperParams, SharedState
 from packages.jhehemann.skills.scraper_abci.rounds import (
     ScraperAbciApp,
@@ -56,6 +57,12 @@ class ScraperBaseBehaviour(DocumentsManagerBaseBehaviour, ABC):  # pylint: disab
     def local_state(self) -> SharedState:
         """Return the state."""
         return cast(SharedState, self.context.state)
+    
+    @property
+    def sampled_doc(self) -> Document:
+        """Get the sampled document."""
+        self.read_documents()
+        return self.documents[self.synchronized_data.sampled_doc_index]
     
         
     def wait_for_condition_with_sleep(

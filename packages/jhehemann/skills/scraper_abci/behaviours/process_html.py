@@ -67,10 +67,17 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         text_chunks = self.recursive_character_text_splitter(text)
         len_text_chunks = len(text_chunks)
         self.context.logger.info(f"Generated {len_text_chunks} text chunks.")
-        chunks_str_with_separator = "\n\n#####\n\n".join(text_chunks)
-        self._process_html_response = chunks_str_with_separator
+
+        # chunks_str_with_separator = "\n\n#####\n\n".join(text_chunks)
+        # self._process_html_response = chunks_str_with_separator
+
+        sampled_doc_index = self.synchronized_data.sampled_doc_index
+        sampled_doc = self.documents[sampled_doc_index]
+        sampled_doc.content = text
+        sampled_doc.text_chunks = text_chunks
+        self.context.logger.info(f"Updated documents: {self.documents}")
         
-        return self._process_html_response
+        # return self._process_html_response
  
     
     def get_payload_content(self) -> str:
@@ -85,8 +92,12 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
+            self.read_documents()
             payload_content = self.get_payload_content()
-            payload = ProcessHtmlPayload(sender=sender, content=payload_content)
+            self.store_documents()
+            documents_hash = self.hash_stored_documents()
+
+            payload = ProcessHtmlPayload(sender=sender, documents_hash=documents_hash, num_unprocessed=None)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

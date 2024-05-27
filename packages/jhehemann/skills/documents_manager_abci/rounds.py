@@ -66,23 +66,23 @@ class SynchronizedData(BaseSynchronizedData):
 
     @property
     def num_unprocessed(self) -> Optional[int]:
-        """Get the number of unprocessed bets."""
+        """Get the number of unprocessed documents."""
         return self.db.get("num_unprocessed", None)
     
     @property
-    def search_engine_data(self) -> Optional[str]:
-        """Get the search_engine_data."""
-        return self.db.get("search_engine_data", None)
+    def documents_hash(self) -> Optional[str]:
+        """Get the document's hash."""
+        return self.db.get("documents_hash", None)
+    
+    # @property
+    # def participant_to_unprocessed_documents(self) -> DeserializedCollection:
+    #     """Get the participants to the unprocessed documents."""
+    #     return self._get_deserialized("participant_to_unprocessed_documents")
     
     @property
-    def participant_to_update_documents_round(self) -> DeserializedCollection:
-        """Get the participants to the update_documents round."""
-        return self._get_deserialized("participant_to_update_documents_round")
-    
-    @property
-    def participant_to_search_engine_round(self) -> DeserializedCollection:
-        """Get the participants to the search_engine round."""
-        return self._get_deserialized("participant_to_search_engine_round")
+    def participant_to_documents_hash(self) -> DeserializedCollection:
+        """Get the participants to the documents' hash."""
+        return self._get_deserialized("participant_to_documents_hash")
   
 
 class UpdateDocumentsRound(CollectSameUntilThresholdRound):
@@ -92,8 +92,11 @@ class UpdateDocumentsRound(CollectSameUntilThresholdRound):
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
-    collection_key = get_name(SynchronizedData.participant_to_update_documents_round)
-    selection_key = get_name(SynchronizedData.num_unprocessed)
+    collection_key = get_name(SynchronizedData.participant_to_documents_hash)
+    selection_key = (
+        get_name(SynchronizedData.documents_hash),
+        get_name(SynchronizedData.num_unprocessed),
+    )
     
     def end_block(self) -> Optional[Tuple[SynchronizedData, Enum]]:
         """Process the end of the block."""
@@ -121,8 +124,8 @@ class SearchEngineRound(CollectSameUntilThresholdRound):
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
-    collection_key = get_name(SynchronizedData.participant_to_search_engine_round)
-    selection_key = get_name(SynchronizedData.search_engine_data)
+    collection_key = get_name(SynchronizedData.participant_to_documents_hash)
+    selection_key = get_name(SynchronizedData.documents_hash)
 
 
 class FinishedDocumentsManagerRound(DegenerateRound):
@@ -159,5 +162,5 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
         UpdateDocumentsRound: set(),
     }
     db_post_conditions: Dict[AppState, Set[str]] = {
-        FinishedDocumentsManagerRound: set(),
+        FinishedDocumentsManagerRound: {get_name(SynchronizedData.documents_hash)},
     }

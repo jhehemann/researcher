@@ -63,10 +63,10 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         self.documents: List[Document] = []
         self.documents_filepath: str = os.path.join(self.context.data_dir, DOCUMENTS_FILENAME)
         
-    # @property
-    # def synchronized_data(self) -> SynchronizedData:
-    #     """Return the synchronized data."""
-    #     return cast(SynchronizedData, super().synchronized_data)
+    @property
+    def synchronized_data(self) -> SynchronizedData:
+        """Return the synchronized data."""
+        return cast(SynchronizedData, super().synchronized_data)
     
     # @property
     # def params(self) -> DocumentsManagerParams:
@@ -84,7 +84,6 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         self.documents = [document for document in self.documents]
         return filter(lambda document: document.status == DocumentStatus.UNPROCESSED, self.documents)
     
-        
     def wait_for_condition_with_sleep(
         self,
         condition_gen: Callable[[], WaitableConditionType],

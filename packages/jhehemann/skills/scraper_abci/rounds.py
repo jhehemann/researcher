@@ -20,7 +20,7 @@
 """This package contains the rounds of ScraperAbciApp."""
 
 from enum import Enum
-from typing import Dict, FrozenSet, Optional, Set
+from typing import Any, Dict, FrozenSet, Optional, Set
 
 from packages.jhehemann.skills.scraper_abci.payloads import (
     SamplingPayload,
@@ -40,6 +40,10 @@ from packages.valory.skills.abstract_round_abci.base import (
     EventToTimeout,
     get_name,
 )
+from packages.jhehemann.skills.documents_manager_abci.rounds import (
+    UpdateDocumentsRound,
+    SynchronizedData as DocumentsManagerSyncedData,
+)
 
 
 class Event(Enum):
@@ -50,7 +54,7 @@ class Event(Enum):
     ROUND_TIMEOUT = "round_timeout"
 
 
-class SynchronizedData(BaseSynchronizedData):
+class SynchronizedData(DocumentsManagerSyncedData):
     """
     Class to represent the synchronized data.
 
@@ -63,14 +67,16 @@ class SynchronizedData(BaseSynchronizedData):
         return CollectionRound.deserialize_collection(serialized)
 
     @property
-    def sampling_data(self) -> Optional[str]:
-        """Get the sampling_data."""
-        return self.db.get("sampling_data", None)
+    def sampled_doc_index(self) -> int:
+        """Get the index of the sampled document."""
+        return int(self.db.get_strict("sampled_doc_index"))
     
-    @property
-    def search_engine_data(self) -> Optional[str]:
-        """Get the search_engine_data."""
-        return self.db.get("search_engine_data", None)
+
+    
+    # @property
+    # def documents_hash(self) -> Optional[str]:
+    #     """Get the ."""
+    #     return self.db.get_strict("documents_hash", None)
     
     @property
     def web_scrape_data(self) -> Optional[str]:
@@ -82,10 +88,10 @@ class SynchronizedData(BaseSynchronizedData):
         """Get the web_scrape_data."""
         return self.db.get("process_html_data", None)
 
-    @property
-    def participant_to_sampling_round(self) -> DeserializedCollection:
-        """Get the participants to the sampling round."""
-        return self._get_deserialized("participant_to_sampling_round")
+    # @property
+    # def participant_to_documents_hash(self) -> DeserializedCollection:
+    #     """Get the participants to the sampling round."""
+    #     return self._get_deserialized("participant_to_documents")
     
     @property
     def participant_to_web_scrape_round(self) -> DeserializedCollection:
@@ -98,15 +104,18 @@ class SynchronizedData(BaseSynchronizedData):
         return self._get_deserialized("participant_to_process_html_round")
 
 
-class SamplingRound(CollectSameUntilThresholdRound):
+class SamplingRound(UpdateDocumentsRound):
     """SamplingRound"""
 
     payload_class = SamplingPayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
-    collection_key = get_name(SynchronizedData.participant_to_sampling_round)
-    selection_key = get_name(SynchronizedData.sampling_data)
+    selection_key: Any = (
+        UpdateDocumentsRound.selection_key[0],
+        UpdateDocumentsRound.selection_key[1],
+        get_name(SynchronizedData.sampled_doc_index),
+    )
 
     # Event.ROUND_TIMEOUT  # this needs to be mentioned for static checkers
 

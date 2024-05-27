@@ -30,7 +30,7 @@ from packages.jhehemann.skills.documents_manager_abci.payloads import UpdateDocu
 class SamplingPayload(UpdateDocumentsPayload):
     """Represent a transaction payload for the SamplingRound."""
 
-    index: Optional[int]
+    sampled_doc_index: Optional[int]
 
 @dataclass(frozen=True)
 class SearchEnginePayload(BaseTxPayload):
@@ -45,7 +45,6 @@ class WebScrapePayload(BaseTxPayload):
     content: str
 
 @dataclass(frozen=True)
-class ProcessHtmlPayload(BaseTxPayload):
+class ProcessHtmlPayload(UpdateDocumentsPayload):
     """Represent a transaction payload for the ProcessHtmlRound."""
 
-    content: str

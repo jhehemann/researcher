@@ -60,6 +60,7 @@ class Document:
     title: Optional[str] = None
     description: Optional[str] = None
     content: Optional[str] = None
+    text_chunks: Optional[List[str]] = None
     publisher: Optional[str] = None
     author: Optional[str] = None
     publication_date: Optional[datetime] = None
