@@ -20,6 +20,7 @@
 """This package contains round behaviours of ResearcherSkillAbciApp."""
 
 import packages.jhehemann.skills.scraper_abci.rounds as ScraperAbciApp
+import packages.jhehemann.skills.documents_manager_abci.rounds as DocumentsManagerAbciApp
 import packages.valory.skills.registration_abci.rounds as RegistrationAbci
 import packages.valory.skills.reset_pause_abci.rounds as ResetAndPauseAbci
 from packages.valory.skills.abstract_round_abci.abci_app_chain import (
@@ -35,7 +36,8 @@ from packages.valory.skills.termination_abci.rounds import (
 
 
 abci_app_transition_mapping: AbciAppTransitionMapping = {
-    RegistrationAbci.FinishedRegistrationRound: ScraperAbciApp.HelloRound,
+    RegistrationAbci.FinishedRegistrationRound: DocumentsManagerAbciApp.UpdateDocumentsRound,
+    DocumentsManagerAbciApp.FinishedDocumentsManagerRound: ScraperAbciApp.HelloRound,
     ScraperAbciApp.FinishedHelloRound: ResetAndPauseAbci.ResetAndPauseRound,
     ResetAndPauseAbci.FinishedResetAndPauseRound: ScraperAbciApp.HelloRound,
     ResetAndPauseAbci.FinishedResetAndPauseErrorRound: ResetAndPauseAbci.ResetAndPauseRound,
@@ -50,6 +52,7 @@ termination_config = BackgroundAppConfig(
 ResearcherSkillAbciApp = chain(
     (
         RegistrationAbci.AgentRegistrationAbciApp,
+        DocumentsManagerAbciApp.DocumentsManagerAbciApp,
         ScraperAbciApp.ScraperAbciApp,
         ResetAndPauseAbci.ResetPauseAbciApp,
     ),

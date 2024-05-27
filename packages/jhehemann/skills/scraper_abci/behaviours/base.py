@@ -31,7 +31,6 @@ from packages.jhehemann.skills.scraper_abci.models import ScraperParams, SharedS
 from packages.jhehemann.skills.scraper_abci.rounds import (
     ScraperAbciApp,
     HelloRound,
-    SearchEngineRound,
     WebScrapeRound,
     SynchronizedData,
 )

@@ -139,6 +139,7 @@ class UpdateDocumentsBehaviour(DocumentsManagerBehaviour):
             self.read_documents()
             unprocessed_docs = list(self.unprocessed_documents)
             num_unprocessed = len(unprocessed_docs)
+            self.context.logger.info(f"Number of unprocessed documents: {num_unprocessed}")
             payload = UpdateDocumentsPayload(self.context.agent_address, num_unprocessed)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():

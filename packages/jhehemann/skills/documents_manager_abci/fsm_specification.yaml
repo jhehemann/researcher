@@ -2,13 +2,11 @@ alphabet_in:
 - DONE
 - TO_UPDATE
 - NO_UPDATES
-- FETCH_ERROR
 - NO_MAJORITY
 - ROUND_TIMEOUT
 default_start_state: UpdateDocumentsRound
 final_states:
 - FinishedDocumentsManagerRound
-- FailedDocumentsManagerRound
 label: ScraperAbciApp
 start_states:
 - UpdateDocumentsRound
@@ -24,4 +22,3 @@ transition_func:
     (SearchEngineRound, DONE): FinishedDocumentsManagerRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
-    (SearchEngineRound, FETCH_ERROR): FailedDocumentsManagerRound

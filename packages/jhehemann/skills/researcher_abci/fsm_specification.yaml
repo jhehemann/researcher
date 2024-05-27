@@ -1,5 +1,7 @@
 alphabet_in:
 - DONE
+- NO_UPDATES
+- TO_UPDATE
 - NO_MAJORITY
 - RESET_AND_PAUSE_TIMEOUT
 - ROUND_TIMEOUT
@@ -15,16 +17,23 @@ states:
 - RegistrationStartupRound
 - ResetAndPauseRound
 - SearchEngineRound
+- UpdateDocumentsRound
+- WebScrapeRound
 transition_func:
-    (HelloRound, DONE): SearchEngineRound
-    (HelloRound, NO_MAJORITY): HelloRound
-    (HelloRound, ROUND_TIMEOUT): HelloRound
+    (UpdateDocumentsRound, DONE): UpdateDocumentsRound
+    (UpdateDocumentsRound, NO_UPDATES): HelloRound
+    (UpdateDocumentsRound, TO_UPDATE): SearchEngineRound
+    (UpdateDocumentsRound, NO_MAJORITY): HelloRound
+    (UpdateDocumentsRound, ROUND_TIMEOUT): HelloRound
     (RegistrationRound, DONE): HelloRound
     (RegistrationRound, NO_MAJORITY): RegistrationRound
     (RegistrationStartupRound, DONE): HelloRound
-    (ResetAndPauseRound, DONE): HelloRound
+    (ResetAndPauseRound, DONE): UpdateDocumentsRound
     (ResetAndPauseRound, NO_MAJORITY): ResetAndPauseRound
     (ResetAndPauseRound, RESET_AND_PAUSE_TIMEOUT): ResetAndPauseRound
-    (SearchEngineRound, DONE): ResetAndPauseRound
+    (SearchEngineRound, DONE): WebScrapeRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
+    (WebScrapeRound, DONE): ResetAndPauseRound
+    (WebScrapeRound, NO_MAJORITY): WebScrapeRound
+    (WebScrapeRound, ROUND_TIMEOUT): WebScrapeRound

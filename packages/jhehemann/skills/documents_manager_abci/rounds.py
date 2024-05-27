@@ -90,11 +90,10 @@ class UpdateDocumentsRound(CollectSameUntilThresholdRound):
 
     payload_class = UpdateDocumentsPayload
     synchronized_data_class = SynchronizedData
-    done_event = Event.TO_UPDATE
-    none_event = Event.NO_UPDATES
+    done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_update_documents_round)
-    selection_key = get_name(SynchronizedData.update_documents_data)
+    selection_key = get_name(SynchronizedData.num_unprocessed)
     
     def end_block(self) -> Optional[Tuple[SynchronizedData, Enum]]:
         """Process the end of the block."""
@@ -104,11 +103,11 @@ class UpdateDocumentsRound(CollectSameUntilThresholdRound):
 
         synced_data, event = cast(Tuple[SynchronizedData, Enum], res)
 
-        if synced_data.num_unprocessed is None:
-            return synced_data, Event.TIE
-
-        if event == Event.DONE and not synced_data.is_profitable:
-            return synced_data, Event.UNPROFITABLE
+        if event == Event.DONE and not synced_data.num_unprocessed:
+            return synced_data, Event.TO_UPDATE
+        
+        if event == Event.DONE and synced_data.num_unprocessed != 0:
+            return synced_data, Event.NO_UPDATES
 
         return synced_data, event
 
@@ -121,7 +120,6 @@ class SearchEngineRound(CollectSameUntilThresholdRound):
     payload_class = SearchEnginePayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
-    none_event = Event.FETCH_ERROR
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_search_engine_round)
     selection_key = get_name(SynchronizedData.search_engine_data)
@@ -129,9 +127,6 @@ class SearchEngineRound(CollectSameUntilThresholdRound):
 
 class FinishedDocumentsManagerRound(DegenerateRound):
     """FinishedDocumentsManagerRound"""
-
-class FailedDocumentsManagerRound(DegenerateRound):
-    """FailedDocumentsManagerRound"""
 
 
 class DocumentsManagerAbciApp(AbciApp[Event]):
@@ -151,7 +146,6 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
         SearchEngineRound: {
             Event.NO_MAJORITY: SearchEngineRound,
             Event.ROUND_TIMEOUT: SearchEngineRound,
-            Event.FETCH_ERROR: FailedDocumentsManagerRound,
             Event.DONE: FinishedDocumentsManagerRound,
         },
         FinishedDocumentsManagerRound: {},

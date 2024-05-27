@@ -10,12 +10,12 @@ start_states:
 - HelloRound
 states:
 - HelloRound
-- SearchEngineRound
+- WebScrapeRound
 - FinishedHelloRound
 transition_func:
-    (HelloRound, DONE): SearchEngineRound
+    (HelloRound, DONE): WebScrapeRound
     (HelloRound, NO_MAJORITY): HelloRound
     (HelloRound, ROUND_TIMEOUT): HelloRound
-    (SearchEngineRound, DONE): FinishedHelloRound
-    (SearchEngineRound, NO_MAJORITY): SearchEngineRound
-    (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
+    (WebScrapeRound, DONE): FinishedHelloRound
+    (WebScrapeRound, NO_MAJORITY): SearchEngineRound
+    (WebScrapeRound, ROUND_TIMEOUT): SearchEngineRound

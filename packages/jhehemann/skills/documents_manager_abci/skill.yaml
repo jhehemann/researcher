@@ -1,24 +1,23 @@
-name: scraper_abci
+name: documents_manager_abci
 author: jhehemann
 version: 0.1.0
 type: skill
-description: A scraper abci skill.
+description: A documents manager abci skill.
 license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
-  behaviours/base.py: bafybeigq4w36szut2ikqrz6szzs62ip5xtrhcneyphaccrhb4mmccxrmea
-  behaviours/hello.py: bafybeif3o5ncbklo67gdztd464jaz757fkdbt63tqazv3sc6fugvmvvehm
-  behaviours/process_html.py: bafybeiehjyhkqwnp7ivvyffo5lldrlunfhcwhrmq6wlg3555qdvfy4ypt4
-  behaviours/search_engine.py: bafybeigzoefkc4wrnwoguf677rczc7sdyw3xe722nrswxf5eqchskwlevu
-  behaviours/web_scrape.py: bafybeibznio2uowswp2s4axx4bblm3m2c6oy6v5qsekmpxfcvc4scptz2q
+  behaviours/base.py: bafybeidmobp3u57uop2wi6634eaf5pljn6ttwhdesevtyicmpg5fgyeiny
+  behaviours/search_engine.py: bafybeiaxlsjuss7zqezdddxxgvpcewxlevo5e77v3buel7ccfslnkopvmu
+  behaviours/update_documents.py: bafybeibpaubh4elj2nlh3sm6lgaqi4wbjnr6tgapziwsqv4lrxg2wi44ym
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  fsm_specification.yaml: bafybeicarbpkve5vtlnv5qtimie64qz52jzzjm7o75zf3gviblklebueae
+  documents.py: bafybeiegypqsndwrbwjeyrizpgjk5hka77n3qos4na545a5wmsn6yuhxaq
+  fsm_specification.yaml: bafybeidezyhs3lt45s2vplgwu7ueqopq6xcendoehjeyzoodqdhknyg5di
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeid73bcqox3r6ycz3erj4xq5px4pc3tkppeu3ppaknypyyedu27zwu
-  payloads.py: bafybeicro2n6bxfqt6lskqewa3vjzxfseo26prlnflpopakpljqgcjntim
-  round_behaviour.py: bafybeida35cnu5ahtieuntr4nuwtvk3juv7ouguij7f2enareh7vsmqaku
-  rounds.py: bafybeibekev7apgm26s6k6365tcuknrwyax7emmu5bszyekwi35hyeusne
+  models.py: bafybeid3judkrftcuvmygw4tcptmh2rz6dmmkiba2bztlqiypdkmzcd4yu
+  payloads.py: bafybeifkkqambwp4yhiwgdpyjcp7fa366iiyucwhpu3kighaoibcopqmra
+  round_behaviour.py: bafybeigciec5polqttnp5uo3mk2mcrkuqz2ladvxdqohsf7zhu7dqzedzq
+  rounds.py: bafybeigalzptezpdmnad7gch27a74p2wox5xk3ty6bcwxf5mmemmivq3bq
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -28,7 +27,7 @@ skills:
 behaviours:
   main:
     args: {}
-    class_name: ScraperRoundBehaviour
+    class_name: UpdateDocumentsRoundBehaviour
 handlers:
   abci:
     args: {}
@@ -153,18 +152,6 @@ models:
       retries: 5
       url: https://www.googleapis.com/customsearch/v1
     class_name: SearchEngineResponseSpecs
-  web_scrape_response:
-    args:
-      api_id: web_scrape_response
-      headers:
-        Content-Type: text/html
-      method: GET
-      parameters: {}
-      response_key: null
-      response_type: dict
-      retries: 5
-      url: ''
-    class_name: WebScrapeResponseSpecs
   requests:
     args: {}
     class_name: Requests

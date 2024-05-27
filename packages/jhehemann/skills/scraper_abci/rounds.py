@@ -117,15 +117,15 @@ class HelloRound(CollectSameUntilThresholdRound):
     # Event.ROUND_TIMEOUT  # this needs to be mentioned for static checkers
 
 
-class SearchEngineRound(CollectSameUntilThresholdRound):
-    """SearchEngineRound"""
+# class SearchEngineRound(CollectSameUntilThresholdRound):
+#     """SearchEngineRound"""
 
-    payload_class = SearchEnginePayload
-    synchronized_data_class = SynchronizedData
-    done_event = Event.DONE
-    no_majority_event = Event.NO_MAJORITY
-    collection_key = get_name(SynchronizedData.participant_to_search_engine_round)
-    selection_key = get_name(SynchronizedData.search_engine_data)
+#     payload_class = SearchEnginePayload
+#     synchronized_data_class = SynchronizedData
+#     done_event = Event.DONE
+#     no_majority_event = Event.NO_MAJORITY
+#     collection_key = get_name(SynchronizedData.participant_to_search_engine_round)
+#     selection_key = get_name(SynchronizedData.search_engine_data)
 
 
 class WebScrapeRound(CollectSameUntilThresholdRound):
@@ -164,13 +164,13 @@ class ScraperAbciApp(AbciApp[Event]):
         HelloRound: {
             Event.NO_MAJORITY: HelloRound,
             Event.ROUND_TIMEOUT: HelloRound,
-            Event.DONE: SearchEngineRound,
-        },
-        SearchEngineRound: {
-            Event.NO_MAJORITY: SearchEngineRound,
-            Event.ROUND_TIMEOUT: SearchEngineRound,
             Event.DONE: WebScrapeRound,
         },
+        # SearchEngineRound: {
+        #     Event.NO_MAJORITY: SearchEngineRound,
+        #     Event.ROUND_TIMEOUT: SearchEngineRound,
+        #     Event.DONE: WebScrapeRound,
+        # },
         WebScrapeRound: {
             Event.NO_MAJORITY: WebScrapeRound,
             Event.ROUND_TIMEOUT: WebScrapeRound,

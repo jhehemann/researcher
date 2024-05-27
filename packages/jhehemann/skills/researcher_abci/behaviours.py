@@ -34,6 +34,7 @@ from packages.valory.skills.reset_pause_abci.behaviours import (
     ResetPauseABCIConsensusBehaviour,
 )
 from packages.jhehemann.skills.scraper_abci.round_behaviour import ScraperRoundBehaviour
+from packages.jhehemann.skills.documents_manager_abci.round_behaviour import DocumentsManagerRoundBehaviour
 from packages.valory.skills.termination_abci.behaviours import (
     BackgroundBehaviour,
     TerminationAbciBehaviours,
@@ -54,5 +55,6 @@ class ResearcherConsensusBehaviour(AbstractRoundBehaviour):
         *TransactionSettlementRoundBehaviour.behaviours,
         *TerminationAbciBehaviours.behaviours,
         *ScraperRoundBehaviour.behaviours,
+        *DocumentsManagerRoundBehaviour.behaviours,
     }
     background_behaviours_cls = {BackgroundBehaviour}

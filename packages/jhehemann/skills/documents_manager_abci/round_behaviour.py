@@ -17,29 +17,25 @@
 #
 # ------------------------------------------------------------------------------
 
-"""This module contains the round behaviour for the 'scraper_abci' skill."""
+"""This module contains the round behaviour for the 'documents_manager_abci' skill."""
 
 from typing import Set, Type
 
-from packages.jhehemann.skills.scraper_abci.behaviours.hello import HelloBehaviour
-from packages.jhehemann.skills.scraper_abci.behaviours.process_html import ProcessHtmlBehaviour
-from packages.jhehemann.skills.scraper_abci.behaviours.search_engine import SearchEngineBehaviour
-from packages.jhehemann.skills.scraper_abci.behaviours.web_scrape import WebScrapeBehaviour
+from packages.jhehemann.skills.documents_manager_abci.behaviours.update_documents import UpdateDocumentsBehaviour
+from packages.jhehemann.skills.documents_manager_abci.behaviours.search_engine import SearchEngineBehaviour
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
     BaseBehaviour,
 )
-from packages.jhehemann.skills.scraper_abci.rounds import ScraperAbciApp
+from packages.jhehemann.skills.documents_manager_abci.rounds import DocumentsManagerAbciApp
 
 
-class ScraperRoundBehaviour(AbstractRoundBehaviour):
-    """This behaviour manages the consensus stages for the scraping."""
+class DocumentsManagerRoundBehaviour(AbstractRoundBehaviour):
+    """This behaviour manages the consensus stages for the documents management."""
 
-    initial_behaviour_cls = HelloBehaviour
-    abci_app_cls = ScraperAbciApp  # type: ignore
+    initial_behaviour_cls = UpdateDocumentsBehaviour
+    abci_app_cls = DocumentsManagerAbciApp  # type: ignore
     behaviours: Set[Type[BaseBehaviour]] = [  # type: ignore
-        HelloBehaviour,
+        UpdateDocumentsBehaviour,
         SearchEngineBehaviour,
-        WebScrapeBehaviour,
-        ProcessHtmlBehaviour,
     ]

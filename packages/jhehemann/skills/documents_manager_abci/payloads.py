@@ -28,7 +28,7 @@ from packages.valory.skills.abstract_round_abci.base import BaseTxPayload
 class UpdateDocumentsPayload(BaseTxPayload):
     """Represent a transaction payload for the UpdateDocumentsRound."""
 
-    content: str
+    content: int
 
 @dataclass(frozen=True)
 class SearchEnginePayload(BaseTxPayload):

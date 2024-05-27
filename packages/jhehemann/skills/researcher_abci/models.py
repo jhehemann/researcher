@@ -28,6 +28,8 @@ from packages.jhehemann.skills.scraper_abci.models import (
 )
 from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSharedState
 from packages.jhehemann.skills.scraper_abci.rounds import Event as HelloEvent
+from packages.jhehemann.skills.documents_manager_abci.models import DocumentsManagerParams
+from packages.jhehemann.skills.documents_manager_abci.rounds import Event as DocumentsManagerEvent
 from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
 from packages.valory.skills.abstract_round_abci.models import (
     BenchmarkTool as BaseBenchmarkTool,
@@ -76,10 +78,14 @@ class SharedState(BaseSharedState):
         ResearcherSkillAbciApp.event_to_timeout[HelloEvent.ROUND_TIMEOUT] = (
             self.context.params.round_timeout_seconds * MULTIPLIER
         )
+        ResearcherSkillAbciApp.event_to_timeout[DocumentsManagerEvent.ROUND_TIMEOUT] = (
+            self.context.params.round_timeout_seconds * MULTIPLIER
+        )
 
 
 class ResearcherParams(  # pylint: disable=too-many-ancestors
     ScraperParams,
+    DocumentsManagerParams,
     TerminationParams
 ):
     """A model to represent params for multiple abci apps."""
