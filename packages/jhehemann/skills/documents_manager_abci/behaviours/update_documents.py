@@ -53,30 +53,7 @@ class UpdateDocumentsBehaviour(DocumentsManagerBaseBehaviour):
     def __init__(self, **kwargs: Any) -> None:
         """Initialize `UpdateDocumentsBehaviour`."""
         super().__init__(**kwargs)
-
-    def is_frozen_document(self, document: Document) -> bool:
-        """Return if a document should not be updated."""
-        return (
-            document.blacklist_expiration > self.synced_time
-            and document.status == DocumentStatus.BLACKLISTED
-        ) or document.status == DocumentStatus.PROCESSED
-
-    @property
-    def frozen_local_documents(self) -> Iterator[Document]:
-        """Get the frozen, already existing, documents."""
-        return filter(self.is_frozen_document, self.documents)
-
-    @property
-    def frozen_documents_and_ids(self) -> Tuple[List[Document], Set[str]]:
-        """Get the ids of the frozen, already existing, documents."""
-        documents = []
-        ids = set()
-        for document in self.frozen_local_documents:
-            documents.append(document)
-            ids.add(document.id)
-        return documents, ids
-
- 
+    
     def async_act(self) -> Generator:
         """Do the action."""
         with self.context.benchmark_tool.measure(self.behaviour_id).local():

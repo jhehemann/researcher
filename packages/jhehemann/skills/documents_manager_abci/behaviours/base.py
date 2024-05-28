@@ -24,7 +24,7 @@ import json
 from abc import ABC
 from json import JSONDecodeError
 from datetime import datetime, timedelta
-from typing import Any, Callable, Generator, Iterator, Optional, Set, Type, cast, List
+from typing import Any, Callable, Generator, Iterator, Optional, Set, Tuple, cast, List
 
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
@@ -77,12 +77,40 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
     # def local_state(self) -> SharedState:
     #     """Return the state."""
     #     return cast(SharedState, self.context.state)
-    
+
+    @property
+    def synced_time(self) -> int:
+        """Get the synchronized time among agents."""
+        synced_time = self.shared_state.round_sequence.last_round_transition_timestamp
+        return int(synced_time.timestamp())
+
     @property
     def unprocessed_documents(self) -> Iterator[Document]:
         """Get an iterator of the unprocessed documents."""
         self.documents = [document for document in self.documents]
-        return filter(lambda document: document.status == DocumentStatus.UNPROCESSED, self.documents)
+        return filter(lambda document: document.status == DocumentStatus.UNPROCESSED, self.documents)    
+
+    @property
+    def frozen_local_documents(self) -> Iterator[Document]:
+        """Get the frozen, already existing, documents."""
+        return filter(self.is_frozen_document, self.documents)
+
+    @property
+    def frozen_documents_and_urls(self) -> Tuple[List[Document], Set[str]]:
+        """Get the urls of the frozen, already existing, documents."""
+        documents = []
+        urls = set()
+        for document in self.frozen_local_documents:
+            documents.append(document)
+            urls.add(document.url)
+        return documents, urls
+    
+    def is_frozen_document(self, document: Document) -> bool:
+        """Return if a document should not be updated."""
+        return (
+            document.blacklist_expiration > self.synced_time
+            and document.status == DocumentStatus.BLACKLISTED
+        ) or document.status == DocumentStatus.PROCESSED
     
     def wait_for_condition_with_sleep(
         self,

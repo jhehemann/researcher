@@ -71,28 +71,6 @@ class SearchEngineBehaviour(DocumentsManagerBaseBehaviour):  # pylint: disable=t
         self.search_engine_response_api.parameters = parameters
         self.search_engine_response_api.__dict__["_frozen"] = True
 
-    def is_frozen_document(self, document: Document) -> bool:
-        """Return if a document should not be updated."""
-        return (
-            document.blacklist_expiration > self.synced_time
-            and document.status == DocumentStatus.BLACKLISTED
-        ) or document.status == DocumentStatus.PROCESSED
-
-    @property
-    def frozen_local_documents(self) -> Iterator[Document]:
-        """Get the frozen, already existing, documents."""
-        return filter(self.is_frozen_document, self.documents)
-
-    @property
-    def frozen_documents_and_urls(self) -> Tuple[List[Document], Set[str]]:
-        """Get the urls of the frozen, already existing, documents."""
-        documents = []
-        urls = set()
-        for document in self.frozen_local_documents:
-            documents.append(document)
-            urls.add(document.url)
-        return documents, urls
-
     def _handle_response(
         self,
         res: Optional[str],
@@ -148,18 +126,26 @@ class SearchEngineBehaviour(DocumentsManagerBaseBehaviour):  # pylint: disable=t
         # self.context.logger.info(f"Search response items: {json.dumps(search_response_items, indent=4)}")
 
         if search_response_items is not None:
+            initial_docs_count = len(self.documents)
             documents_updates = (
                 Document(url=doc['link'], title=doc['title'])
                 for doc in search_response_items
                 if doc.get("link", "") not in existing_urls
             )
             self.documents.extend(documents_updates)
+            
+            docs_updated = len(self.documents) > initial_docs_count
+            if not docs_updated:
+                self.context.logger.warning(f"No new documents were added to the list.")
+                return
+            
         self.context.logger.info(f"Updated documents: {self.documents}")
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
+            self.read_documents()
             sender = self.context.agent_address
             yield from self._update_documents()
             self.store_documents()
