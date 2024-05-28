@@ -32,7 +32,7 @@ from packages.jhehemann.skills.documents_manager_abci.behaviours.base import Doc
 from packages.jhehemann.skills.documents_manager_abci.documents import Document, DocumentStatus
 
 
-class CheckDocumentsBehaviour(UpdateDocumentsBehaviour):
+class CheckDocumentsBehaviour(DocumentsManagerBaseBehaviour):
     """Behaviour that fetches and updates the documents."""
 
     matching_round = CheckDocumentsRound 
@@ -48,14 +48,13 @@ class CheckDocumentsBehaviour(UpdateDocumentsBehaviour):
             unprocessed_docs = list(self.unprocessed_documents)
             num_unprocessed = len(unprocessed_docs)
             self.context.logger.info(f"Number of unprocessed documents: {num_unprocessed}")
-            if not self.documents:
-                documents_hash = None
-            else:
-                documents_hash = self.hash_stored_documents()
+            # if not self.documents:
+            #     documents_hash = None
+            # else:
+            #     documents_hash = self.hash_stored_documents()
 
             payload = CheckDocumentsPayload(
                 self.context.agent_address,
-                documents_hash=documents_hash,
                 num_unprocessed=num_unprocessed,
             )
 

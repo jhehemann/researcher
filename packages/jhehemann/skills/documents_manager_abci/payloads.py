@@ -32,7 +32,7 @@ class UpdateDocumentsPayload(BaseTxPayload, ABC):
     documents_hash: Optional[str]
 
 @dataclass(frozen=True)
-class CheckDocumentsPayload(UpdateDocumentsPayload):
+class CheckDocumentsPayload(BaseTxPayload):
     """Represent a transaction payload for the UpdateDocumentsRound."""
 
     num_unprocessed: Optional[int]

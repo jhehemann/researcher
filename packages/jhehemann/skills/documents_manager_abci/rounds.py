@@ -106,7 +106,7 @@ class CheckDocumentsRound(CollectSameUntilThresholdRound):
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_documents_hash)
     selection_key = (
-        get_name(SynchronizedData.documents_hash),
+        # get_name(SynchronizedData.documents_hash),
         get_name(SynchronizedData.num_unprocessed),
     )
     
