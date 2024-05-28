@@ -31,9 +31,9 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihat4giyc4bz6zopvahcj4iw53356pbtwfn7p4d5yflwly2qhahum
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeidce6s2nweuknssbcxvehx4q25vjt66763ycw36rk46sqguzfu64y
-- jhehemann/scraper_abci:0.1.0:bafybeiangrbbashcuozizb2qg3uxovqgce2qo74akv7fq5gqsltj3iiuj4
-- jhehemann/researcher_abci:0.1.0:bafybeihesvpdpbv4m4w33wc4j73kixin2l5e36qvnpfueklff7fhpu3sla
+- jhehemann/documents_manager_abci:0.1.0:bafybeifwedajh4eiuojdghaysq6thp5w62q2ovwvu4fcjj2rxmcwa7eqwi
+- jhehemann/scraper_abci:0.1.0:bafybeial4ap26plnihzspuzwmaxnvz3kw73r5ckqgl2lbmrruhefnfrnbe
+- jhehemann/researcher_abci:0.1.0:bafybeie5oypb5a57w6w4ziaiawzzpt2g3m4arcloll5m5jtfvhnqrieme4
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
@@ -124,8 +124,7 @@ models:
       log_dir: ${str:/logs}
   params:
     args:
-      input_query: ${INPUT_QUERY:str:Search for relevant information about current
-        topics of interest.}
+      input_query: ${INPUT_QUERY:str:Search for relevant information about current topics of interest.}
       api_keys_json: ${API_KEYS:list:[]}
       cleanup_history_depth: 1
       cleanup_history_depth_current: null

@@ -50,6 +50,7 @@ class Event(Enum):
     """ScraperAbciApp Events"""
 
     DONE = "done"
+    NONE = "none"
     NO_MAJORITY = "no_majority"
     ROUND_TIMEOUT = "round_timeout"
 
@@ -110,6 +111,7 @@ class SamplingRound(UpdateDocumentsRound):
     payload_class = SamplingPayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
+    none_event = Event.NONE
     no_majority_event = Event.NO_MAJORITY
     selection_key: Any = (
         UpdateDocumentsRound.selection_key,
@@ -154,6 +156,9 @@ class ProcessHtmlRound(CollectSameUntilThresholdRound):
 class FinishedScraperRound(DegenerateRound):
     """FinishedScraperRound"""
 
+class FinishedWithoutScraping(DegenerateRound):
+    """FinishedWithoutScraping"""
+
 
 class ScraperAbciApp(AbciApp[Event]):
     """ScraperAbciApp"""
@@ -167,6 +172,7 @@ class ScraperAbciApp(AbciApp[Event]):
             Event.NO_MAJORITY: SamplingRound,
             Event.ROUND_TIMEOUT: SamplingRound,
             Event.DONE: WebScrapeRound,
+            Event.NONE: FinishedWithoutScraping,
         },
         WebScrapeRound: {
             Event.NO_MAJORITY: WebScrapeRound,
@@ -179,9 +185,11 @@ class ScraperAbciApp(AbciApp[Event]):
             Event.DONE: FinishedScraperRound,
         },
         FinishedScraperRound: {},
+        FinishedWithoutScraping: {},
     }
     final_states: Set[AppState] = {
         FinishedScraperRound,
+        FinishedWithoutScraping,
     }
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
@@ -190,4 +198,5 @@ class ScraperAbciApp(AbciApp[Event]):
     }
     db_post_conditions: Dict[AppState, Set[str]] = {
         FinishedScraperRound: set(),
+        FinishedWithoutScraping: set(),
     }

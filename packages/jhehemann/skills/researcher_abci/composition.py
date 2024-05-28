@@ -39,6 +39,7 @@ abci_app_transition_mapping: AbciAppTransitionMapping = {
     RegistrationAbci.FinishedRegistrationRound: DocumentsManagerAbciApp.CheckDocumentsRound,
     DocumentsManagerAbciApp.FinishedDocumentsManagerRound: ScraperAbciApp.SamplingRound,
     ScraperAbciApp.FinishedScraperRound: ResetAndPauseAbci.ResetAndPauseRound,
+    ScraperAbciApp.FinishedWithoutScraping: ResetAndPauseAbci.ResetAndPauseRound,
     ResetAndPauseAbci.FinishedResetAndPauseRound: DocumentsManagerAbciApp.CheckDocumentsRound,
     ResetAndPauseAbci.FinishedResetAndPauseErrorRound: ResetAndPauseAbci.ResetAndPauseRound,
 }

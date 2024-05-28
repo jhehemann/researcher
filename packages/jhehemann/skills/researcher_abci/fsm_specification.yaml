@@ -1,5 +1,6 @@
 alphabet_in:
 - DONE
+- NONE
 - NO_UPDATES
 - TO_UPDATE
 - NO_MAJORITY
@@ -12,6 +13,7 @@ start_states:
 - RegistrationRound
 - RegistrationStartupRound
 states:
+- FinishedWithoutScraping
 - SamplingRound
 - RegistrationRound
 - RegistrationStartupRound
@@ -27,6 +29,7 @@ transition_func:
     (ResetAndPauseRound, NO_MAJORITY): ResetAndPauseRound
     (ResetAndPauseRound, RESET_AND_PAUSE_TIMEOUT): ResetAndPauseRound
     (SamplingRound, DONE): WebScrapeRound
+    (SamplingRound, NONE): ResetAndPauseRound
     (SamplingRound, NO_MAJORITY): SamplingRound
     (SamplingRound, ROUND_TIMEOUT): SamplingRound
     (SearchEngineRound, DONE): SamplingRound

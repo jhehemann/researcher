@@ -12,19 +12,19 @@ fingerprint:
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeidoz222wbe6owv4faeoahpfo2nzywbedskpkuyf2hc2vkxc3q7uzq
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  fsm_specification.yaml: bafybeignqrtrlcapbyb7c4dof7qr6jwq5psq2pb7igfsd7zq4aawsasbmy
+  fsm_specification.yaml: bafybeicayckznxgzinjzly2pwhjd7dggjacz42clidsndmfneoa5xhdzm4
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
   models.py: bafybeid73bcqox3r6ycz3erj4xq5px4pc3tkppeu3ppaknypyyedu27zwu
   payloads.py: bafybeif34w64uhr4f5knbjgaekzpqnrlbukejuabqsng6qp43udc4gw3kq
   round_behaviour.py: bafybeih3zbpaatlkxvqf2tuqsbexmlqdxrahdwovf4sg75c3tnrd25vejm
-  rounds.py: bafybeicgvnwq5fipmqq2vh2t33gmo4uanpmau4o2j5qryyjde73muh2xiq
+  rounds.py: bafybeibvd3ea5zymw24wsisubvgvs6fuvlfspzeu4biqs5qu3qugnwihny
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
 protocols: []
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeidce6s2nweuknssbcxvehx4q25vjt66763ycw36rk46sqguzfu64y
+- jhehemann/documents_manager_abci:0.1.0:bafybeifwedajh4eiuojdghaysq6thp5w62q2ovwvu4fcjj2rxmcwa7eqwi
 behaviours:
   main:
     args: {}

@@ -58,7 +58,7 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
         query = self.params.input_query
         self.context.logger.info(f"Search query: {query}")
 
-        num = 2
+        num = 1
 
         parameters = {
             "key": google_api_key,
@@ -117,6 +117,11 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
 
     def _update_documents(self) -> Generator:
         """Search Google using a custom search engine."""
+        
+        # # Temporarily used for testing purposes. Remove both lines when done.
+        # self.documents = [Document(url="www.google.com", title="Hi", status=DocumentStatus.PROCESSED)]
+        # return
+        
         self.documents, existing_urls = self.frozen_documents_and_urls
 
         yield from self.wait_for_condition_with_sleep(self._fetch_documents)

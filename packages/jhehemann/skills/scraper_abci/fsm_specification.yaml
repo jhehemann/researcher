@@ -1,10 +1,12 @@
 alphabet_in:
 - DONE
+- NONE
 - NO_MAJORITY
 - ROUND_TIMEOUT
 default_start_state: SamplingRound
 final_states:
 - FinishedScraperRound
+- FinishedWithoutScraping
 label: ScraperAbciApp
 start_states:
 - SamplingRound
@@ -12,8 +14,10 @@ states:
 - SamplingRound
 - WebScrapeRound
 - FinishedScraperRound
+- FinishedWithoutScraping
 transition_func:
     (SamplingRound, DONE): WebScrapeRound
+    (SamplingRound, NONE): FinishedWithoutScraping
     (SamplingRound, NO_MAJORITY): SamplingRound
     (SamplingRound, ROUND_TIMEOUT): SamplingRound
     (WebScrapeRound, DONE): FinishedScraperRound
