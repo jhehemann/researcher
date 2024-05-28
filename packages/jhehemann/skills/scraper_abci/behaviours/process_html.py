@@ -97,7 +97,7 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
             self.store_documents()
             documents_hash = self.hash_stored_documents()
 
-            payload = ProcessHtmlPayload(sender=sender, documents_hash=documents_hash, num_unprocessed=None)
+            payload = ProcessHtmlPayload(sender=sender, documents_hash=documents_hash)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

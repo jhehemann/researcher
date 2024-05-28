@@ -112,8 +112,7 @@ class SamplingRound(UpdateDocumentsRound):
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
     selection_key: Any = (
-        UpdateDocumentsRound.selection_key[0],
-        UpdateDocumentsRound.selection_key[1],
+        UpdateDocumentsRound.selection_key,
         get_name(SynchronizedData.sampled_doc_index),
     )
 

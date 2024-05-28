@@ -4,21 +4,21 @@ alphabet_in:
 - NO_UPDATES
 - NO_MAJORITY
 - ROUND_TIMEOUT
-default_start_state: UpdateDocumentsRound
+default_start_state: CheckDocumentsRound
 final_states:
 - FinishedDocumentsManagerRound
 label: ScraperAbciApp
 start_states:
-- UpdateDocumentsRound
+- CheckDocumentsRound
 states:
-- UpdateDocumentsRound
+- CheckDocumentsRound
 - SearchEngineRound
 - FinishedDocumentsManagerRound
 transition_func:
-    (UpdateDocumentsRound, TO_UPDATE): SearchEngineRound
-    (UpdateDocumentsRound, NO_UPDATES): FinishedDocumentsManagerRound
-    (UpdateDocumentsRound, NO_MAJORITY): UpdateDocumentsRound
-    (UpdateDocumentsRound, ROUND_TIMEOUT): UpdateDocumentsRound
+    (CheckDocumentsRound, TO_UPDATE): SearchEngineRound
+    (CheckDocumentsRound, NO_UPDATES): FinishedDocumentsManagerRound
+    (CheckDocumentsRound, NO_MAJORITY): CheckDocumentsRound
+    (CheckDocumentsRound, ROUND_TIMEOUT): CheckDocumentsRound
     (SearchEngineRound, DONE): FinishedDocumentsManagerRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound

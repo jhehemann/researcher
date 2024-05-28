@@ -21,7 +21,7 @@
 
 from typing import Set, Type
 
-from packages.jhehemann.skills.documents_manager_abci.behaviours.update_documents import UpdateDocumentsBehaviour
+from packages.jhehemann.skills.documents_manager_abci.behaviours.check_documents import CheckDocumentsBehaviour
 from packages.jhehemann.skills.documents_manager_abci.behaviours.search_engine import SearchEngineBehaviour
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
@@ -33,9 +33,9 @@ from packages.jhehemann.skills.documents_manager_abci.rounds import DocumentsMan
 class DocumentsManagerRoundBehaviour(AbstractRoundBehaviour):
     """This behaviour manages the consensus stages for the documents management."""
 
-    initial_behaviour_cls = UpdateDocumentsBehaviour
+    initial_behaviour_cls = CheckDocumentsBehaviour
     abci_app_cls = DocumentsManagerAbciApp  # type: ignore
     behaviours: Set[Type[BaseBehaviour]] = [  # type: ignore
-        UpdateDocumentsBehaviour,
+        CheckDocumentsBehaviour,
         SearchEngineBehaviour,
     ]

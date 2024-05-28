@@ -36,10 +36,10 @@ from packages.valory.skills.termination_abci.rounds import (
 
 
 abci_app_transition_mapping: AbciAppTransitionMapping = {
-    RegistrationAbci.FinishedRegistrationRound: DocumentsManagerAbciApp.UpdateDocumentsRound,
+    RegistrationAbci.FinishedRegistrationRound: DocumentsManagerAbciApp.CheckDocumentsRound,
     DocumentsManagerAbciApp.FinishedDocumentsManagerRound: ScraperAbciApp.SamplingRound,
     ScraperAbciApp.FinishedScraperRound: ResetAndPauseAbci.ResetAndPauseRound,
-    ResetAndPauseAbci.FinishedResetAndPauseRound: DocumentsManagerAbciApp.UpdateDocumentsRound,
+    ResetAndPauseAbci.FinishedResetAndPauseRound: DocumentsManagerAbciApp.CheckDocumentsRound,
     ResetAndPauseAbci.FinishedResetAndPauseErrorRound: ResetAndPauseAbci.ResetAndPauseRound,
 }
 

@@ -79,16 +79,73 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
     #     return cast(SharedState, self.context.state)
 
     @property
+    def unprocessed_documents(self) -> Iterator[Document]:
+        """Get an iterator of the unprocessed documents."""
+        self.documents = [document for document in self.documents]
+        return filter(lambda document: document.status == DocumentStatus.UNPROCESSED, self.documents)   
+
+    @property
     def synced_time(self) -> int:
         """Get the synchronized time among agents."""
         synced_time = self.shared_state.round_sequence.last_round_transition_timestamp
         return int(synced_time.timestamp())
 
-    @property
-    def unprocessed_documents(self) -> Iterator[Document]:
-        """Get an iterator of the unprocessed documents."""
-        self.documents = [document for document in self.documents]
-        return filter(lambda document: document.status == DocumentStatus.UNPROCESSED, self.documents)    
+    def store_documents(self) -> None:
+        """Store the documents to the agent's data dir as JSON."""
+        serialized = serialize_documents(self.documents)
+        if serialized is None:
+            self.context.logger.warning("No documents to store.")
+            return
+
+        try:
+            with open(self.documents_filepath, WRITE_MODE) as documents_file:
+                try:
+                    documents_file.write(serialized)
+                    return
+                except (IOError, OSError):
+                    err = f"Error writing to file {self.documents_filepath!r}!"
+        except (FileNotFoundError, PermissionError, OSError):
+            err = f"Error opening file {self.documents_filepath!r} in write mode!"
+
+        self.context.logger.error(err)
+
+    def read_documents(self) -> None:
+        """Read the documents from the agent's data dir as JSON."""
+        self.documents = []
+
+        if not os.path.isfile(self.documents_filepath):
+            self.context.logger.warning(
+                f"No stored documents file was detected in {self.documents_filepath}. Assuming documents are empty."
+            )
+            return
+
+        try:
+            with open(self.documents_filepath, READ_MODE) as documents_file:
+                try:
+                    self.documents = json.load(documents_file, cls=DocumentsDecoder)
+                    return
+                except (JSONDecodeError, TypeError):
+                    err = (
+                        f"Error decoding file {self.documents_filepath!r} to a list of documents!"
+                    )
+        except (FileNotFoundError, PermissionError, OSError):
+            err = f"Error opening file {self.documents_filepath!r} in read mode!"
+
+        self.context.logger.error(err)
+
+    def hash_stored_documents(self) -> str:
+        """Get the hash of the stored documents' file."""
+        return IPFSHashOnly.hash_file(self.documents_filepath)
+    
+
+class UpdateDocumentsBehaviour(DocumentsManagerBaseBehaviour):
+    """Behaviour that fetches and updates the documents."""
+
+    matching_round = UpdateDocumentsRound
+
+    def __init__(self, **kwargs: Any) -> None:
+        """Initialize `UpdateDocumentsBehaviour`."""
+        super().__init__(**kwargs)
 
     @property
     def frozen_local_documents(self) -> Iterator[Document]:
@@ -142,52 +199,3 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
                 raise TimeoutException()
             self.context.logger.info(f"Retrying in {self.params.sleep_time} seconds.")
             yield from self.sleep(self.params.sleep_time)
-
-    def store_documents(self) -> None:
-        """Store the documents to the agent's data dir as JSON."""
-        serialized = serialize_documents(self.documents)
-        if serialized is None:
-            self.context.logger.warning("No documents to store.")
-            return
-
-        try:
-            with open(self.documents_filepath, WRITE_MODE) as documents_file:
-                try:
-                    documents_file.write(serialized)
-                    return
-                except (IOError, OSError):
-                    err = f"Error writing to file {self.documents_filepath!r}!"
-        except (FileNotFoundError, PermissionError, OSError):
-            err = f"Error opening file {self.documents_filepath!r} in write mode!"
-
-        self.context.logger.error(err)
-
-    def read_documents(self) -> None:
-        """Read the documents from the agent's data dir as JSON."""
-        self.documents = []
-
-        if not os.path.isfile(self.documents_filepath):
-            self.context.logger.warning(
-                f"No stored documents file was detected in {self.documents_filepath}. Assuming documents are empty."
-            )
-            return
-
-        try:
-            with open(self.documents_filepath, READ_MODE) as documents_file:
-                try:
-                    self.documents = json.load(documents_file, cls=DocumentsDecoder)
-                    return
-                except (JSONDecodeError, TypeError):
-                    err = (
-                        f"Error decoding file {self.documents_filepath!r} to a list of documents!"
-                    )
-        except (FileNotFoundError, PermissionError, OSError):
-            err = f"Error opening file {self.documents_filepath!r} in read mode!"
-
-        self.context.logger.error(err)
-
-    def hash_stored_documents(self) -> str:
-        """Get the hash of the stored documents' file."""
-        return IPFSHashOnly.hash_file(self.documents_filepath)
-
-

@@ -23,7 +23,7 @@ import os.path
 from typing import Any, Generator, Optional, Type, Iterator, List, Set, Tuple
 
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import (
-    DocumentsManagerBaseBehaviour,
+    UpdateDocumentsBehaviour,
     WaitableConditionType,
 )
 from packages.jhehemann.skills.documents_manager_abci.models import SearchEngineInteractionResponse, SearchEngineResponseSpecs
@@ -36,7 +36,7 @@ from packages.jhehemann.skills.documents_manager_abci.documents import (
 )
 
 
-class SearchEngineBehaviour(DocumentsManagerBaseBehaviour):  # pylint: disable=too-many-ancestors
+class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-many-ancestors
     """Behaviour to request URLs from search engine"""
 
     matching_round: Type[AbstractRound] = SearchEngineRound     

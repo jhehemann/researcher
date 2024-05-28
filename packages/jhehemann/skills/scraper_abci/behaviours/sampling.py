@@ -35,7 +35,6 @@ class SamplingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ances
 
     matching_round: Type[AbstractRound] = SamplingRound
 
-
     def _sampled_doc_idx(self, documents: List[Document]) -> int:
         """
         Sample a document and return its id.
@@ -83,7 +82,7 @@ class SamplingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ances
             else:
                 documents_hash = self.hash_stored_documents()
 
-            payload = SamplingPayload(sender=sender, documents_hash=documents_hash, num_unprocessed=None, sampled_doc_index=idx)
+            payload = SamplingPayload(sender=sender, documents_hash=documents_hash, sampled_doc_index=idx)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

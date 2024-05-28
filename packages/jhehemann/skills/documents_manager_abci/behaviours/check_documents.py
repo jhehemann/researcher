@@ -24,31 +24,18 @@ import os.path
 from abc import ABC
 from typing import Any, Generator, Iterator, List, Set, Tuple, Type
 
-
-from packages.jhehemann.skills.documents_manager_abci.payloads import UpdateDocumentsPayload
-from packages.jhehemann.skills.documents_manager_abci.rounds import UpdateDocumentsRound
+from packages.jhehemann.skills.documents_manager_abci.payloads import CheckDocumentsPayload
+from packages.jhehemann.skills.documents_manager_abci.rounds import CheckDocumentsRound
+from packages.jhehemann.skills.documents_manager_abci.behaviours.base import UpdateDocumentsBehaviour
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import DocumentsManagerBaseBehaviour   
-from packages.jhehemann.skills.documents_manager_abci.documents import (
-    Document,
-    DocumentStatus,
-)
+from packages.jhehemann.skills.documents_manager_abci.documents import Document, DocumentStatus
 
 
-# class DocumentsManagerBehaviour(DocumentsManagerBaseBehaviour, ABC):
-#     """Abstract behaviour responsible for documents management, such as storing, hashing, reading."""
-
-#     def __init__(self, **kwargs: Any) -> None:
-#         """Initialize `DocumentsManagerBehaviour`."""
-#         super().__init__(**kwargs)
-#         self.documents: List[Document] = []
-#         self.documents_filepath: str = os.path.join(self.context.data_dir, DOCUMENTS_FILENAME)
-
-
-class UpdateDocumentsBehaviour(DocumentsManagerBaseBehaviour):
+class CheckDocumentsBehaviour(UpdateDocumentsBehaviour):
     """Behaviour that fetches and updates the documents."""
 
-    matching_round = UpdateDocumentsRound
+    matching_round = CheckDocumentsRound 
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize `UpdateDocumentsBehaviour`."""
@@ -66,10 +53,10 @@ class UpdateDocumentsBehaviour(DocumentsManagerBaseBehaviour):
             else:
                 documents_hash = self.hash_stored_documents()
 
-            payload = UpdateDocumentsPayload(
+            payload = CheckDocumentsPayload(
                 self.context.agent_address,
+                documents_hash=documents_hash,
                 num_unprocessed=num_unprocessed,
-                documents_hash=documents_hash
             )
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():

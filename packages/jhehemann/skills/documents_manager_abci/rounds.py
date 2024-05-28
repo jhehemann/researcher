@@ -24,6 +24,7 @@ from typing import Dict, FrozenSet, Optional, Set, Tuple, cast
 
 from packages.jhehemann.skills.documents_manager_abci.payloads import (
     UpdateDocumentsPayload,
+    CheckDocumentsPayload,
     SearchEnginePayload,
 )
 
@@ -86,9 +87,20 @@ class SynchronizedData(BaseSynchronizedData):
   
 
 class UpdateDocumentsRound(CollectSameUntilThresholdRound):
-    """HelloRound"""
+    """CheckDocumentsRound"""
 
     payload_class = UpdateDocumentsPayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_documents_hash)
+    selection_key = get_name(SynchronizedData.documents_hash)
+    
+
+class CheckDocumentsRound(CollectSameUntilThresholdRound):
+    """CheckDocumentsRound"""
+
+    payload_class = CheckDocumentsPayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
@@ -135,14 +147,14 @@ class FinishedDocumentsManagerRound(DegenerateRound):
 class DocumentsManagerAbciApp(AbciApp[Event]):
     """DocumentsManagerAbciApp"""
 
-    initial_round_cls: AppState = UpdateDocumentsRound
+    initial_round_cls: AppState = CheckDocumentsRound
     initial_states: Set[AppState] = {
-        UpdateDocumentsRound,
+        CheckDocumentsRound,
     }
     transition_function: AbciAppTransitionFunction = {
-        UpdateDocumentsRound: {
-            Event.NO_MAJORITY: UpdateDocumentsRound,
-            Event.ROUND_TIMEOUT: UpdateDocumentsRound,
+        CheckDocumentsRound: {
+            Event.NO_MAJORITY: CheckDocumentsRound,
+            Event.ROUND_TIMEOUT: CheckDocumentsRound,
             Event.NO_UPDATES: FinishedDocumentsManagerRound,
             Event.TO_UPDATE: SearchEngineRound,
         },
@@ -159,7 +171,7 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
     db_pre_conditions: Dict[AppState, Set[str]] = {
-        UpdateDocumentsRound: set(),
+        CheckDocumentsRound: set(),
     }
     db_post_conditions: Dict[AppState, Set[str]] = {
         FinishedDocumentsManagerRound: {get_name(SynchronizedData.documents_hash)},

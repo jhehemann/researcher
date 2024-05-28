@@ -17,13 +17,13 @@ states:
 - RegistrationStartupRound
 - ResetAndPauseRound
 - SearchEngineRound
-- UpdateDocumentsRound
+- CheckDocumentsRound
 - WebScrapeRound
 transition_func:
-    (RegistrationRound, DONE): UpdateDocumentsRound
+    (RegistrationRound, DONE): CheckDocumentsRound
     (RegistrationRound, NO_MAJORITY): RegistrationRound
-    (RegistrationStartupRound, DONE): UpdateDocumentsRound
-    (ResetAndPauseRound, DONE): UpdateDocumentsRound
+    (RegistrationStartupRound, DONE): CheckDocumentsRound
+    (ResetAndPauseRound, DONE): CheckDocumentsRound
     (ResetAndPauseRound, NO_MAJORITY): ResetAndPauseRound
     (ResetAndPauseRound, RESET_AND_PAUSE_TIMEOUT): ResetAndPauseRound
     (SamplingRound, DONE): WebScrapeRound
@@ -32,11 +32,11 @@ transition_func:
     (SearchEngineRound, DONE): SamplingRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
-    (UpdateDocumentsRound, DONE): UpdateDocumentsRound
-    (UpdateDocumentsRound, NO_UPDATES): SamplingRound
-    (UpdateDocumentsRound, TO_UPDATE): SearchEngineRound
-    (UpdateDocumentsRound, NO_MAJORITY): UpdateDocumentsRound
-    (UpdateDocumentsRound, ROUND_TIMEOUT): UpdateDocumentsRound
+    (CheckDocumentsRound, DONE): CheckDocumentsRound
+    (CheckDocumentsRound, NO_UPDATES): SamplingRound
+    (CheckDocumentsRound, TO_UPDATE): SearchEngineRound
+    (CheckDocumentsRound, NO_MAJORITY): CheckDocumentsRound
+    (CheckDocumentsRound, ROUND_TIMEOUT): CheckDocumentsRound
     (WebScrapeRound, DONE): ResetAndPauseRound
     (WebScrapeRound, NO_MAJORITY): WebScrapeRound
     (WebScrapeRound, ROUND_TIMEOUT): WebScrapeRound
