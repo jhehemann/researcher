@@ -22,9 +22,13 @@
 
 from packages.valory.skills.abstract_round_abci.models import ApiSpecs
 
-from packages.jhehemann.skills.scraper_abci.models import (
+from packages.jhehemann.skills.documents_manager_abci.models import (
     SearchEngineResponseSpecs as ScraperSearchEngineResponseSpecs,
-    WebScrapeResponseSpecs as ScraperWebScrapeResponseSpecs
+)
+
+from packages.jhehemann.skills.scraper_abci.models import (
+    WebScrapeResponseSpecs as ScraperWebScrapeResponseSpecs,
+    EmbeddingResponseSpecs as ScraperEmbeddingResponseSpecs
 )
 from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSharedState
 from packages.jhehemann.skills.scraper_abci.rounds import Event as SamplingEvent
@@ -46,6 +50,7 @@ Requests = BaseRequests
 BenchmarkTool = BaseBenchmarkTool
 SearchEngineResponseSpecs = ScraperSearchEngineResponseSpecs
 WebScrapeResponseSpecs = ScraperWebScrapeResponseSpecs
+EmbeddingResponseSpecs = ScraperEmbeddingResponseSpecs
 
 RandomnessApi = BaseRandomnessApi
 

@@ -32,11 +32,13 @@ class SamplingPayload(UpdateDocumentsPayload):
 
     sampled_doc_index: Optional[int]
 
+
 @dataclass(frozen=True)
 class SearchEnginePayload(BaseTxPayload):
     """Represent a transaction payload for the SearchEngineRound."""
 
     content: str
+
 
 @dataclass(frozen=True)
 class WebScrapePayload(BaseTxPayload):
@@ -44,7 +46,13 @@ class WebScrapePayload(BaseTxPayload):
 
     content: str
 
+
 @dataclass(frozen=True)
 class ProcessHtmlPayload(UpdateDocumentsPayload):
     """Represent a transaction payload for the ProcessHtmlRound."""
+
+
+@dataclass(frozen=True)
+class EmbeddingPayload(UpdateDocumentsPayload):
+    """Represent a transaction payload for the EmbeddingRound."""
 

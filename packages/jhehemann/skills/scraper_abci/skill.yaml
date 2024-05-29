@@ -8,23 +8,24 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
   behaviours/base.py: bafybeif6bwgqdlyd3ynpxiudwdl4jsyhzxranvunjw7bn7dfrr72yofasu
+  behaviours/embedding.py: bafybeicisfpfrdmo2nsshm23vdctsctu7ef2g6opqitzey7nhgsi3ymp3m
   behaviours/process_html.py: bafybeiag5kdcqa2d3iqzw5ii4qsdwtv5prtpcqt7xab4risbz7zaokb2vq
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeidoz222wbe6owv4faeoahpfo2nzywbedskpkuyf2hc2vkxc3q7uzq
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  fsm_specification.yaml: bafybeicayckznxgzinjzly2pwhjd7dggjacz42clidsndmfneoa5xhdzm4
+  fsm_specification.yaml: bafybeiddfy3dppb4uv2m57mtxqlyqeoy2vvgrmzmslc6txcguhbavukpxq
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeid73bcqox3r6ycz3erj4xq5px4pc3tkppeu3ppaknypyyedu27zwu
-  payloads.py: bafybeif34w64uhr4f5knbjgaekzpqnrlbukejuabqsng6qp43udc4gw3kq
-  round_behaviour.py: bafybeih3zbpaatlkxvqf2tuqsbexmlqdxrahdwovf4sg75c3tnrd25vejm
-  rounds.py: bafybeibvd3ea5zymw24wsisubvgvs6fuvlfspzeu4biqs5qu3qugnwihny
+  models.py: bafybeichjk7xzazkx2tasi3ohnoeefuiudyngmomgxwh5ll47h6iy3bj5i
+  payloads.py: bafybeie7jqant7ivi3pzongvhlliuf4obirzc2of2f35hf372dj2t3j6xa
+  round_behaviour.py: bafybeichvgogmwxdj5ojsnzvbs5jdlzuunwitqcflyv7hdyxscsembqsim
+  rounds.py: bafybeie5zcvyiiiksazb2dw4bs37bfdsia2dxdfun6ddizsj47uenunvyu
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
 protocols: []
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeifwedajh4eiuojdghaysq6thp5w62q2ovwvu4fcjj2rxmcwa7eqwi
+- jhehemann/documents_manager_abci:0.1.0:bafybeid4tnylup5y6ixuwyd62nu7q4te6acf3xxjsmwn37gzth4jcgdd5m
 behaviours:
   main:
     args: {}
@@ -165,6 +166,19 @@ models:
       retries: 5
       url: ''
     class_name: WebScrapeResponseSpecs
+  embedding_response:
+    args:
+      api_id: embedding_response
+      headers:
+        Content-Type: application/json
+        Authorization: ''
+      method: POST
+      parameters: {}
+      response_key: null
+      response_type: dict
+      retries: 5
+      url: https://api.openai.com/v1/embeddings
+    class_name: EmbeddingResponseSpecs
   requests:
     args: {}
     class_name: Requests

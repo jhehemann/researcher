@@ -26,6 +26,7 @@ from packages.jhehemann.skills.scraper_abci.payloads import (
     SamplingPayload,
     WebScrapePayload,
     ProcessHtmlPayload,
+    EmbeddingPayload,
 )
 
 from packages.valory.skills.abstract_round_abci.base import (
@@ -72,13 +73,6 @@ class SynchronizedData(DocumentsManagerSyncedData):
         """Get the index of the sampled document."""
         return int(self.db.get_strict("sampled_doc_index"))
     
-
-    
-    # @property
-    # def documents_hash(self) -> Optional[str]:
-    #     """Get the ."""
-    #     return self.db.get_strict("documents_hash", None)
-    
     @property
     def web_scrape_data(self) -> Optional[str]:
         """Get the web_scrape_data."""
@@ -86,13 +80,13 @@ class SynchronizedData(DocumentsManagerSyncedData):
 
     @property
     def process_html_data(self) -> Optional[str]:
-        """Get the web_scrape_data."""
+        """Get the process_html_data."""
         return self.db.get("process_html_data", None)
-
-    # @property
-    # def participant_to_documents_hash(self) -> DeserializedCollection:
-    #     """Get the participants to the sampling round."""
-    #     return self._get_deserialized("participant_to_documents")
+    
+    @property
+    def embeddings(self) -> Optional[str]:
+        """Get the embeddings."""
+        return self.db.get("embeddings", None)
     
     @property
     def participant_to_web_scrape_round(self) -> DeserializedCollection:
@@ -103,6 +97,11 @@ class SynchronizedData(DocumentsManagerSyncedData):
     def participant_to_process_html_round(self) -> DeserializedCollection:
         """Get the participants to the participant_to_process_html round."""
         return self._get_deserialized("participant_to_process_html_round")
+    
+    @property
+    def participant_to_embedding_round(self) -> DeserializedCollection:
+        """Get the participants to the participant_to_embedding round."""
+        return self._get_deserialized("participant_to_embedding_round")
 
 
 class SamplingRound(UpdateDocumentsRound):
@@ -119,18 +118,6 @@ class SamplingRound(UpdateDocumentsRound):
     )
 
     # Event.ROUND_TIMEOUT  # this needs to be mentioned for static checkers
-
-
-# class SearchEngineRound(CollectSameUntilThresholdRound):
-#     """SearchEngineRound"""
-
-#     payload_class = SearchEnginePayload
-#     synchronized_data_class = SynchronizedData
-#     done_event = Event.DONE
-#     no_majority_event = Event.NO_MAJORITY
-#     collection_key = get_name(SynchronizedData.participant_to_search_engine_round)
-#     selection_key = get_name(SynchronizedData.search_engine_data)
-
 
 class WebScrapeRound(CollectSameUntilThresholdRound):
     """SearchEngineRound"""
@@ -151,6 +138,16 @@ class ProcessHtmlRound(CollectSameUntilThresholdRound):
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_process_html_round)
     selection_key = get_name(SynchronizedData.process_html_data)
+
+class EmbeddingRound(CollectSameUntilThresholdRound):
+    """ProcessHtmlRound"""
+
+    payload_class = EmbeddingPayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_embedding_round)
+    selection_key = get_name(SynchronizedData.embeddings)
 
 
 class FinishedScraperRound(DegenerateRound):
@@ -182,6 +179,11 @@ class ScraperAbciApp(AbciApp[Event]):
         ProcessHtmlRound: {
             Event.NO_MAJORITY: ProcessHtmlRound,
             Event.ROUND_TIMEOUT: ProcessHtmlRound,
+            Event.DONE: EmbeddingRound,
+        },
+        EmbeddingRound: {
+            Event.NO_MAJORITY: EmbeddingRound,
+            Event.ROUND_TIMEOUT: EmbeddingRound,
             Event.DONE: FinishedScraperRound,
         },
         FinishedScraperRound: {},

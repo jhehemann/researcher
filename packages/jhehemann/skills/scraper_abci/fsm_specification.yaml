@@ -11,15 +11,23 @@ label: ScraperAbciApp
 start_states:
 - SamplingRound
 states:
-- SamplingRound
-- WebScrapeRound
+- EmbeddingRound
 - FinishedScraperRound
 - FinishedWithoutScraping
+- ProcessHtmlRound
+- SamplingRound
+- WebScrapeRound
 transition_func:
+    (EmbeddingRound, DONE): FinishedScraperRound
+    (EmbeddingRound, NO_MAJORITY): EmbeddingRound
+    (EmbeddingRound, ROUND_TIMEOUT): EmbeddingRound
+    (ProcessHtmlRound, DONE): EmbeddingRound
+    (ProcessHtmlRound, NO_MAJORITY): ProcessHtmlRound
+    (ProcessHtmlRound, ROUND_TIMEOUT): ProcessHtmlRound
     (SamplingRound, DONE): WebScrapeRound
     (SamplingRound, NONE): FinishedWithoutScraping
     (SamplingRound, NO_MAJORITY): SamplingRound
     (SamplingRound, ROUND_TIMEOUT): SamplingRound
-    (WebScrapeRound, DONE): FinishedScraperRound
+    (WebScrapeRound, DONE): ProcessHtmlRound
     (WebScrapeRound, NO_MAJORITY): SearchEngineRound
     (WebScrapeRound, ROUND_TIMEOUT): SearchEngineRound

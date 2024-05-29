@@ -13,15 +13,26 @@ start_states:
 - RegistrationRound
 - RegistrationStartupRound
 states:
-- FinishedWithoutScraping
-- SamplingRound
+- CheckDocumentsRound
+- EmbeddingRound
 - RegistrationRound
 - RegistrationStartupRound
 - ResetAndPauseRound
+- SamplingRound
 - SearchEngineRound
-- CheckDocumentsRound
 - WebScrapeRound
 transition_func:
+    (CheckDocumentsRound, DONE): CheckDocumentsRound
+    (CheckDocumentsRound, NO_UPDATES): SamplingRound
+    (CheckDocumentsRound, TO_UPDATE): SearchEngineRound
+    (CheckDocumentsRound, NO_MAJORITY): CheckDocumentsRound
+    (CheckDocumentsRound, ROUND_TIMEOUT): CheckDocumentsRound
+    (EmbeddingRound, DONE): ResetAndPauseRound
+    (EmbeddingRound, NO_MAJORITY): EmbeddingRound
+    (EmbeddingRound, ROUND_TIMEOUT): EmbeddingRound
+    (ProcessHtmlRound, DONE): EmbeddingRound
+    (ProcessHtmlRound, NO_MAJORITY): ProcessHtmlRound
+    (ProcessHtmlRound, ROUND_TIMEOUT): ProcessHtmlRound
     (RegistrationRound, DONE): CheckDocumentsRound
     (RegistrationRound, NO_MAJORITY): RegistrationRound
     (RegistrationStartupRound, DONE): CheckDocumentsRound
@@ -35,12 +46,7 @@ transition_func:
     (SearchEngineRound, DONE): SamplingRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
-    (CheckDocumentsRound, DONE): CheckDocumentsRound
-    (CheckDocumentsRound, NO_UPDATES): SamplingRound
-    (CheckDocumentsRound, TO_UPDATE): SearchEngineRound
-    (CheckDocumentsRound, NO_MAJORITY): CheckDocumentsRound
-    (CheckDocumentsRound, ROUND_TIMEOUT): CheckDocumentsRound
-    (WebScrapeRound, DONE): ResetAndPauseRound
+    (WebScrapeRound, DONE): ProcessHtmlRound
     (WebScrapeRound, NO_MAJORITY): WebScrapeRound
     (WebScrapeRound, ROUND_TIMEOUT): WebScrapeRound
 
