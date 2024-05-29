@@ -58,7 +58,7 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
         query = self.params.input_query
         self.context.logger.info(f"Search query: {query}")
 
-        num = 1
+        num = 3
 
         parameters = {
             "key": google_api_key,

@@ -21,6 +21,8 @@
 
 import os
 import json
+import numpy as np
+import pandas as pd
 from abc import ABC
 from json import JSONDecodeError
 from datetime import datetime, timedelta
@@ -49,8 +51,10 @@ from aea.helpers.ipfs.base import IPFSHashOnly
 
 UNIX_DAY = 60 * 60 * 24
 DOCUMENTS_FILENAME = "documents.json"
+EMBEDDINGS_FILENAME = "embeddings.parquet"
 READ_MODE = "r"
 WRITE_MODE = "w"
+
 
 WaitableConditionType = Generator[None, None, bool]
 
@@ -61,7 +65,9 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         """Initialize behaviour."""
         super().__init__(**kwargs)
         self.documents: List[Document] = []
+        self.embeddings: pd.DataFrame = pd.DataFrame()
         self.documents_filepath: str = os.path.join(self.context.data_dir, DOCUMENTS_FILENAME)
+        self.embeddings_filepath: str = os.path.join(self.context.data_dir, EMBEDDINGS_FILENAME)
         
     @property
     def synchronized_data(self) -> SynchronizedData:
@@ -136,6 +142,39 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
     def hash_stored_documents(self) -> str:
         """Get the hash of the stored documents' file."""
         return IPFSHashOnly.hash_file(self.documents_filepath)
+    
+    def store_embeddings(self) -> None:
+        """Store the embeddings to the agent's data dir as Parquet."""
+        if self.embeddings.empty:
+            self.context.logger.warning("No embeddings to store.")
+            return
+
+        try:
+            self.embeddings.to_parquet(self.embeddings_filepath)
+            return
+        except Exception as e:
+            err = f"Error writing to file {self.embeddings_filepath!r}: {e}"
+            self.context.logger.error(err)
+
+    def read_embeddings(self) -> None:
+        """Read the embeddings from the agent's data dir as Parquet."""
+        if not os.path.isfile(self.embeddings_filepath):
+            self.context.logger.warning(
+                f"No stored embeddings file was detected in {self.embeddings_filepath}. Assuming embeddings are empty."
+            )
+            return
+
+        try:
+            self.embeddings = pd.read_parquet(self.embeddings_filepath)
+            return
+        except Exception as e:
+            err = f"Error reading file {self.embeddings_filepath!r}: {e}"
+            self.context.logger.error(err)
+
+
+    def hash_stored_embeddings(self) -> str:
+        """Get the hash of the stored embeddings' file."""
+        return IPFSHashOnly.hash_file(self.embeddings_filepath)
     
 
 class UpdateDocumentsBehaviour(DocumentsManagerBaseBehaviour):

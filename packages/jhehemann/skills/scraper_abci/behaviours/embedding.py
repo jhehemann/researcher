@@ -20,6 +20,7 @@
 """This module contains the behaviour for getting links from a embedding."""
 
 import json
+import pandas as pd
 import os.path
 from string import Template
 from typing import Any, Generator, Optional, Type, Iterator, List, Set, Tuple
@@ -101,25 +102,52 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         self.embedding_response_api.reset_retries()
         return res
 
+    def postprocess_results(self) -> None:
+        """Add new embeddings to the existing DataFrame and link them to text chunks in sampled document."""
+        
+        embeddings = [embedding.get('embedding') for embedding in self._embedding_response.data]
+        self.context.logger.info(f"Number of embeddings: {len(embeddings)}")
+        text_chunks = self.sampled_doc.text_chunks
+        if len(embeddings) != len(text_chunks):
+            self.context.logger.error("The number of embeddings and text chunks do not match.")
+            return
+        
+        if not embeddings or not text_chunks:
+            self.context.logger.warning("No new embeddings or text chunks to add.")
+            return
+
+        # Create the columns for the new embeddings        
+        embedding_columns = [f"dim{i+1}" for i in range(len(embeddings[0]))]
+        # Create dictionary combining embeddings and text chunks
+        data = {col: [emb[i] for emb in embeddings] for i, col in enumerate(embedding_columns)}
+        data['text_chunk'] = text_chunks
+        # Create the DataFrame
+        embeddings_df = pd.DataFrame(data)
+                
+        self.context.logger.info(f"Previous Embeddings DF: {self.embeddings}")
+        self.context.logger.info(f"New Embeddings DF: {embeddings_df}")
+        # Concatenate the new embeddings with the existing ones
+        self.embeddings = pd.concat([self.embeddings, embeddings_df], ignore_index=True)
+        self.context.logger.info(f"Added {len(embeddings)} new embeddings.")
+
+        self.context.logger.info(f"Updated embeddings DF: {self.embeddings}")
+        
 
     def _get_embeddings(self) -> WaitableConditionType:
         """Get the response data from embedding."""
         self.set_embedding_response_specs()
 
-        chunks = self.sampled_doc.text_chunks
-        self.context.logger.info(f"Text chunks: {chunks}")
-        self.context.logger.info(f"Chunks data type: {type(chunks)}")
-        model = "text-embedding-3-small"
         specs = self.embedding_response_api.get_spec()
-        self.context.logger.info(f"Specs: {specs}")
-        
+        chunks = self.sampled_doc.text_chunks
+        model = "text-embedding-3-small"
+
         res_raw = yield from self.get_http_response(
             content=to_content(chunks, model),
             **specs
         )  
         res = self.embedding_response_api.process_response(res_raw)
         res = self._handle_response(res)
-        self.context.logger.info(f"Response: {res}")
+        # self.context.logger.info(f"Response: {res}")
 
         if self.embedding_response_api.is_retries_exceeded():
             error = "Retries were exceeded while trying to get the embeddings's response."
@@ -136,45 +164,25 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
 
         return True
 
-    def _update_sampled_doc(self) -> Generator:
+
+    def get_payload_content(self) -> Generator:
         """Update the sampled document with embeddings."""
 
         yield from self.wait_for_condition_with_sleep(self._get_embeddings)
-
-        embedding_response_items = self._embedding_response.data
-        # print the first 100 and the last 100 characters with ... in between for each item in embedding_response.data in pretty format
-        
-        
-        
-        exit()
-
-        if search_response_items is not None:
-            initial_docs_count = len(self.documents)
-            documents_updates = (
-                Document(url=doc['link'], title=doc['title'])
-                for doc in search_response_items
-                if doc.get("link", "") not in existing_urls
-            )
-            self.documents.extend(documents_updates)
-            
-            docs_updated = len(self.documents) > initial_docs_count
-            if not docs_updated:
-                self.context.logger.warning(f"No new documents were added to the list.")
-                return
-            
-        self.context.logger.info(f"Updated documents: {self.documents}")
+        self.postprocess_results()
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
+            self.read_embeddings()
             self.read_documents()
             sender = self.context.agent_address
-            yield from self._update_sampled_doc()
-            self.store_documents()
-            documents_hash = self.hash_stored_documents()
-            self.context.logger.info(f"Documents hash: {documents_hash}")
-            payload = EmbeddingPayload(sender=sender, content=documents_hash)
+            yield from self.get_payload_content()
+            self.store_embeddings()
+            embeddings_hash = self.hash_stored_embeddings()
+            self.context.logger.info(f"Embeddings hash: {embeddings_hash}")
+            payload = EmbeddingPayload(sender=sender, embeddings_hash=embeddings_hash)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

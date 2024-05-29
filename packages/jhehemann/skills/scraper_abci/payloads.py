@@ -53,6 +53,8 @@ class ProcessHtmlPayload(UpdateDocumentsPayload):
 
 
 @dataclass(frozen=True)
-class EmbeddingPayload(UpdateDocumentsPayload):
+class EmbeddingPayload(BaseTxPayload):
     """Represent a transaction payload for the EmbeddingRound."""
+
+    embeddings_hash: str
 

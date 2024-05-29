@@ -75,9 +75,7 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         sampled_doc = self.documents[sampled_doc_index]
         sampled_doc.content = text
         sampled_doc.text_chunks = text_chunks
-        self.context.logger.info(f"Updated documents: {self.documents}")
-        
-        # return self._process_html_response
+        self.context.logger.info(f"Text chunks: {sampled_doc.text_chunks}")
  
     
     def get_payload_content(self) -> str:

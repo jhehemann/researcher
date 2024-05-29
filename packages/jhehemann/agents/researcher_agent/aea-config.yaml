@@ -31,9 +31,9 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihat4giyc4bz6zopvahcj4iw53356pbtwfn7p4d5yflwly2qhahum
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeid4tnylup5y6ixuwyd62nu7q4te6acf3xxjsmwn37gzth4jcgdd5m
-- jhehemann/scraper_abci:0.1.0:bafybeigyjy4lcapokven57unj27vkx3coz3if52gixie344fc27lskcq2e
-- jhehemann/researcher_abci:0.1.0:bafybeiaoaulv3jywu2emi54o6dvtbm5eim5chlx5ofes3prqylnujtpzwy
+- jhehemann/documents_manager_abci:0.1.0:bafybeifdwgygtyzslri6eqlqdaff4f24coawkagp4teny4ogixsbaiwyf4
+- jhehemann/scraper_abci:0.1.0:bafybeicrtzbo6htzbtdu2dmeu75xu2m5abnarhmqxe5jggn7ktjddaajvi
+- jhehemann/researcher_abci:0.1.0:bafybeihoi5bfz5hlomgvyy5mit3b5i7a73c7i3bpbcdhamtisf5d6o6a4y
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
@@ -76,6 +76,12 @@ dependencies:
     version: ==0.12.1
   beautifulsoup4:
     version: ==4.12.3
+  numpy:
+    version: ==1.26.4
+  pandas:
+    version: ==2.2.2
+  pyarrow:
+    version: ==16.1.0
 default_connection: null
 ---
 public_id: valory/abci:0.1.0
