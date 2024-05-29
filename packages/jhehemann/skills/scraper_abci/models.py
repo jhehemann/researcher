@@ -57,6 +57,7 @@ class ScraperParams(BaseParams):
         self.api_keys: Dict = self._nested_list_todict_workaround(
             kwargs, "api_keys_json"
         )
+        self._ipfs_address: str = self._ensure("ipfs_address", kwargs, str)
 
         self.input_query = kwargs.get("input_query", None)
         enforce(self.input_query is not None, "input_query must be set!")
@@ -78,6 +79,13 @@ class ScraperParams(BaseParams):
         self.request_id_to_num_timeouts: Dict[int, int] = defaultdict(lambda: 0)
         #self.mech_to_config: Dict[str, MechConfig] = self._parse_mech_configs(kwargs)
         super().__init__(*args, **kwargs)
+
+    @property
+    def ipfs_address(self) -> str:
+        """Get the IPFS address."""
+        if self._ipfs_address.endswith("/"):
+            return self._ipfs_address
+        return f"{self._ipfs_address}/"
 
     def _nested_list_todict_workaround(
         self,

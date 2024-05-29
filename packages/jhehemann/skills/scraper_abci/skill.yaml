@@ -10,12 +10,13 @@ fingerprint:
   behaviours/base.py: bafybeif6bwgqdlyd3ynpxiudwdl4jsyhzxranvunjw7bn7dfrr72yofasu
   behaviours/embedding.py: bafybeiagtbezw3gi5bkausqw52vv5xsdiduqwsanhbvg5wrw74hwpnhw6e
   behaviours/process_html.py: bafybeigmsarc33tecrfa3svwwvuqtljpogwiayps4mcknqka73qwmqlhs4
+  behaviours/publish.py: bafybeigjmi5tlvtfpl7zghoblfyo6g7ok7xu53n54exaai476bdbrar6p4
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeidoz222wbe6owv4faeoahpfo2nzywbedskpkuyf2hc2vkxc3q7uzq
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   fsm_specification.yaml: bafybeiddfy3dppb4uv2m57mtxqlyqeoy2vvgrmzmslc6txcguhbavukpxq
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeichjk7xzazkx2tasi3ohnoeefuiudyngmomgxwh5ll47h6iy3bj5i
+  models.py: bafybeic3p7qiydq3cxi7vy5omug3jryvdtv52ijrjsi37sfubpcstnfh74
   payloads.py: bafybeiepfnpq2enyjjph35vnt7zkn3zovues57n5bj7mni6cvxyr3t4b2a
   round_behaviour.py: bafybeichvgogmwxdj5ojsnzvbs5jdlzuunwitqcflyv7hdyxscsembqsim
   rounds.py: bafybeie5zcvyiiiksazb2dw4bs37bfdsia2dxdfun6ddizsj47uenunvyu
@@ -141,6 +142,7 @@ models:
       light_slash_unit_amount: 5000000000000000
       serious_slash_unit_amount: 8000000000000000
       service_endpoint_base: https://demo.staging.autonolas.tech/
+      ipfs_address: https://gateway.autonolas.tech/ipfs/
     class_name: ScraperParams
   search_engine_response:
     args:
