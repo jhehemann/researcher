@@ -23,6 +23,9 @@ from abc import ABC
 from datetime import datetime, timedelta
 from typing import Any, Callable, Generator, Optional, Set, Type, cast
 
+import multibase
+import multicodec
+
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
     BaseBehaviour,
@@ -64,6 +67,16 @@ class ScraperBaseBehaviour(DocumentsManagerBaseBehaviour, ABC):  # pylint: disab
         self.read_documents()
         return self.documents[self.synchronized_data.sampled_doc_index]
     
+    @staticmethod
+    def to_multihash(hash_string: str) -> str:
+        """To multihash string."""
+        # Decode the Base32 CID to bytes
+        cid_bytes = multibase.decode(hash_string)
+        # Remove the multicodec prefix (0x01) from the bytes
+        multihash_bytes = multicodec.remove_prefix(cid_bytes)
+        # Convert the multihash bytes to a hexadecimal string
+        hex_multihash = multihash_bytes.hex()
+        return hex_multihash[6:]
         
     def wait_for_condition_with_sleep(
         self,

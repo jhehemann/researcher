@@ -15,6 +15,8 @@ start_states:
 states:
 - CheckDocumentsRound
 - EmbeddingRound
+- ProcessHtmlRound
+- PublishRound
 - RegistrationRound
 - RegistrationStartupRound
 - ResetAndPauseRound
@@ -27,12 +29,15 @@ transition_func:
     (CheckDocumentsRound, TO_UPDATE): SearchEngineRound
     (CheckDocumentsRound, NO_MAJORITY): CheckDocumentsRound
     (CheckDocumentsRound, ROUND_TIMEOUT): CheckDocumentsRound
-    (EmbeddingRound, DONE): ResetAndPauseRound
+    (EmbeddingRound, DONE): PublishRound
     (EmbeddingRound, NO_MAJORITY): EmbeddingRound
     (EmbeddingRound, ROUND_TIMEOUT): EmbeddingRound
     (ProcessHtmlRound, DONE): EmbeddingRound
     (ProcessHtmlRound, NO_MAJORITY): ProcessHtmlRound
     (ProcessHtmlRound, ROUND_TIMEOUT): ProcessHtmlRound
+    (PublishRound, DONE): ResetAndPauseRound
+    (PublishRound, NO_MAJORITY): PublishRound
+    (PublishRound, ROUND_TIMEOUT): PublishRound
     (RegistrationRound, DONE): CheckDocumentsRound
     (RegistrationRound, NO_MAJORITY): RegistrationRound
     (RegistrationStartupRound, DONE): CheckDocumentsRound

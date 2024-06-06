@@ -21,6 +21,8 @@
 
 import os
 import json
+from pathlib import Path
+from tempfile import mkdtemp
 import numpy as np
 import pandas as pd
 from abc import ABC
@@ -51,7 +53,7 @@ from aea.helpers.ipfs.base import IPFSHashOnly
 
 UNIX_DAY = 60 * 60 * 24
 DOCUMENTS_FILENAME = "documents.json"
-EMBEDDINGS_FILENAME = "embeddings.parquet"
+EMBEDDINGS_FILENAME = "embeddings.json"
 READ_MODE = "r"
 WRITE_MODE = "w"
 
@@ -84,6 +86,11 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
     #     """Return the state."""
     #     return cast(SharedState, self.context.state)
 
+    # @property
+    # def embeddings_filepath(self) -> str:
+    #     """Get the filepath to the metadata."""
+    #     return str(Path(mkdtemp()) / EMBEDDINGS_FILENAME)
+    
     @property
     def unprocessed_documents(self) -> Iterator[Document]:
         """Get an iterator of the unprocessed documents."""

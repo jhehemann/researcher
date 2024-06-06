@@ -102,7 +102,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         self.embedding_response_api.reset_retries()
         return res
 
-    def postprocess_results(self) -> None:
+    def update_embeddings(self) -> None:
         """Add new embeddings to the existing DataFrame and link them to text chunks in sampled document."""
         
         embeddings = [embedding.get('embedding') for embedding in self._embedding_response.data]
@@ -165,11 +165,11 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         return True
 
 
-    def get_payload_content(self) -> Generator:
-        """Update the sampled document with embeddings."""
+    # def get_payload_content(self) -> Generator:
+    #     """Update the sampled document with embeddings."""
 
-        yield from self.wait_for_condition_with_sleep(self._get_embeddings)
-        self.postprocess_results()
+    #     yield from self.wait_for_condition_with_sleep(self._get_embeddings)
+    #     self.update_embeddings()
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
@@ -177,11 +177,13 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             self.read_embeddings()
             self.read_documents()
-            sender = self.context.agent_address
-            yield from self.get_payload_content()
+            yield from self.wait_for_condition_with_sleep(self._get_embeddings)
+            self.update_embeddings()
             self.store_embeddings()
             embeddings_hash = self.hash_stored_embeddings()
             self.context.logger.info(f"Embeddings hash: {embeddings_hash}")
+
+            sender = self.context.agent_address
             payload = EmbeddingPayload(sender=sender, embeddings_hash=embeddings_hash)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():

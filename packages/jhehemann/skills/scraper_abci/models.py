@@ -32,11 +32,13 @@ from packages.valory.skills.abstract_round_abci.models import Requests as BaseRe
 from packages.valory.skills.abstract_round_abci.models import (
     SharedState as BaseSharedState,
 )
+from packages.valory.skills.abstract_round_abci.models import TypeCheckMixin
 from collections import defaultdict
 from typing import Any, Callable, Dict, List, Optional, cast
 
 from aea.exceptions import enforce
 from aea.skills.base import Model
+
 
 class SharedState(BaseSharedState):
     """Keep the current shared state of the skill."""
@@ -46,7 +48,14 @@ class SharedState(BaseSharedState):
 
 Requests = BaseRequests
 BenchmarkTool = BaseBenchmarkTool
-#Params = BaseParams
+
+
+@dataclass
+class MutableParams(TypeCheckMixin):
+    """Collection for the mutable parameters."""
+
+    latest_metadata_hash: Optional[bytes] = None
+
 
 class ScraperParams(BaseParams):
     """A model to represent params for multiple abci apps."""
@@ -78,6 +87,9 @@ class ScraperParams(BaseParams):
         # maps the request id to the number of times it has timed out
         self.request_id_to_num_timeouts: Dict[int, int] = defaultdict(lambda: 0)
         #self.mech_to_config: Dict[str, MechConfig] = self._parse_mech_configs(kwargs)
+
+        self.publish_mutable_params = MutableParams()
+
         super().__init__(*args, **kwargs)
 
     @property
@@ -129,7 +141,7 @@ class WebScrapeInteractionResponse:
 
 @dataclass(init=False)
 class EmbeddingInteractionResponse:
-    """A structure for the response of a search engine interaction task."""
+    """A structure for the response of an embedding model interaction task."""
 
     object: str
     data: list
