@@ -85,21 +85,25 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         # latest_hash = cast(bytes, contract_api_msg.state.body["data"])
 
 
-        return self.params.publish_mutable_params.latest_metadata_hash
+        return self.params.publish_mutable_params.latest_embeddings_hash
 
     def _should_update_hash(self) -> Generator:
         """Check if the agent should update the hash."""
-        if self.params.publish_mutable_params.latest_metadata_hash is None:
+        if self.params.publish_mutable_params.latest_embeddings_hash is None:
             latest_hash = self.synchronized_data.embeddings_hash
             if latest_hash is None:
                 self.context.logger.warning(
                     "Could not get latest hash. Don't update the metadata."
                 )
                 return False
-            self.params.publish_mutable_params.latest_metadata_hash = latest_hash
+            #self.params.publish_mutable_params.latest_embeddings_hash = latest_hash
 
-        configured_hash = self.to_multihash(self.synchronized_data.embeddings_hash)
-        latest_hash = self.params.publish_mutable_params.latest_metadata_hash
+        # configured_hash = self.to_multihash(self.synchronized_data.embeddings_hash)
+        configured_hash = self.synchronized_data.embeddings_hash
+        self.context.logger.info(f"Configured hash (From synced data): {configured_hash}")
+        latest_hash = self.params.publish_mutable_params.latest_embeddings_hash
+        self.context.logger.info(f"Latest hash (publish_mutable_params): {latest_hash}")
+        self.context.logger.info(f"Should update hash: {configured_hash != latest_hash}")
         return configured_hash != latest_hash
 
     def _handle_response(
@@ -138,6 +142,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         # v1_file_hash_hex = self.to_multihash(to_v1(ipfs_hash))
 
         v1_file_hash = to_v1(ipfs_hash)
+        self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
@@ -158,10 +163,9 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
     def get_payload_content(self) -> Generator:
         """Extract html text from website"""
         self.read_embeddings()
-        should_update_hash = self._should_update_hash()
-        if not should_update_hash:
-            return None
-        
+        # should_update_hash = self._should_update_hash()
+        # if not should_update_hash:
+        #     return None
         
         ipfs_link = yield from self._send_embeddings_to_ipfs()
         

@@ -54,7 +54,7 @@ BenchmarkTool = BaseBenchmarkTool
 class MutableParams(TypeCheckMixin):
     """Collection for the mutable parameters."""
 
-    latest_metadata_hash: Optional[bytes] = None
+    latest_embeddings_hash: Optional[bytes] = None
 
 
 class ScraperParams(BaseParams):

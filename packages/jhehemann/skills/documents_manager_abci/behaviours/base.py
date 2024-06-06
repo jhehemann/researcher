@@ -53,7 +53,7 @@ from aea.helpers.ipfs.base import IPFSHashOnly
 
 UNIX_DAY = 60 * 60 * 24
 DOCUMENTS_FILENAME = "documents.json"
-EMBEDDINGS_FILENAME = "embeddings.json"
+EMBEDDINGS_FILENAME = "embeddings.parquet"
 READ_MODE = "r"
 WRITE_MODE = "w"
 
@@ -181,6 +181,11 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
 
     def hash_stored_embeddings(self) -> str:
         """Get the hash of the stored embeddings' file."""
+        if not os.path.isfile(self.embeddings_filepath):
+            self.context.logger.warning(
+                f"No stored embeddings file was detected in {self.embeddings_filepath}. Assuming embeddings are empty."
+            )
+            return ""
         return IPFSHashOnly.hash_file(self.embeddings_filepath)
     
 

@@ -164,6 +164,17 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
 
         return True
 
+    # def embeddings_updated(self) -> bool:
+    #     json_data = self.embeddings.to_dict(orient='records')
+    #     self.hash_stored_embeddings()
+
+
+    #     if ipfs_hash is None:
+    #         return None
+        
+    #     # v1_file_hash_hex = self.to_multihash(to_v1(ipfs_hash))
+
+    #     v1_file_hash = to_v1(ipfs_hash)
 
     # def get_payload_content(self) -> Generator:
     #     """Update the sampled document with embeddings."""
@@ -175,13 +186,19 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
+            embeddings_hash_prev = self.hash_stored_embeddings()
             self.read_embeddings()
             self.read_documents()
             yield from self.wait_for_condition_with_sleep(self._get_embeddings)
             self.update_embeddings()
             self.store_embeddings()
-            embeddings_hash = self.hash_stored_embeddings()
-            self.context.logger.info(f"Embeddings hash: {embeddings_hash}")
+            embeddings_hash_post = self.hash_stored_embeddings()
+            if embeddings_hash_prev == embeddings_hash_post:
+                self.context.logger.info("No new embeddings were added.")
+                embeddings_hash = None
+            else:
+                self.context.logger.info(f"Updated embeddings hash: {embeddings_hash_post}")
+                embeddings_hash = embeddings_hash_post            
 
             sender = self.context.agent_address
             payload = EmbeddingPayload(sender=sender, embeddings_hash=embeddings_hash)
