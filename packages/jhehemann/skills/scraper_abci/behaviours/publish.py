@@ -34,8 +34,11 @@ from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBe
 # from packages.jhehemann.skills.scraper_abci.models import PublishInteractionResponse
 from packages.jhehemann.skills.scraper_abci.payloads import PublishPayload
 from packages.jhehemann.skills.scraper_abci.rounds import PublishRound
+from packages.jhehemann.skills.scraper_abci.rounds import ValidateEmbeddingsHashRound
+from packages.jhehemann.skills.scraper_abci.payloads import ValidateEmbeddingsHashPayload
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.valory.skills.abstract_round_abci.io_.store import SupportedFiletype
+
 
 V1_HEX_PREFIX = "f01"
 Ox = "0x"
@@ -62,30 +65,30 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
     #     self.web_scrape_response_api.url = url
     #     self.web_scrape_response_api.__dict__["_frozen"] = True
 
-    def _get_latest_hash(self) -> str:
-        """Get latest update hash."""
-        ## Right now only stored locally by agents - No access across runs
-        ## Should be stored in smart contract later and dynamically loaded 
+    # def _get_latest_hash(self) -> str:
+    #     """Get latest update hash."""
+    #     ## Right now only stored locally by agents - No access across runs
+    #     ## Should be stored in smart contract later and dynamically loaded 
         
-        # contract_api_msg = yield from self.get_contract_api_response(
-        #     performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
-        #     contract_address=self.params.agent_registry_address,
-        #     contract_id=str(AgentRegistryContract.contract_id),
-        #     contract_callable="get_token_hash",
-        #     token_id=self.params.agent_id,
-        # )
-        # if (
-        #     contract_api_msg.performative != ContractApiMessage.Performative.STATE
-        # ):  # pragma: nocover
-        #     self.context.logger.warning(
-        #         f"get_token_hash unsuccessful!: {contract_api_msg}"
-        #     )
-        #     return None
+    #     # contract_api_msg = yield from self.get_contract_api_response(
+    #     #     performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
+    #     #     contract_address=self.params.agent_registry_address,
+    #     #     contract_id=str(AgentRegistryContract.contract_id),
+    #     #     contract_callable="get_token_hash",
+    #     #     token_id=self.params.agent_id,
+    #     # )
+    #     # if (
+    #     #     contract_api_msg.performative != ContractApiMessage.Performative.STATE
+    #     # ):  # pragma: nocover
+    #     #     self.context.logger.warning(
+    #     #         f"get_token_hash unsuccessful!: {contract_api_msg}"
+    #     #     )
+    #     #     return None
 
-        # latest_hash = cast(bytes, contract_api_msg.state.body["data"])
+    #     # latest_hash = cast(bytes, contract_api_msg.state.body["data"])
 
 
-        return self.params.publish_mutable_params.latest_embeddings_hash
+    #     return self.params.publish_mutable_params.latest_embeddings_hash
 
     def _should_update_hash(self) -> Generator:
         """Check if the agent should update the hash."""
@@ -176,7 +179,36 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
             payload_content = yield from self.get_payload_content()
-            payload = PublishPayload(sender=sender, embeddings_ipfs_hash=payload_content)
+            self.context.logger.info(f"Payload content: {payload_content}")
+            payload = PublishPayload(sender=sender, content=payload_content)
+
+        with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
+            yield from self.send_a2a_transaction(payload)
+            yield from self.wait_until_round_end()
+
+        self.set_done()
+
+
+class ValidateEmbeddingsHashBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
+    """Behaviour to request URLs from embedding"""
+
+    matching_round: Type[AbstractRound] = ValidateEmbeddingsHashRound   
+
+    def __init__(self, **kwargs: Any) -> None:
+        """Initialize behaviour."""
+        super().__init__(**kwargs)
+
+    def async_act(self) -> Generator:
+        """Do the act, supporting asynchronous execution."""
+
+        with self.context.benchmark_tool.measure(self.behaviour_id).local():
+            payload_content = self.synchronized_data.embeddings_ipfs_hash
+            self.context.logger.info(f"consensus ipfs hash: {payload_content}")
+            self.params.publish_mutable_params.latest_embeddings_hash = payload_content
+
+            self.context.logger.info(f"Latest embeddings hash (Final Payload Validate Embeddings): {self.params.publish_mutable_params.latest_embeddings_hash}")
+            sender = self.context.agent_address
+            payload = ValidateEmbeddingsHashPayload(sender=sender, content=payload_content)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

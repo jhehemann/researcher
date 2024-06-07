@@ -56,11 +56,18 @@ class ProcessHtmlPayload(UpdateDocumentsPayload):
 class EmbeddingPayload(BaseTxPayload):
     """Represent a transaction payload for the EmbeddingRound."""
 
-    embeddings_hash: str
+    content: str
 
 
 @dataclass(frozen=True)
 class PublishPayload(BaseTxPayload):
     """Represent a transaction payload for the EmbeddingRound."""
 
-    embeddings_ipfs_hash: str
+    content: str
+
+@dataclass(frozen=True)
+class ValidateEmbeddingsHashPayload(BaseTxPayload):
+    """Represent a transaction payload for the ValidateEmbeddingsHashRound."""
+
+    content: str
+

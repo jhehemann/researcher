@@ -23,6 +23,7 @@ states:
 - SamplingRound
 - SearchEngineRound
 - WebScrapeRound
+- ValidateEmbeddingsHashRound
 transition_func:
     (CheckDocumentsRound, DONE): CheckDocumentsRound
     (CheckDocumentsRound, NO_UPDATES): SamplingRound
@@ -35,7 +36,7 @@ transition_func:
     (ProcessHtmlRound, DONE): EmbeddingRound
     (ProcessHtmlRound, NO_MAJORITY): ProcessHtmlRound
     (ProcessHtmlRound, ROUND_TIMEOUT): ProcessHtmlRound
-    (PublishRound, DONE): ResetAndPauseRound
+    (PublishRound, DONE): ValidateEmbeddingsHashRound
     (PublishRound, NO_MAJORITY): PublishRound
     (PublishRound, ROUND_TIMEOUT): PublishRound
     (RegistrationRound, DONE): CheckDocumentsRound
@@ -54,4 +55,7 @@ transition_func:
     (WebScrapeRound, DONE): ProcessHtmlRound
     (WebScrapeRound, NO_MAJORITY): WebScrapeRound
     (WebScrapeRound, ROUND_TIMEOUT): WebScrapeRound
+    (ValidateEmbeddingsHashRound, DONE): ResetAndPauseRound
+    (ValidateEmbeddingsHashRound, NO_MAJORITY): ValidateEmbeddingsHashRound
+    (ValidateEmbeddingsHashRound, ROUND_TIMEOUT): ValidateEmbeddingsHashRound
 

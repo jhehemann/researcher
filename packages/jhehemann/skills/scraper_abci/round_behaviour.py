@@ -25,7 +25,10 @@ from packages.jhehemann.skills.scraper_abci.behaviours.sampling import SamplingB
 from packages.jhehemann.skills.scraper_abci.behaviours.process_html import ProcessHtmlBehaviour
 from packages.jhehemann.skills.scraper_abci.behaviours.web_scrape import WebScrapeBehaviour
 from packages.jhehemann.skills.scraper_abci.behaviours.embedding import EmbeddingBehaviour
-from packages.jhehemann.skills.scraper_abci.behaviours.publish import PublishBehaviour
+from packages.jhehemann.skills.scraper_abci.behaviours.publish import (
+    PublishBehaviour,
+    ValidateEmbeddingsHashBehaviour,
+)
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
     BaseBehaviour,
@@ -44,4 +47,5 @@ class ScraperRoundBehaviour(AbstractRoundBehaviour):
         ProcessHtmlBehaviour,
         EmbeddingBehaviour,
         PublishBehaviour,
+        ValidateEmbeddingsHashBehaviour,
     ]

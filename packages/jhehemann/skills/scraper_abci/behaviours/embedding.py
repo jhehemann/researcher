@@ -41,7 +41,7 @@ from packages.jhehemann.skills.documents_manager_abci.documents import (
     DocumentStatus,
 )
 
-IPFSFILENAME = "embeddings.json"
+# IPFSFILENAME = "embeddings.parquet"
 
 def to_content(input: list, model: str) -> bytes:
     """Convert the given query string to payload content, i.e., add it under a `queries` key and convert it to bytes."""
@@ -173,9 +173,8 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
 
     def load_latest_embeddings(self) -> Generator:
         """Get the latest embeddings from IPFS."""
-        self.params.publish_mutable_params.latest_embeddings_hash = self.synchronized_data.embeddings_ipfs_hash
         ipfs_hash = self.params.publish_mutable_params.latest_embeddings_hash
-        self.context.logger.info(f"Latest embeddings hash (from synced data prev period): {self.params.publish_mutable_params.latest_embeddings_hash}")
+        self.context.logger.info(f"Latest embeddings hash (from publish_mutable_params): {ipfs_hash}")
         if ipfs_hash is None:
             self.context.logger.warning(
                 "No embeddings hash found. Assuming no embeddings are stored on IPFS."
@@ -187,6 +186,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         embeddings_json = yield from self.get_from_ipfs(
             ipfs_hash, filetype=SupportedFiletype.JSON
         )
+        self.context.logger.info(f"Retrieved raw IPFS embeddings json: {embeddings_json}")
         if embeddings_json is None:
             self.context.logger.warning(
                 f"Could not get embeddings from IPFS: {ipfs_hash}"
@@ -196,25 +196,6 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         embeddings = pd.read_json(embeddings_json)
         self.context.logger.info(f"Downloaded Embeddings: {embeddings}")
         self.embeddings = embeddings
-
-
-    # def embeddings_updated(self) -> bool:
-    #     json_data = self.embeddings.to_dict(orient='records')
-    #     self.hash_stored_embeddings()
-
-
-    #     if ipfs_hash is None:
-    #         return None
-        
-    #     # v1_file_hash_hex = self.to_multihash(to_v1(ipfs_hash))
-
-    #     v1_file_hash = to_v1(ipfs_hash)
-
-    # def get_payload_content(self) -> Generator:
-    #     """Update the sampled document with embeddings."""
-
-    #     yield from self.wait_for_condition_with_sleep(self._get_embeddings)
-    #     self.update_embeddings()
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
@@ -234,7 +215,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
                 self.context.logger.info("No new embeddings were added.")
 
             sender = self.context.agent_address
-            payload = EmbeddingPayload(sender=sender, embeddings_hash=embeddings_hash)
+            payload = EmbeddingPayload(sender=sender, content=embeddings_hash)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)
