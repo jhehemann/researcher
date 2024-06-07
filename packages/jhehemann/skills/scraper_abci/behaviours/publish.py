@@ -89,22 +89,10 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
     def _should_update_hash(self) -> Generator:
         """Check if the agent should update the hash."""
-        if self.params.publish_mutable_params.latest_embeddings_hash is None:
-            latest_hash = self.synchronized_data.embeddings_hash
-            if latest_hash is None:
-                self.context.logger.warning(
-                    "Could not get latest hash. Don't update the metadata."
-                )
-                return False
-            #self.params.publish_mutable_params.latest_embeddings_hash = latest_hash
-
-        # configured_hash = self.to_multihash(self.synchronized_data.embeddings_hash)
-        configured_hash = self.synchronized_data.embeddings_hash
-        self.context.logger.info(f"Configured hash (From synced data): {configured_hash}")
         latest_hash = self.params.publish_mutable_params.latest_embeddings_hash
-        self.context.logger.info(f"Latest hash (publish_mutable_params): {latest_hash}")
-        self.context.logger.info(f"Should update hash: {configured_hash != latest_hash}")
-        return configured_hash != latest_hash
+        new_hash = self.synchronized_data.embeddings_hash
+
+        return new_hash != latest_hash
 
     def _handle_response(
         self,
@@ -139,6 +127,8 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         if ipfs_hash is None:
             return None
         
+        self.context.logger.info(f"IPFS hash from upload: {ipfs_hash}")
+        
         # v1_file_hash_hex = self.to_multihash(to_v1(ipfs_hash))
 
         v1_file_hash = to_v1(ipfs_hash)
@@ -148,6 +138,8 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
 
+
+
         # v1_file_hash = to_v1(embeddings_hash_live)
         # cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
         # multihash_bytes = multicodec.remove_prefix(cid_bytes)
@@ -155,21 +147,28 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         
         # ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         
-        self.context.logger.info(f"Prompt uploaded: {ipfs_link}")
+        self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
         # mech_request_data = v1_file_hash_hex[9:]
         # self._v1_hex_truncated = Ox + mech_request_data
-        return ipfs_link
+        return v1_file_hash_hex
 
     def get_payload_content(self) -> Generator:
         """Extract html text from website"""
-        self.read_embeddings()
-        # should_update_hash = self._should_update_hash()
-        # if not should_update_hash:
-        #     return None
+        should_update_hash = self._should_update_hash()
+        if not should_update_hash:
+            return None
         
-        ipfs_link = yield from self._send_embeddings_to_ipfs()
+        embeddings_ipfs_hash = yield from self._send_embeddings_to_ipfs()
         
-        return ipfs_link
+        # self.read_embeddings()
+
+        # # should_update_hash = self._should_update_hash()
+        # # if not should_update_hash:
+        # #     return None
+        
+        # ipfs_link = yield from self._send_embeddings_to_ipfs()
+        
+        return embeddings_ipfs_hash
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
@@ -177,7 +176,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
             payload_content = yield from self.get_payload_content()
-            payload = PublishPayload(sender=sender, embeddings_ipfs_link=payload_content)
+            payload = PublishPayload(sender=sender, embeddings_ipfs_hash=payload_content)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

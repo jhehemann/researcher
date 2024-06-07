@@ -63,4 +63,4 @@ class EmbeddingPayload(BaseTxPayload):
 class PublishPayload(BaseTxPayload):
     """Represent a transaction payload for the EmbeddingRound."""
 
-    embeddings_ipfs_link: str
+    embeddings_ipfs_hash: str

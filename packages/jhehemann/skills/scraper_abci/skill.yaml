@@ -8,25 +8,25 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
   behaviours/base.py: bafybeifws3a76oeidd27rbo3cq3bbwye5fwln76dpx36whxcsocr36ig6e
-  behaviours/embedding.py: bafybeiar77hiqe24d2aitchwsdtpihj3yvacg4kxcmyx2n436zswbrn4tu
+  behaviours/embedding.py: bafybeiekdrxed7dpzfdj2pda7bzoltdrbg524p5tot3cx4fvvsx3mld7bu
   behaviours/process_html.py: bafybeigmsarc33tecrfa3svwwvuqtljpogwiayps4mcknqka73qwmqlhs4
-  behaviours/publish.py: bafybeigaid3ypiposr3jyuadsvjgahy5n5a3wagse7bmrswkd7ceuychae
+  behaviours/publish.py: bafybeifwx7q3rpvqllukx4eifjy5gahhiabebhvfsikzkufzjibwmrbu2y
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeidoz222wbe6owv4faeoahpfo2nzywbedskpkuyf2hc2vkxc3q7uzq
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   fsm_specification.yaml: bafybeif7jdomdanrraube3kvuf375m5eqe5jpmr4djqq7g7w6wyvuznrpm
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
   models.py: bafybeibdti6x6syw32ifdaoqf65xhjnp4myina4x5spjchbldyqcmtuefm
-  payloads.py: bafybeieh2kmqgf5wvne4jbkosnwwoe3ndt2hp7g4apy43ksa6giylmzpve
+  payloads.py: bafybeicrarbzvmaxuwkip5mav3c33fqd3sehzsk5542qs6h3smaoo6cvdm
   round_behaviour.py: bafybeihgf7agmngkzstddwektywz4mbjzw7hviofqu7ltwahoum4d65iri
-  rounds.py: bafybeicfupxz5cnr2c6v3soqq4xqwbhnsumv4btmkonrsxxttifufzirm4
+  rounds.py: bafybeifvdecu6anp4ef4m63m43qeiloz6nxpcuo5v7x2uu5yijk5ohnwoy
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
 protocols: []
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeibjllr67btr5rldsqwa3j3ind63dbkudbvskyvu5egm62agbedc6m
+- jhehemann/documents_manager_abci:0.1.0:bafybeidctl3oxfbhidefvnwes7jx43odqrd42trkyxtigtxipni5vj2wrq
 behaviours:
   main:
     args: {}

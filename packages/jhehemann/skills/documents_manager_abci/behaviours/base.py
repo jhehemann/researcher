@@ -186,6 +186,7 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
                 f"No stored embeddings file was detected in {self.embeddings_filepath}. Assuming embeddings are empty."
             )
             return ""
+        self.context.logger.info(f"Hashing embeddings file: {self.embeddings_filepath}")
         return IPFSHashOnly.hash_file(self.embeddings_filepath)
     
 

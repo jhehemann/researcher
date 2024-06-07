@@ -91,5 +91,15 @@ docker container run -it valory/open-autonomy-user:latest
 
 ## Useful commands:
 
+Docker logs:
+```bash
+docker logs researcherservice_abci_0 --follow
+```
+State transitions:
+```bash
+poetry run autonomy analyse logs --from-dir researcher_service/abci_build/persistent_data/logs/ --agent aea_0 --fsm --reset-db
+```
+
+### Makefile
 Check out the `Makefile` for useful commands, e.g. `make formatters`, `make generators`, `make code-checks`, as well
 as `make common-checks-1`. To run tests use the `autonomy test` command. Run `autonomy test --help` for help about its usage.

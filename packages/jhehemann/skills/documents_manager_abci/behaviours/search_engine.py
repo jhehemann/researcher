@@ -70,7 +70,6 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
         self.search_engine_response_api.__dict__["_frozen"] = False
         self.search_engine_response_api.parameters = parameters
         self.search_engine_response_api.__dict__["_frozen"] = True
-        print(f"HEADERS: {self.search_engine_response_api.headers}")
 
     def _handle_response(
         self,

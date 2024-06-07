@@ -20,7 +20,7 @@
 """This package contains the rounds of ScraperAbciApp."""
 
 from enum import Enum
-from typing import Any, Dict, FrozenSet, Optional, Set
+from typing import Any, Dict, FrozenSet, Optional, Set, Tuple
 
 from packages.jhehemann.skills.scraper_abci.payloads import (
     SamplingPayload,
@@ -95,7 +95,7 @@ class SynchronizedData(DocumentsManagerSyncedData):
         return self.db.get("embeddings_hash", None)
     
     @property
-    def embeddings_ipfs_link(self) -> str:
+    def embeddings_ipfs_hash(self) -> str:
         """Get the embeddings ipfs link."""
         return self.db.get("embeddings_ipfs_link", None)
     
@@ -177,11 +177,15 @@ class PublishRound(CollectSameUntilThresholdRound):
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_publish_round)
-    selection_key = get_name(SynchronizedData.embeddings_ipfs_link)
+    selection_key = get_name(SynchronizedData.embeddings_ipfs_hash)
+
+# class ValidateEmbeddingsHashRound(DegenerateRound):
+#     """ValidateEmbeddingsHashRound"""
 
 
 class FinishedScraperRound(DegenerateRound):
     """FinishedScraperRound"""
+
 
 class FinishedWithoutScraping(DegenerateRound):
     """FinishedWithoutScraping"""
