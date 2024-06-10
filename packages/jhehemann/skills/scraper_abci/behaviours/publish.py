@@ -21,7 +21,7 @@
 
 
 
-from typing import Any, Generator, Optional, Type, cast
+from typing import Any, Generator, Optional, Type, List, Dict, cast
 from abc import ABC
 
 from aea.helpers.cid import to_v1
@@ -30,12 +30,14 @@ import multibase
 import multicodec
 
 # from packages.jhehemann.skills.scraper_abci.models import PublishResponseSpecs
+from packages.jhehemann.contracts.hash_checkpoint.contract import HashCheckpointContract
 from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour, WaitableConditionType
 # from packages.jhehemann.skills.scraper_abci.models import PublishInteractionResponse
 from packages.jhehemann.skills.scraper_abci.payloads import PublishPayload
 from packages.jhehemann.skills.scraper_abci.rounds import PublishRound
 from packages.jhehemann.skills.scraper_abci.rounds import ValidateEmbeddingsHashRound
 from packages.jhehemann.skills.scraper_abci.payloads import ValidateEmbeddingsHashPayload
+from packages.valory.protocols.contract_api.message import ContractApiMessage
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.valory.skills.abstract_round_abci.io_.store import SupportedFiletype
 
@@ -43,6 +45,10 @@ from packages.valory.skills.abstract_round_abci.io_.store import SupportedFilety
 V1_HEX_PREFIX = "f01"
 Ox = "0x"
 EMBEDDINGS_FILENAME = "embeddings.json"
+ZERO_ETHER_VALUE = 0
+ZERO_IPFS_HASH = (
+    "f017012200000000000000000000000000000000000000000000000000000000000000000"
+)
 
 class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
     """Behaviour to get content from web pages"""
@@ -129,15 +135,23 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         )
         if ipfs_hash is None:
             return None        
+        
+        to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
+        self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
 
-        v1_file_hash = to_v1(ipfs_hash)
-        cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
-        multihash_bytes = multicodec.remove_prefix(cid_bytes)
-        v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
-        self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
-        ipfs_link = self.params.ipfs_address + v1_file_hash_hex
-        self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
-        return v1_file_hash_hex
+        # v1_file_hash = to_v1(ipfs_hash)
+        # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
+        # cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
+        # self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
+        # multihash_bytes = multicodec.remove_prefix(cid_bytes)
+        # self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
+        # v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
+        # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
+        # ipfs_link = self.params.ipfs_address + v1_file_hash_hex
+        # self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
+
+
+        return to_multihash_to_v1
 
     def get_payload_content(self) -> Generator:
         """Extract html text from website"""
@@ -164,7 +178,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
         self.set_done()
 
-
 class ValidateEmbeddingsHashBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
     """Behaviour to request URLs from embedding"""
 
@@ -172,13 +185,56 @@ class ValidateEmbeddingsHashBehaviour(ScraperBaseBehaviour):  # pylint: disable=
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize behaviour."""
-        super().__init__(**kwargs)
+        super().__init__(**kwargs)    
+
+    
+    def _get_checkpoint_tx(
+        self,
+        hashcheckpoint_address: str,
+        ipfs_hash: str,
+    ) -> Generator[None, None, Optional[Dict[str, Any]]]:
+        """Get the transfer tx."""
+        contract_api_msg = yield from self.get_contract_api_response(
+            performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
+            contract_address=hashcheckpoint_address,
+            contract_id=str(HashCheckpointContract.contract_id),
+            contract_callable="get_checkpoint_data",
+            #data=bytes.fromhex("f02d773780ee38a64657f824472c7328ff389e845ff0f9d5c4585f955c8b2c4e"),
+            data=bytes.fromhex(ipfs_hash),
+        )
+        if (
+            contract_api_msg.performative != ContractApiMessage.Performative.STATE
+        ):  # pragma: nocover
+            self.context.logger.warning(
+                f"get_checkpoint_data unsuccessful!: {contract_api_msg}"
+            )
+            return None
+
+        self.context.logger.info(f"Retrieved the checkpoint data: {contract_api_msg}")
+
+        data = cast(bytes, contract_api_msg.state.body["data"])
+        return {
+            "to": hashcheckpoint_address,
+            "value": ZERO_ETHER_VALUE,
+            "data": data,
+        }
+    
+    def _get_payload_content(self) -> Generator:
+        all
+        hash_checkpoint_address = self.params.hash_checkpoint_address
+        ipfs_hash = self.synchronized_data.embeddings_ipfs_hash
+        update_checkpoint_tx = yield from self._get_checkpoint_tx(hash_checkpoint_address, ipfs_hash)
+        self.context.logger.info(f"Update checkpoint tx: {update_checkpoint_tx}")
+
+        return str(update_checkpoint_tx)
+
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
-            payload_content = self.synchronized_data.embeddings_ipfs_hash
+            payload_content = yield from self._get_payload_content()
+            
             self.context.logger.info(f"Updated latest IPFS embeddings hash: {payload_content}")
             self.params.publish_mutable_params.latest_embeddings_hash = payload_content
             sender = self.context.agent_address

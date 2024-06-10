@@ -67,6 +67,7 @@ class ScraperParams(BaseParams):
             kwargs, "api_keys_json"
         )
         self._ipfs_address: str = self._ensure("ipfs_address", kwargs, str)
+        self.hash_checkpoint_address: str = self._ensure("hash_checkpoint_address", kwargs, str)
 
         self.input_query = kwargs.get("input_query", None)
         enforce(self.input_query is not None, "input_query must be set!")

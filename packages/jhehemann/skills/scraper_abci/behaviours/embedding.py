@@ -25,10 +25,12 @@ from tempfile import mkdtemp
 import pandas as pd
 import os.path
 from string import Template
-from typing import Any, Generator, Optional, Type, Iterator, List, Set, Tuple
+from typing import Any, Dict, Generator, Optional, Type, Iterator, List, Set, Tuple, cast
 
 from aea.helpers.cid import CID, to_v1
 
+from packages.jhehemann.contracts.hash_checkpoint.contract import HashCheckpointContract
+from packages.valory.protocols.contract_api.message import ContractApiMessage
 from packages.valory.skills.abstract_round_abci.io_.store import SupportedFiletype
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import WaitableConditionType
 from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour
@@ -41,7 +43,10 @@ from packages.jhehemann.skills.documents_manager_abci.documents import (
     DocumentStatus,
 )
 
-# IPFSFILENAME = "embeddings.parquet"
+ZERO_ETHER_VALUE = 0
+ZERO_IPFS_HASH = (
+    "f017012200000000000000000000000000000000000000000000000000000000000000000"
+)
 
 def to_content(input: list, model: str) -> bytes:
     """Convert the given query string to payload content, i.e., add it under a `queries` key and convert it to bytes."""
@@ -108,6 +113,37 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         self.context.logger.info(f"Retrieved the embedding's response.")
         self.embedding_response_api.reset_retries()
         return res
+    
+    def _get_latest_hash(
+        self,
+    ) -> Generator[None, None, Optional[Dict[str, Any]]]:
+        """Get the latest IPFS embeddings hash from contract."""
+        self.context.logger.info(f"Performative: {ContractApiMessage.Performative.GET_STATE}")
+        self.context.logger.info(f"Contract Address: {self.params.hash_checkpoint_address}")
+        self.context.logger.info(f"Contract ID: {str(HashCheckpointContract.contract_id)}")
+        self.context.logger.info(f"Sender Address: {self.context.agent_address}")
+        self.context.logger.info(f"Default ledger id: {self.context.default_ledger_id}")
+
+        contract_api_msg = yield from self.get_contract_api_response(
+            performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
+            contract_address=self.params.hash_checkpoint_address,
+            contract_id=str(HashCheckpointContract.contract_id),
+            contract_callable="get_latest_hash",
+            sender_address=self.context.agent_address,
+        )
+        if contract_api_msg.performative != ContractApiMessage.Performative.STATE:
+            self.context.logger.warning(
+                f"get_latest_hash unsuccessful!: {contract_api_msg}"
+            )
+            return None
+        latest_ipfs_hash = cast(str, contract_api_msg.state.body["data"])
+        #self.context.logger.debug(f"Latest IPFS hash: {latest_ipfs_hash}")
+    
+        if latest_ipfs_hash == ZERO_IPFS_HASH:
+            return {}
+        # format the hash
+        ipfs_hash = str(CID.from_string(latest_ipfs_hash))
+        return ipfs_hash
 
     def update_embeddings(self) -> None:
         """Add new embeddings to the existing DataFrame and link them to text chunks in sampled document."""
@@ -173,7 +209,9 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
 
     def load_latest_embeddings(self) -> Generator:
         """Get the latest embeddings from IPFS."""
-        ipfs_hash = self.params.publish_mutable_params.latest_embeddings_hash
+        ipfs_hash = yield from self._get_latest_hash()
+        self.context.logger.info(f"Latest embeddings hash from contract: {ipfs_hash}")
+        #ipfs_hash = self.params.publish_mutable_params.latest_embeddings_hash
         self.context.logger.info(f"Latest embeddings hash: {ipfs_hash}")
         if ipfs_hash is None:
             self.context.logger.warning(
@@ -181,7 +219,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
             )
             return
 
-        ipfs_hash = str(CID.from_string(ipfs_hash))
+        #ipfs_hash = str(CID.from_string(ipfs_hash))
         self.context.logger.info(f"Getting embeddings from IPFS with cid hash: {ipfs_hash}")
         embeddings_json = yield from self.get_from_ipfs(
             ipfs_hash, filetype=SupportedFiletype.JSON

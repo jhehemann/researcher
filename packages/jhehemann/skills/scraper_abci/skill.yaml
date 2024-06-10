@@ -8,22 +8,24 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
   behaviours/base.py: bafybeifws3a76oeidd27rbo3cq3bbwye5fwln76dpx36whxcsocr36ig6e
-  behaviours/embedding.py: bafybeidksb74zpelcnnxlupsje7664zjcurdzj2wzwaoanqwm3eugis5ga
+  behaviours/embedding.py: bafybeignxyvegz2wrqxc7yoztfoxcibq7op5plr2y5y6ayup5d4dzwwmjm
   behaviours/process_html.py: bafybeigmsarc33tecrfa3svwwvuqtljpogwiayps4mcknqka73qwmqlhs4
-  behaviours/publish.py: bafybeic4pvp6gin4f3ozkv5eok77tzjhp27t3z52l7vml4kxaur72yfqse
+  behaviours/publish.py: bafybeibqhbcbgbc74uryu47ziaowsolhxn5avqsjzms64v32sjmkn6upvq
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeidoz222wbe6owv4faeoahpfo2nzywbedskpkuyf2hc2vkxc3q7uzq
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   fsm_specification.yaml: bafybeicutfuhzffjx5co474qng3ajxrj7x2l54sprtuzbzvzkzg6kacsvm
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeibdti6x6syw32ifdaoqf65xhjnp4myina4x5spjchbldyqcmtuefm
+  models.py: bafybeibyihgc7up7cyoucl4ljoiaocjkjoyfzcsab6hf2eeic3ecng5bqm
   payloads.py: bafybeigbg34qxk2ay3ld3g5gecwfcfxbj6kaf3gibrh7pebpeff3hj25yy
   round_behaviour.py: bafybeieew3jbw3l4h3gdq6e7egbyzrgxpjphla5f7szcebc5dpihpilcla
   rounds.py: bafybeif6ylowqfho66ivzyqti3pblqp44at4xihtte35tc3urjjxmu6n6u
 fingerprint_ignore_patterns: []
 connections: []
-contracts: []
-protocols: []
+contracts:
+- jhehemann/hash_checkpoint:0.1.0:bafybeifgecefjud6szawvrz2asazonb3qa4bmsutpfzch56ylovse6csqu
+protocols:
+- valory/contract_api:1.0.0:bafybeidgu7o5llh26xp3u3ebq3yluull5lupiyeu6iooi2xyymdrgnzq5i
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
 - jhehemann/documents_manager_abci:0.1.0:bafybeiba7eovhf27ww5nt6g4qqwaycn3ufvsknzg6v7ajjzqyepj7ryrla
@@ -114,6 +116,7 @@ models:
       round_timeout_seconds: 30.0
       service_id: researcher
       service_registry_address: null
+      hash_checkpoint_address: '0x0000000000000000000000000000000000000000'
       setup:
         all_participants:
         - '0x0000000000000000000000000000000000000000'
