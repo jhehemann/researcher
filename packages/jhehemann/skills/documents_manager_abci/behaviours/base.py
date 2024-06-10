@@ -107,7 +107,7 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         """Store the documents to the agent's data dir as JSON."""
         serialized = serialize_documents(self.documents)
         if serialized is None:
-            self.context.logger.warning("No documents to store.")
+            self.context.logger.warning("No documents to store locally.")
             return
 
         try:
@@ -128,7 +128,7 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
 
         if not os.path.isfile(self.documents_filepath):
             self.context.logger.warning(
-                f"No stored documents file was detected in {self.documents_filepath}. Assuming documents are empty."
+                f"No stored documents file was detected in {self.documents_filepath}. Assuming local documents are empty."
             )
             return
 
@@ -148,17 +148,21 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
 
     def hash_stored_documents(self) -> str:
         """Get the hash of the stored documents' file."""
+        if not os.path.isfile(self.documents_filepath):
+            self.context.logger.warning(
+                f"No stored documents file was detected in {self.documents_filepath}. Assuming local documents are empty."
+            )
+            return ""
         return IPFSHashOnly.hash_file(self.documents_filepath)
     
     def store_embeddings(self) -> None:
         """Store the embeddings to the agent's data dir as Parquet."""
         if self.embeddings.empty:
-            self.context.logger.warning("No embeddings to store.")
+            self.context.logger.warning("No embeddings to store locally.")
             return
 
         try:
             self.embeddings.to_parquet(self.embeddings_filepath)
-            self.context.logger.info(f"Stored embeddings to {self.embeddings_filepath}.")
             return
         except Exception as e:
             err = f"Error writing to file {self.embeddings_filepath!r}: {e}"
@@ -168,7 +172,7 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         """Read the embeddings from the agent's data dir as Parquet."""
         if not os.path.isfile(self.embeddings_filepath):
             self.context.logger.warning(
-                f"No stored embeddings file was detected in {self.embeddings_filepath}. Assuming embeddings are empty."
+                f"No stored embeddings file was detected in {self.embeddings_filepath}. Assuming local embeddings are empty."
             )
             return
 
@@ -184,10 +188,9 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         """Get the hash of the stored embeddings' file."""
         if not os.path.isfile(self.embeddings_filepath):
             self.context.logger.warning(
-                f"No stored embeddings file was detected in {self.embeddings_filepath}. Assuming embeddings are empty."
+                f"No stored embeddings file was detected in {self.embeddings_filepath}. Assuming local embeddings are empty."
             )
             return ""
-        self.context.logger.info(f"Hashing embeddings file: {self.embeddings_filepath}")
         return IPFSHashOnly.hash_file(self.embeddings_filepath)
     
 

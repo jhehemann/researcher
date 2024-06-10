@@ -128,31 +128,15 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
             EMBEDDINGS_FILENAME, json_data, filetype=SupportedFiletype.JSON
         )
         if ipfs_hash is None:
-            return None
-        
-        self.context.logger.info(f"IPFS hash from upload: {ipfs_hash}")
-        
-        # v1_file_hash_hex = self.to_multihash(to_v1(ipfs_hash))
+            return None        
 
         v1_file_hash = to_v1(ipfs_hash)
-        self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
+        self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
-
-
-
-        # v1_file_hash = to_v1(embeddings_hash_live)
-        # cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
-        # multihash_bytes = multicodec.remove_prefix(cid_bytes)
-        # v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
-        
-        # ipfs_link = self.params.ipfs_address + v1_file_hash_hex
-        
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
-        # mech_request_data = v1_file_hash_hex[9:]
-        # self._v1_hex_truncated = Ox + mech_request_data
         return v1_file_hash_hex
 
     def get_payload_content(self) -> Generator:
@@ -164,14 +148,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         
         embeddings_ipfs_hash = yield from self._send_embeddings_to_ipfs()
         
-        # self.read_embeddings()
-
-        # # should_update_hash = self._should_update_hash()
-        # # if not should_update_hash:
-        # #     return None
-        
-        # ipfs_link = yield from self._send_embeddings_to_ipfs()
-        
         return embeddings_ipfs_hash
 
     def async_act(self) -> Generator:
@@ -180,7 +156,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
             payload_content = yield from self.get_payload_content()
-            self.context.logger.info(f"Payload content: {payload_content}")
             payload = PublishPayload(sender=sender, content=payload_content)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
@@ -204,10 +179,8 @@ class ValidateEmbeddingsHashBehaviour(ScraperBaseBehaviour):  # pylint: disable=
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             payload_content = self.synchronized_data.embeddings_ipfs_hash
-            self.context.logger.info(f"consensus ipfs hash: {payload_content}")
+            self.context.logger.info(f"Updated latest IPFS embeddings hash: {payload_content}")
             self.params.publish_mutable_params.latest_embeddings_hash = payload_content
-
-            self.context.logger.info(f"Latest embeddings hash (Final Payload Validate Embeddings): {self.params.publish_mutable_params.latest_embeddings_hash}")
             sender = self.context.agent_address
             payload = ValidateEmbeddingsHashPayload(sender=sender, content=payload_content)
 

@@ -155,7 +155,7 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
             yield from self._update_documents()
             self.store_documents()
             documents_hash = self.hash_stored_documents()
-            self.context.logger.info(f"Documents hash: {documents_hash}")
+            self.context.logger.info(f"Local documents hash: {documents_hash}")
             payload = SearchEnginePayload(sender=sender, content=documents_hash)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():

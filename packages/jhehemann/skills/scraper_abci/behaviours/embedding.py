@@ -113,10 +113,11 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         """Add new embeddings to the existing DataFrame and link them to text chunks in sampled document."""
         
         embeddings = [embedding.get('embedding') for embedding in self._embedding_response.data]
-        self.context.logger.info(f"Number of embeddings: {len(embeddings)}")
         text_chunks = self.sampled_doc.text_chunks
         if len(embeddings) != len(text_chunks):
-            self.context.logger.error("The number of embeddings and text chunks do not match.")
+            self.context.logger.error(
+                "The number of new embeddings and corresponding text chunks do not match."
+            )
             return
         
         if not embeddings or not text_chunks:
@@ -130,15 +131,14 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         data['text_chunk'] = text_chunks
         # Create the DataFrame
         embeddings_df = pd.DataFrame(data)
-                
-        self.context.logger.info(f"Previous Embeddings DF: {self.embeddings}")
-        self.context.logger.info(f"New Embeddings DF: {embeddings_df}")
+        self.context.logger.info(f"New Embeddings DF: {embeddings_df.shape}")
+        self.context.logger.info(f"Previous Embeddings DF: {self.embeddings.shape}")
+        
         # Concatenate the new embeddings with the existing ones
         self.embeddings = pd.concat([self.embeddings, embeddings_df], ignore_index=True)
-        self.context.logger.info(f"Added {len(embeddings)} new embeddings.")
-
-        self.context.logger.info(f"Updated embeddings DF: {self.embeddings}")
-        
+        self.context.logger.info(
+            f"Total new embeddings: {self.embeddings.shape}"
+        )        
 
     def _get_embeddings(self) -> WaitableConditionType:
         """Get the response data from embedding."""
@@ -174,7 +174,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
     def load_latest_embeddings(self) -> Generator:
         """Get the latest embeddings from IPFS."""
         ipfs_hash = self.params.publish_mutable_params.latest_embeddings_hash
-        self.context.logger.info(f"Latest embeddings hash (from publish_mutable_params): {ipfs_hash}")
+        self.context.logger.info(f"Latest embeddings hash: {ipfs_hash}")
         if ipfs_hash is None:
             self.context.logger.warning(
                 "No embeddings hash found. Assuming no embeddings are stored on IPFS."
@@ -193,7 +193,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
             return
         
         embeddings = pd.DataFrame(embeddings_json)
-        self.context.logger.info(f"Downloaded Embeddings: {embeddings}")
+        self.context.logger.info(f"Downloaded embeddings dataframe: {embeddings.shape}")
         self.embeddings = embeddings
 
     def async_act(self) -> Generator:
@@ -209,7 +209,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
             self.store_embeddings()
             embeddings_hash = self.hash_stored_embeddings()
             if  embeddings_hash != embeddings_hash_prev:
-                self.context.logger.info(f"Updated embeddings hash: {embeddings_hash}")
+                self.context.logger.info(f"Updated local embeddings hash: {embeddings_hash}")
             else:
                 self.context.logger.info("No new embeddings were added.")
 
