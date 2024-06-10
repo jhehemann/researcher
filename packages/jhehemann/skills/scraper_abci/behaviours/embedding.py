@@ -186,14 +186,13 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         embeddings_json = yield from self.get_from_ipfs(
             ipfs_hash, filetype=SupportedFiletype.JSON
         )
-        self.context.logger.info(f"Retrieved raw IPFS embeddings json: {embeddings_json}")
         if embeddings_json is None:
             self.context.logger.warning(
                 f"Could not get embeddings from IPFS: {ipfs_hash}"
             )
             return
         
-        embeddings = pd.read_json(embeddings_json)
+        embeddings = pd.DataFrame(embeddings_json)
         self.context.logger.info(f"Downloaded Embeddings: {embeddings}")
         self.embeddings = embeddings
 

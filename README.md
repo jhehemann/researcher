@@ -1,6 +1,6 @@
-# Dev-template
+# Researcher
 
-A template for development with the open-autonomy framework. Find the documentation [here](https://docs.autonolas.network).
+A researcher service that searches for relevant news on the internet, generates embeddings and stores them on IPFS.
 
 ## System requirements
 
@@ -21,16 +21,6 @@ docker pull valory/open-autonomy-user:latest
 docker container run -it valory/open-autonomy-user:latest
 ```
 
-## This repository contains:
-
-- A directory, `packages`, which acts as the local registry
-
-- Pre-filled in third-party core packages
-
-- Basic example of a simple skill, a chained skill, an agent and a service
-
-- .env sample file with Python path updated to include packages directory
-
 ## How to use
 
 1. Create a virtual environment with all development dependencies:
@@ -41,7 +31,7 @@ docker container run -it valory/open-autonomy-user:latest
     autonomy packages sync --update-packages
     ```
 
-2. Prepare an `ethereum_private_key.txt` (for agents) file and `keys.json` (for services) files containing wallet address and/or the private key for each of the agents. You can generate a new key by running `autonomy generate-key ethereum`. This is how those files hsould look like:
+2. Prepare an `ethereum_private_key.txt` (for agents) file and `keys.json` (for services) files containing wallet address and/or the private key for each of the agents. You can generate a new key by running `autonomy generate-key ethereum`. This is how those files should look like:
 
     ethereum_private_key.txt (check that there are no newlines at the end)
 
@@ -66,28 +56,48 @@ docker container run -it valory/open-autonomy-user:latest
 
     ```cp sample.env .env```
 
-5. Fill in the required environment variables in .env. You'll need a Ethereum RPC. `ALL_PARTICIPANTS` needs to contain your agent's public address.
+5. Fill in the required environment variables in .env. You'll need
+- Ethereum RPC
+- `ALL_PARTICIPANTS` needs to contain your agent's public address
+- API keys: OpenAI, Google, Google custom search engine ID
 
 
 6. Test the agent
-
+    1. Add upper case env variables to aea-config.yaml.
+    ```yaml
+    public_id: jhehemann/researcher_abci:0.1.0
+    type: skill
+    models:
+        params:
+            args:
+            input_query: ${INPUT_QUERY:str:Search for relevant information about current topics of interest.}
+            api_keys_json: ${API_KEYS:list:[]}
+    ```
+    2. Open terminal and run the agent:
     ```bash
     bash run_agent.py
     ```
-
-    and in other terminal run Tendermint:
+    3. In different terminal run Tendermint:
 
     ```bash
     make tm
     ```
 
 7. Test the service
-
+    1. Remove upper case env variables from aea-config.yaml that are automatically overridden when service is run.
+    ```yaml
+    public_id: jhehemann/researcher_abci:0.1.0
+    type: skill
+    models:
+        params:
+            args:
+            input_query: ${str:Search for relevant information about current topics of interest.}
+            api_keys_json: ${list:[]}
+    ```
+    2. Open terminal and run the service:
     ```bash
     bash run_service.py
     ```
-
-8. Get developing...
 
 ## Useful commands:
 

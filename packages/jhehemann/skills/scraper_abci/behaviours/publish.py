@@ -157,6 +157,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
     def get_payload_content(self) -> Generator:
         """Extract html text from website"""
+        self.read_embeddings()
         should_update_hash = self._should_update_hash()
         if not should_update_hash:
             return None

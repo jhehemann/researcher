@@ -158,6 +158,7 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
 
         try:
             self.embeddings.to_parquet(self.embeddings_filepath)
+            self.context.logger.info(f"Stored embeddings to {self.embeddings_filepath}.")
             return
         except Exception as e:
             err = f"Error writing to file {self.embeddings_filepath!r}: {e}"
