@@ -12,7 +12,7 @@ fingerprint:
   dialogues.py: bafybeiakqfqcpg7yrxt4bsyernhy5p77tci4qhmgqqjqi3ttx7zk6sklca
   fsm_specification.yaml: bafybeia5loukxl3einpxjj6kfp6woahrssh7m3nxfre4cgctbj643yzurm
   handlers.py: bafybeiet4vvrjm35rsuqvym52q5bfyglrvffunnxvui2nkjir746ndm2zm
-  models.py: bafybeiauqg5kqmf3jrxmw2lpgz2m26s6qayzld7tenzbozxjskog5wex5m
+  models.py: bafybeifago7xkezfsip32k7lahlcscqm6cn2e6pbrxdpvdsio274cjzbdy
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -74,7 +74,11 @@ models:
   params:
     args:
       input_query: Search for relevant information about current topics of interest.
-      api_keys_json: []
+      api_keys_json:
+      - - openai
+        - dummy_api_key
+      - - stabilityai
+        - dummy_api_key
       cleanup_history_depth: 1
       cleanup_history_depth_current: null
       drand_public_key: 868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31

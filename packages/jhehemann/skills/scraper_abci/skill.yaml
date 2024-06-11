@@ -26,7 +26,7 @@ contracts: []
 protocols: []
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeiba7eovhf27ww5nt6g4qqwaycn3ufvsknzg6v7ajjzqyepj7ryrla
+- jhehemann/documents_manager_abci:0.1.0:bafybeiccc4sr3vc32kbgh462z3rgb6ahvhjmaxchj6l67n7b5tn4rgblme
 behaviours:
   main:
     args: {}
@@ -76,7 +76,11 @@ models:
   params:
     args:
       input_query: Search for relevant information about current topics of interest.
-      api_keys_json: []
+      api_keys_json:
+      - - openai
+        - dummy_api_key
+      - - stabilityai
+        - dummy_api_key
       cleanup_history_depth: 1
       cleanup_history_depth_current: null
       drand_public_key: 868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31
