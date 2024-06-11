@@ -14,7 +14,7 @@ fingerprint:
   documents.py: bafybeibpkwt2t7ekjckkp63g5772b7uowschvjncx4gidwttr4wcwo6j4a
   fsm_specification.yaml: bafybeib6qj5qh5a45f4mkcwsfn3snaipohsoebcgw5xrs3ptgt6t2hmg5u
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeibgbpmaozi3qzfknxtahmt5vhxldvxz6hh3xgy7tv63eqxjetbt5m
+  models.py: bafybeia4zqvej2hqqozhnnctvikjmseddqgozwquc6zxbvllwx57juykhe
   payloads.py: bafybeih3c4b7u6fjeji4tzkn5nfprvx2dpae73qkx52prx3zsautkrtj7m
   round_behaviour.py: bafybeifc4cbu7vmypneca5a5t4ujob5twdrr5o5xpqenittxxsahar24q4
   rounds.py: bafybeigsrrudtq7dxbhzjrrurewkpvrcpmjts6sbfkidaqrefgxgtcbe5m
@@ -73,11 +73,7 @@ models:
   params:
     args:
       input_query: Search for relevant information about current topics of interest.
-      api_keys_json:
-      - - openai
-        - dummy_api_key
-      - - stabilityai
-        - dummy_api_key
+      api_keys_json: []
       cleanup_history_depth: 1
       cleanup_history_depth_current: null
       drand_public_key: 868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31
