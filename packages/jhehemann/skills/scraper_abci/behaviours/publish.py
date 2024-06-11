@@ -134,9 +134,9 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
-        self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
+        self.context.logger.info(f"V1 hash hex: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
-        self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
+        self.context.logger.info(f"IPFS link: {ipfs_link}")
         return v1_file_hash_hex
 
     def get_payload_content(self) -> Generator:

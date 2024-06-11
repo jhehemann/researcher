@@ -161,7 +161,7 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
         SearchEngineRound: {
             Event.NO_MAJORITY: SearchEngineRound,
             Event.ROUND_TIMEOUT: SearchEngineRound,
-            Event.DONE: FinishedDocumentsManagerRound,
+            Event.DONE: CheckDocumentsRound,
         },
         FinishedDocumentsManagerRound: {},
     }

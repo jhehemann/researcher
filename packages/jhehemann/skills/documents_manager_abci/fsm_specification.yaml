@@ -19,6 +19,6 @@ transition_func:
     (CheckDocumentsRound, NO_UPDATES): FinishedDocumentsManagerRound
     (CheckDocumentsRound, NO_MAJORITY): CheckDocumentsRound
     (CheckDocumentsRound, ROUND_TIMEOUT): CheckDocumentsRound
-    (SearchEngineRound, DONE): FinishedDocumentsManagerRound
+    (SearchEngineRound, DONE): CheckDocumentsRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound

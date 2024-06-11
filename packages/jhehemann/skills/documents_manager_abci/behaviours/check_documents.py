@@ -47,7 +47,9 @@ class CheckDocumentsBehaviour(DocumentsManagerBaseBehaviour):
             self.read_documents()
             unprocessed_docs = list(self.unprocessed_documents)
             num_unprocessed = len(unprocessed_docs)
+            self.context
             self.context.logger.info(f"Number of unprocessed documents: {num_unprocessed}")
+            
             # if not self.documents:
             #     documents_hash = None
             # else:

@@ -49,7 +49,7 @@ transition_func:
     (SamplingRound, NONE): ResetAndPauseRound
     (SamplingRound, NO_MAJORITY): SamplingRound
     (SamplingRound, ROUND_TIMEOUT): SamplingRound
-    (SearchEngineRound, DONE): SamplingRound
+    (SearchEngineRound, DONE): CheckDocumentsRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
     (WebScrapeRound, DONE): ProcessHtmlRound

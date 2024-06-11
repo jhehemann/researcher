@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# Function to handle sudo errors
+check_sudo() {
+  if [ $? -ne 0 ]; then
+    echo "Incorrect sudo password. Exiting script."
+    exit 1
+  fi
+}
+
 REPO_PATH=$PWD
 
 source .env
@@ -11,6 +19,7 @@ export INPUT_QUERY="Who will be the next president of the United States?"
 if test -d researcher_service; then
   echo "Removing previous service build"
   sudo rm -r researcher_service
+  check_sudo
 fi
 
 # Push packages and fetch service

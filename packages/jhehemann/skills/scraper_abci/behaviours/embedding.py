@@ -138,6 +138,9 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         self.embeddings = pd.concat([self.embeddings, embeddings_df], ignore_index=True)
         self.context.logger.info(
             f"Total new embeddings: {self.embeddings.shape}"
+        )
+        self.context.logger.info(
+            f"\n{self.embeddings}"
         )        
 
     def _get_embeddings(self) -> WaitableConditionType:
