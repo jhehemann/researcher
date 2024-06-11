@@ -142,21 +142,30 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
             docs_updated = len(self.documents) > initial_docs_count
             if not docs_updated:
                 self.context.logger.warning(f"No new documents were added to the list.")
-                return
+                return False
             
         self.context.logger.info(f"Updated documents: {self.documents}")
+        return True
+
+    def get_payload_content(self) -> Generator:
+        """Get the payload content."""
+        self.read_documents()
+        documents_updated = yield from self._update_documents()
+        if not documents_updated:
+            return None
+        self.store_documents()
+        documents_hash = self.hash_stored_documents()
+        self.context.logger.info(f"Local documents hash: {documents_hash}")
+        return documents_hash
+
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
-            self.read_documents()
             sender = self.context.agent_address
-            yield from self._update_documents()
-            self.store_documents()
-            documents_hash = self.hash_stored_documents()
-            self.context.logger.info(f"Local documents hash: {documents_hash}")
-            payload = SearchEnginePayload(sender=sender, content=documents_hash)
+            payload_content = yield from self.get_payload_content()
+            payload = SearchEnginePayload(sender=sender, content=payload_content)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

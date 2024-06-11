@@ -3,6 +3,7 @@ alphabet_in:
 - NONE
 - NO_UPDATES
 - TO_UPDATE
+- UPDATE_FAILED
 - NO_MAJORITY
 - RESET_AND_PAUSE_TIMEOUT
 - ROUND_TIMEOUT
@@ -50,6 +51,7 @@ transition_func:
     (SamplingRound, NO_MAJORITY): SamplingRound
     (SamplingRound, ROUND_TIMEOUT): SamplingRound
     (SearchEngineRound, DONE): CheckDocumentsRound
+    (SearchEngineRound, UPDATE_FAILED): ResetAndPauseRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
     (WebScrapeRound, DONE): ProcessHtmlRound

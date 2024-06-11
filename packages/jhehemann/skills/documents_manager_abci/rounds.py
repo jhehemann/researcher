@@ -48,7 +48,7 @@ class Event(Enum):
     DONE = "done"
     TO_UPDATE = "to_update"
     NO_UPDATES = "no_updates"
-    FETCH_ERROR = "fetch_error"
+    UPDATE_FAILED = "update_failed"
     NO_MAJORITY = "no_majority"
     ROUND_TIMEOUT = "round_timeout"
 
@@ -135,6 +135,7 @@ class SearchEngineRound(CollectSameUntilThresholdRound):
     payload_class = SearchEnginePayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
+    none_event = Event.UPDATE_FAILED
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_documents_hash)
     selection_key = get_name(SynchronizedData.documents_hash)
@@ -142,6 +143,10 @@ class SearchEngineRound(CollectSameUntilThresholdRound):
 
 class FinishedDocumentsManagerRound(DegenerateRound):
     """FinishedDocumentsManagerRound"""
+
+
+class FailedDocumentsManagerRound(DegenerateRound):
+    """FailedDocumentsManagerRound"""
 
 
 class DocumentsManagerAbciApp(AbciApp[Event]):
@@ -161,12 +166,15 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
         SearchEngineRound: {
             Event.NO_MAJORITY: SearchEngineRound,
             Event.ROUND_TIMEOUT: SearchEngineRound,
+            Event.UPDATE_FAILED: FailedDocumentsManagerRound,
             Event.DONE: CheckDocumentsRound,
         },
         FinishedDocumentsManagerRound: {},
+        FailedDocumentsManagerRound: {},
     }
     final_states: Set[AppState] = {
         FinishedDocumentsManagerRound,
+        FailedDocumentsManagerRound,
     }
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
@@ -175,4 +183,5 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
     }
     db_post_conditions: Dict[AppState, Set[str]] = {
         FinishedDocumentsManagerRound: {get_name(SynchronizedData.documents_hash)},
+        FailedDocumentsManagerRound: set(),
     }

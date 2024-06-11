@@ -83,6 +83,11 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         # Decode response body from bytes to html string
         res = res_raw.body.decode()
         res = self._handle_response(res)
+        
+        # truncate the response to 100000 characters
+        if len(res) > 300000:
+            res = res[:300000]
+            self.context.logger.warning("Response was truncated to 300000 characters.")
 
         if self.web_scrape_response_api.is_retries_exceeded():
             error = "Retries were exceeded while trying to get the web page's response."
@@ -103,6 +108,7 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         """Extract html text from website"""
         yield from self.wait_for_condition_with_sleep(self._get_response)
         html = self._web_scrape_response.html
+
     
         return html
 

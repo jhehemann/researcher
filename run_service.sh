@@ -12,7 +12,7 @@ REPO_PATH=$PWD
 
 source .env
 
-export INPUT_QUERY="Who will be the next president of the United States?"
+export INPUT_QUERY="Who will be the next US President?"
 
 
 # Remove previous service build
