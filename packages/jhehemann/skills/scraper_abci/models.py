@@ -23,6 +23,7 @@ import json
 from dataclasses import dataclass
 
 from packages.jhehemann.skills.scraper_abci.rounds import ScraperAbciApp
+from packages.jhehemann.skills.documents_manager_abci.models import DocumentsManagerParams
 from packages.valory.skills.abstract_round_abci.models import BaseParams
 from packages.valory.skills.abstract_round_abci.models import ApiSpecs
 from packages.valory.skills.abstract_round_abci.models import (
@@ -57,40 +58,15 @@ class MutableParams(TypeCheckMixin):
     latest_embeddings_hash: Optional[bytes] = None
 
 
-class ScraperParams(BaseParams):
+class ScraperParams(DocumentsManagerParams):
     """A model to represent params for multiple abci apps."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the parameters object."""
-       
-        self.api_keys: Dict = self._nested_list_todict_workaround(
-            kwargs, "api_keys_json"
-        )
         self._ipfs_address: str = self._ensure("ipfs_address", kwargs, str)
         self.hash_checkpoint_address: str = self._ensure("hash_checkpoint_address", kwargs, str)
 
-        self.input_query = kwargs.get("input_query", None)
-        enforce(self.input_query is not None, "input_query must be set!")
-        self.polling_interval = kwargs.get("polling_interval", 30.0)
-        self.task_deadline = kwargs.get("task_deadline", 240.0)
-        self.num_agents = kwargs.get("num_agents", None)
-        self.request_count: int = 0
-        self.cleanup_freq = kwargs.get("cleanup_freq", 50)
-        enforce(self.num_agents is not None, "num_agents must be set!")
-        self.agent_index = kwargs.get("agent_index", None)
-        enforce(self.agent_index is not None, "agent_index must be set!")
-        self.from_block_range = kwargs.get("from_block_range", None)
-        enforce(self.from_block_range is not None, "from_block_range must be set!")
-        self.timeout_limit = kwargs.get("timeout_limit", None)
-        enforce(self.timeout_limit is not None, "timeout_limit must be set!")
-        self.max_block_window = kwargs.get("max_block_window", None)
-        enforce(self.max_block_window is not None, "max_block_window must be set!")
-        # maps the request id to the number of times it has timed out
-        self.request_id_to_num_timeouts: Dict[int, int] = defaultdict(lambda: 0)
-        #self.mech_to_config: Dict[str, MechConfig] = self._parse_mech_configs(kwargs)
-
         self.publish_mutable_params = MutableParams()
-
         super().__init__(*args, **kwargs)
 
     @property
@@ -99,18 +75,7 @@ class ScraperParams(BaseParams):
         if self._ipfs_address.endswith("/"):
             return self._ipfs_address
         return f"{self._ipfs_address}/"
-
-    def _nested_list_todict_workaround(
-        self,
-        kwargs: Dict,
-        key: str,
-    ) -> Dict:
-        """Get a nested list from the kwargs and convert it to a dictionary."""
-        values = cast(List, kwargs.get(key))
-        if len(values) == 0:
-            raise ValueError(f"No {key} specified!")
-        return {value[0]: value[1] for value in values}
-
+    
 
 class WebScrapeResponseSpecs(ApiSpecs):
     """A model that wraps ApiSpecs for the web scraping response specifications."""

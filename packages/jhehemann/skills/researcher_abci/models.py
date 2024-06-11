@@ -18,7 +18,7 @@
 # ------------------------------------------------------------------------------
 
 """This module contains the shared state for the abci skill of ResearcherSkillAbciApp."""
-# from typing import Any
+from typing import Any
 
 from packages.valory.skills.abstract_round_abci.models import ApiSpecs
 
@@ -63,10 +63,10 @@ class SharedState(BaseSharedState):
 
     abci_app_cls = ResearcherSkillAbciApp  # type: ignore
 
-    # def __init__(self, *args: Any, **kwargs: Any) -> None:
-    #     """Initialize the shared state."""
-    #     self.last_processed_request_block_number: int = 0
-    #     super().__init__(*args, **kwargs)
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize the shared state."""
+        self.last_processed_request_block_number: int = 0
+        super().__init__(*args, **kwargs)
 
     def setup(self) -> None:
         """Set up."""
@@ -89,8 +89,8 @@ class SharedState(BaseSharedState):
 
 
 class ResearcherParams(  # pylint: disable=too-many-ancestors
+    #DocumentsManagerParams,
     ScraperParams,
-    DocumentsManagerParams,
     TerminationParams
 ):
     """A model to represent params for multiple abci apps."""
