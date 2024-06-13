@@ -161,7 +161,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
             performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
             contract_address=hashcheckpoint_address,
             contract_id=str(HashCheckpointContract.contract_id),
-            contract_callable="checkpoint",
+            contract_callable="get_checkpoint_data",
             #data=bytes.fromhex("f02d773780ee38a64657f824472c7328ff389e845ff0f9d5c4585f955c8b2c4e"),
             data=bytes.fromhex(ipfs_hash),
         )
@@ -216,7 +216,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         return tx_hash
 
     
-    def _get_payload_content(self) -> Generator:
+    def get_payload_content(self) -> Generator:
         self.read_embeddings()
         should_update_hash = self._should_update_hash()
         if not should_update_hash:
@@ -225,7 +225,10 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         hash_checkpoint_address = self.params.hash_checkpoint_address
         ipfs_hash = yield from self._send_embeddings_to_ipfs()
         update_checkpoint_tx = yield from self._get_checkpoint_tx(hash_checkpoint_address, ipfs_hash)
-        tx_data = bytes.fromhex(update_checkpoint_tx)
+        self.context.logger.info(f"Update checkpoint tx: {update_checkpoint_tx}")
+        tx_data_str = (cast(str, update_checkpoint_tx)["data"])[2:]
+        self.context.logger.info(f"Tx data str: {tx_data_str}")
+        tx_data = bytes.fromhex(cast(str, tx_data_str))
         tx_hash = yield from self._get_safe_tx_hash(tx_data)
         if tx_hash is None:
             # something went wrong
@@ -239,6 +242,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
             data=tx_data,
             gas_limit=self.params.manual_gas_limit,
         )
+        self.context.logger.info(f"Payload data: {payload_data}")
         return payload_data
       
     def async_act(self) -> Generator:
