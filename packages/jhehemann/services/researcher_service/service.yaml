@@ -85,6 +85,7 @@ extra:
         validate_timeout: 1205
         service_endpoint_base: ${SERVICE_ENDPOINT_BASE:str:https://demo.autonolas.tech/}
         use_slashing: ${USE_SLASHING:bool:false}
+        manual_gas_limit: ${MANUAL_GAS_LIMIT:int:1000000}
         slash_cooldown_hours: ${SLASH_COOLDOWN_HOURS:int:3}
         slash_threshold_amount: ${SLASH_THRESHOLD_AMOUNT:int:10000000000000000}
         light_slash_unit_amount: ${LIGHT_SLASH_UNIT_AMOUNT:int:5000000000000000}

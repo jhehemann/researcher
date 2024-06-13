@@ -45,6 +45,10 @@ from packages.valory.skills.abstract_round_abci.tests.data.dummy_abci.models imp
 from packages.valory.skills.reset_pause_abci.rounds import Event as ResetPauseEvent
 from packages.valory.skills.termination_abci.models import TerminationParams
 from packages.jhehemann.skills.scraper_abci.models import ScraperParams
+from packages.valory.skills.transaction_settlement_abci.rounds import (
+    Event as TransactionSettlementEvent,
+)
+
 
 Requests = BaseRequests
 BenchmarkTool = BaseBenchmarkTool
@@ -80,12 +84,25 @@ class SharedState(BaseSharedState):
             ResetPauseEvent.RESET_AND_PAUSE_TIMEOUT
         ] = (self.context.params.reset_pause_duration + MARGIN)
 
-        ResearcherSkillAbciApp.event_to_timeout[SamplingEvent.ROUND_TIMEOUT] = (
-            self.context.params.round_timeout_seconds * MULTIPLIER
-        )
-        ResearcherSkillAbciApp.event_to_timeout[DocumentsManagerEvent.ROUND_TIMEOUT] = (
-            self.context.params.round_timeout_seconds * MULTIPLIER
-        )
+        ResearcherSkillAbciApp.event_to_timeout[
+            SamplingEvent.ROUND_TIMEOUT
+        ] = (self.context.params.round_timeout_seconds * MULTIPLIER)
+
+        ResearcherSkillAbciApp.event_to_timeout[
+            DocumentsManagerEvent.ROUND_TIMEOUT
+        ] = (self.context.params.round_timeout_seconds * MULTIPLIER)
+
+        # ResearcherSkillAbciApp.event_to_timeout[
+        #     TransactionSettlementEvent.ROUND_TIMEOUT
+        # ] = self.context.params.round_timeout_seconds
+
+        # ResearcherSkillAbciApp.event_to_timeout[
+        #     TransactionSettlementEvent.VALIDATE_TIMEOUT
+        # ] = self.context.params.validate_timeout
+
+        # ResearcherSkillAbciApp.event_to_timeout[
+        #     TransactionSettlementEvent.FINALIZE_TIMEOUT
+        # ] = self.context.params.finalize_timeout
 
 
 class ResearcherParams(  # pylint: disable=too-many-ancestors

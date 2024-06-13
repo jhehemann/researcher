@@ -20,7 +20,7 @@
 """This package contains the rounds of ScraperAbciApp."""
 
 from enum import Enum
-from typing import Any, Dict, FrozenSet, Optional, Set, Tuple
+from typing import Any, Dict, FrozenSet, Optional, Set, Tuple, cast
 
 from packages.jhehemann.skills.scraper_abci.payloads import (
     SamplingPayload,
@@ -28,7 +28,6 @@ from packages.jhehemann.skills.scraper_abci.payloads import (
     ProcessHtmlPayload,
     EmbeddingPayload,
     PublishPayload,
-    ValidateEmbeddingsHashPayload,
 )
 
 from packages.valory.skills.abstract_round_abci.base import (
@@ -101,9 +100,9 @@ class SynchronizedData(DocumentsManagerSyncedData):
         return self.db.get("embeddings_ipfs_hash", None)
     
     @property
-    def embeddings_ipfs_hash_2(self) -> str:
-        """Get the embeddings ipfs link."""
-        return self.db.get("embeddings_ipfs_hash_2", None)
+    def most_voted_tx_hash(self) -> str:
+        """Get the most_voted_tx_hash."""
+        return cast(str, self.db.get_strict("most_voted_tx_hash"))
     
     @property
     def participant_to_web_scrape_round(self) -> DeserializedCollection:
@@ -124,11 +123,6 @@ class SynchronizedData(DocumentsManagerSyncedData):
     def participant_to_publish_round(self) -> DeserializedCollection:
         """Get the participants to the participant_to_publish round."""
         return self._get_deserialized("participant_to_publish_round")
-    
-    @property
-    def participant_to_validate_embeddings_hash_round(self) -> DeserializedCollection:
-        """Get the participants to the participant_to_validate_embeddings_hash round."""
-        return self._get_deserialized("participant_to_validate_embeddings_hash_round")
 
 
 class SamplingRound(UpdateDocumentsRound):
@@ -188,18 +182,7 @@ class PublishRound(CollectSameUntilThresholdRound):
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_publish_round)
-    selection_key = get_name(SynchronizedData.embeddings_ipfs_hash)
-
-
-class ValidateEmbeddingsHashRound(CollectSameUntilThresholdRound):
-    """ValidateEmbeddingsHashRound"""
-
-    payload_class = ValidateEmbeddingsHashPayload
-    synchronized_data_class = SynchronizedData
-    done_event = Event.DONE
-    no_majority_event = Event.NO_MAJORITY
-    collection_key = get_name(SynchronizedData.participant_to_validate_embeddings_hash_round)
-    selection_key = get_name(SynchronizedData.embeddings_ipfs_hash_2)
+    selection_key = get_name(SynchronizedData.most_voted_tx_hash)
 
 
 class FinishedScraperRound(DegenerateRound):
@@ -242,11 +225,6 @@ class ScraperAbciApp(AbciApp[Event]):
         PublishRound: {
             Event.NO_MAJORITY: PublishRound,
             Event.ROUND_TIMEOUT: PublishRound,
-            Event.DONE: ValidateEmbeddingsHashRound,
-        },
-        ValidateEmbeddingsHashRound: {
-            Event.NO_MAJORITY: ValidateEmbeddingsHashRound,
-            Event.ROUND_TIMEOUT: ValidateEmbeddingsHashRound,
             Event.DONE: FinishedScraperRound,
         },
         FinishedScraperRound: {},

@@ -34,6 +34,7 @@ from packages.valory.skills.abstract_round_abci.models import (
     SharedState as BaseSharedState,
 )
 from packages.valory.skills.abstract_round_abci.models import TypeCheckMixin
+from packages.valory.skills.abstract_round_abci.utils import check_type
 from collections import defaultdict
 from typing import Any, Callable, Dict, List, Optional, cast
 
@@ -65,6 +66,7 @@ class ScraperParams(DocumentsManagerParams):
         """Initialize the parameters object."""
         self._ipfs_address: str = self._ensure("ipfs_address", kwargs, str)
         self.hash_checkpoint_address: str = self._ensure("hash_checkpoint_address", kwargs, str)
+        # self.manual_gas_limit = self._ensure_get("manual_gas_limit", kwargs, int)
 
         self.publish_mutable_params = MutableParams()
         super().__init__(*args, **kwargs)
@@ -75,6 +77,25 @@ class ScraperParams(DocumentsManagerParams):
         if self._ipfs_address.endswith("/"):
             return self._ipfs_address
         return f"{self._ipfs_address}/"
+    
+    # @classmethod
+    # def _ensure_get(cls, key: str, kwargs: Dict, type_: Any) -> Any:
+    #     """Ensure that the parameters are set, and return them without popping the key."""
+    #     enforce("skill_context" in kwargs, "Only use on models!")
+    #     skill_id = kwargs["skill_context"].skill_id
+    #     enforce(
+    #         key in kwargs,
+    #         f"'{key!r}' of type '{type_!r}' required, but it is not set in `models.params.args` of `skill.yaml` of `{skill_id}`",
+    #     )
+    #     value = kwargs.get(key, None)
+    #     try:
+    #         check_type(key, value, type_)
+    #     except TypeError:  # pragma: nocover
+    #         enforce(
+    #             False,
+    #             f"'{key!r}' must be a {type_!r}, but type {type(value)} was found in `models.params.args` of `skill.yaml` of `{skill_id}`",
+    #         )
+    #     return value
     
 
 class WebScrapeResponseSpecs(ApiSpecs):

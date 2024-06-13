@@ -27,7 +27,6 @@ from packages.jhehemann.skills.scraper_abci.behaviours.web_scrape import WebScra
 from packages.jhehemann.skills.scraper_abci.behaviours.embedding import EmbeddingBehaviour
 from packages.jhehemann.skills.scraper_abci.behaviours.publish import (
     PublishBehaviour,
-    ValidateEmbeddingsHashBehaviour,
 )
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
@@ -47,5 +46,4 @@ class ScraperRoundBehaviour(AbstractRoundBehaviour):
         ProcessHtmlBehaviour,
         EmbeddingBehaviour,
         PublishBehaviour,
-        ValidateEmbeddingsHashBehaviour,
     ]

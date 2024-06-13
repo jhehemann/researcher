@@ -142,6 +142,7 @@ models:
       finalize_timeout: 60.0
       history_check_timeout: 1205
       use_slashing: false
+      manual_gas_limit: 1000000
       slash_cooldown_hours: 3
       slash_threshold_amount: 10000000000000000
       light_slash_unit_amount: 5000000000000000
