@@ -19,7 +19,7 @@ contracts:
 - valory/gnosis_safe_proxy_factory:0.1.0:bafybeib6podeifufgmawvicm3xyz3uaplbcrsptjzz4unpseh7qtcpar74
 - valory/multisend:0.1.0:bafybeig5byt5urg2d2bsecufxe5ql7f4mezg3mekfleeh32nmuusx66p4y
 - valory/service_registry:0.1.0:bafybeicbxmbzt757lbmyh6762lrkcrp3oeum6dk3z7pvosixasifsk6xlm
-- jhehemann/hash_checkpoint:0.1.0:bafybeifgecefjud6szawvrz2asazonb3qa4bmsutpfzch56ylovse6csqu
+- jhehemann/hash_checkpoint:0.1.0:bafybeicuhncglpgvsdyblheoafsuzejuxwerqn2f3y7vpedunazad3xvxq
 protocols:
 - open_aea/signing:1.0.0:bafybeihv62fim3wl2bayavfcg3u5e5cxu3b7brtu4cn5xoxd6lqwachasi
 - valory/abci:0.1.0:bafybeiaqmp7kocbfdboksayeqhkbrynvlfzsx4uy4x6nohywnmaig4an7u
@@ -32,9 +32,9 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihat4giyc4bz6zopvahcj4iw53356pbtwfn7p4d5yflwly2qhahum
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeiccc4sr3vc32kbgh462z3rgb6ahvhjmaxchj6l67n7b5tn4rgblme
-- jhehemann/scraper_abci:0.1.0:bafybeidwgzwaibqqmdjvgz5ffud37zwvdxot5wyufrdj5knzlm7cfjfw2y
-- jhehemann/researcher_abci:0.1.0:bafybeia7t4khzmopaunckelvphizggu2syc4c64kynjzprkvp7qjaofyga
+- jhehemann/documents_manager_abci:0.1.0:bafybeigbayx6s7ickzki3kxrouukiltkepa6jsp6hv6ghf4v75ybf3fili
+- jhehemann/scraper_abci:0.1.0:bafybeiecj4otj4h2za4akhp74qmkfkbaz64m2xv5ts5evyfqhaykpog4um
+- jhehemann/researcher_abci:0.1.0:bafybeiguyazvifhth7z5asqtdn5mdasrnt6ub2tyc66otdowceokfc3qam
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44

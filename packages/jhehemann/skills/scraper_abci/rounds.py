@@ -240,6 +240,6 @@ class ScraperAbciApp(AbciApp[Event]):
         SamplingRound: set(),
     }
     db_post_conditions: Dict[AppState, Set[str]] = {
-        FinishedScraperRound: set(),
+        FinishedScraperRound: {"most_voted_tx_hash"},
         FinishedWithoutScraping: set(),
     }

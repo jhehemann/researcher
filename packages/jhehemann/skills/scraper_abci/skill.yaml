@@ -10,25 +10,27 @@ fingerprint:
   behaviours/base.py: bafybeifws3a76oeidd27rbo3cq3bbwye5fwln76dpx36whxcsocr36ig6e
   behaviours/embedding.py: bafybeignxyvegz2wrqxc7yoztfoxcibq7op5plr2y5y6ayup5d4dzwwmjm
   behaviours/process_html.py: bafybeigmsarc33tecrfa3svwwvuqtljpogwiayps4mcknqka73qwmqlhs4
-  behaviours/publish.py: bafybeibqhbcbgbc74uryu47ziaowsolhxn5avqsjzms64v32sjmkn6upvq
+  behaviours/publish.py: bafybeia7jlqi2bqn2l2uwwdckmwvxzhy4dqpoogmn44hbltlggzo4gmb74
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeidoz222wbe6owv4faeoahpfo2nzywbedskpkuyf2hc2vkxc3q7uzq
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  fsm_specification.yaml: bafybeicutfuhzffjx5co474qng3ajxrj7x2l54sprtuzbzvzkzg6kacsvm
+  fsm_specification.yaml: bafybeid5zl3c5w6uit6zyjui7lf7fx2xpz4qyv6elgvfzfohxwfup2lcpy
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeib2ujmrdct6zwrjgvllresdqszegrofd5riinhimefzxav2cmxq5u
-  payloads.py: bafybeigbg34qxk2ay3ld3g5gecwfcfxbj6kaf3gibrh7pebpeff3hj25yy
-  round_behaviour.py: bafybeieew3jbw3l4h3gdq6e7egbyzrgxpjphla5f7szcebc5dpihpilcla
-  rounds.py: bafybeif6ylowqfho66ivzyqti3pblqp44at4xihtte35tc3urjjxmu6n6u
+  models.py: bafybeig6svwxvou6mbontvf3a6f6reejjkvu2sfp5y36oluyzmbyrhxp4u
+  payloads.py: bafybeicey2ny6cuhebnuwl6auw5byllbvruiu5gewawwzkpqcoy5qubeo4
+  round_behaviour.py: bafybeidjdnmf6fs7jy3mlykhas4y7m5y26w2csldmva5zj5veqsj73acie
+  rounds.py: bafybeifhvu6l23kpvox3q4wligdjc6jelgr5r5rog4watxnxjwxl3relte
 fingerprint_ignore_patterns: []
 connections: []
 contracts:
-- jhehemann/hash_checkpoint:0.1.0:bafybeifgecefjud6szawvrz2asazonb3qa4bmsutpfzch56ylovse6csqu
+- jhehemann/hash_checkpoint:0.1.0:bafybeicuhncglpgvsdyblheoafsuzejuxwerqn2f3y7vpedunazad3xvxq
+- valory/gnosis_safe:0.1.0:bafybeibq77mgzhyb23blf2eqmia3kc6io5karedfzhntvpcebeqdzrgyqa
 protocols:
 - valory/contract_api:1.0.0:bafybeidgu7o5llh26xp3u3ebq3yluull5lupiyeu6iooi2xyymdrgnzq5i
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeiccc4sr3vc32kbgh462z3rgb6ahvhjmaxchj6l67n7b5tn4rgblme
+- valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
+- jhehemann/documents_manager_abci:0.1.0:bafybeigbayx6s7ickzki3kxrouukiltkepa6jsp6hv6ghf4v75ybf3fili
 behaviours:
   main:
     args: {}
