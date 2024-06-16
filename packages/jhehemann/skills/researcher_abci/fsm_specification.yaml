@@ -72,6 +72,7 @@ transition_func:
     (CollectSignatureRound, NO_MAJORITY): ResetRound
     (CollectSignatureRound, ROUND_TIMEOUT): CollectSignatureRound
     (EmbeddingRound, DONE): PublishRound
+    (EmbeddingRound, NONE): ResetAndPauseRound
     (EmbeddingRound, NO_MAJORITY): EmbeddingRound
     (EmbeddingRound, ROUND_TIMEOUT): EmbeddingRound
     (FinalizationRound, CHECK_HISTORY): CheckTransactionHistoryRound
@@ -131,7 +132,3 @@ transition_func:
     (WebScrapeRound, DONE): ProcessHtmlRound
     (WebScrapeRound, NO_MAJORITY): WebScrapeRound
     (WebScrapeRound, ROUND_TIMEOUT): WebScrapeRound
-    # (ValidateEmbeddingsHashRound, DONE): ResetAndPauseRound
-    # (ValidateEmbeddingsHashRound, NO_MAJORITY): ValidateEmbeddingsHashRound
-    # (ValidateEmbeddingsHashRound, ROUND_TIMEOUT): ValidateEmbeddingsHashRound
-

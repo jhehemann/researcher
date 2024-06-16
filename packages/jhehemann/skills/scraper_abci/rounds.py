@@ -174,6 +174,7 @@ class EmbeddingRound(CollectSameUntilThresholdRound):
     payload_class = EmbeddingPayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
+    none_event = Event.NONE
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_embedding_round)
     selection_key = get_name(SynchronizedData.embeddings_hash)
@@ -198,6 +199,10 @@ class FinishedScraperRound(DegenerateRound):
 
 class FinishedWithoutScraping(DegenerateRound):
     """FinishedWithoutScraping"""
+
+
+class FinishedWithoutEmbeddingUpdate(DegenerateRound):
+    """FinishedWithoutEmbeddingUpdate"""
 
 
 class ScraperAbciApp(AbciApp[Event]):
@@ -228,6 +233,8 @@ class ScraperAbciApp(AbciApp[Event]):
             Event.NO_MAJORITY: EmbeddingRound,
             Event.ROUND_TIMEOUT: EmbeddingRound,
             Event.DONE: PublishRound,
+            Event.NONE: FinishedWithoutEmbeddingUpdate,
+
         },
         PublishRound: {
             Event.NO_MAJORITY: PublishRound,
@@ -236,10 +243,13 @@ class ScraperAbciApp(AbciApp[Event]):
         },
         FinishedScraperRound: {},
         FinishedWithoutScraping: {},
+        FinishedWithoutEmbeddingUpdate: {},
+
     }
     final_states: Set[AppState] = {
         FinishedScraperRound,
         FinishedWithoutScraping,
+        FinishedWithoutEmbeddingUpdate,
     }
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
@@ -249,4 +259,5 @@ class ScraperAbciApp(AbciApp[Event]):
     db_post_conditions: Dict[AppState, Set[str]] = {
         FinishedScraperRound: {"most_voted_tx_hash"},
         FinishedWithoutScraping: set(),
+        FinishedWithoutEmbeddingUpdate: set(),
     }

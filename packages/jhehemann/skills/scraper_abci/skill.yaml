@@ -14,12 +14,12 @@ fingerprint:
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeidoz222wbe6owv4faeoahpfo2nzywbedskpkuyf2hc2vkxc3q7uzq
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  fsm_specification.yaml: bafybeid5zl3c5w6uit6zyjui7lf7fx2xpz4qyv6elgvfzfohxwfup2lcpy
+  fsm_specification.yaml: bafybeifa64uuk6csovwxprdiyrwxfl6jfykcdwzfx3h5d7u3zfowybeyoy
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
   models.py: bafybeig6svwxvou6mbontvf3a6f6reejjkvu2sfp5y36oluyzmbyrhxp4u
   payloads.py: bafybeicey2ny6cuhebnuwl6auw5byllbvruiu5gewawwzkpqcoy5qubeo4
   round_behaviour.py: bafybeidjdnmf6fs7jy3mlykhas4y7m5y26w2csldmva5zj5veqsj73acie
-  rounds.py: bafybeihwbyguxnqk5tuwq6melhvsswvvqq5qguiblsp3ub5pc4asoerwt4
+  rounds.py: bafybeigx2mkzmxeob4gom2xfsh3za24nxbsvydbk6n63fzxaa2i262y6zi
 fingerprint_ignore_patterns: []
 connections: []
 contracts:

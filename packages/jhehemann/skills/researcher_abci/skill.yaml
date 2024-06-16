@@ -8,9 +8,9 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeiabpuj3ksuzmro5bnzgavcwnode34wfrkvf3apvgd6bzvs2j47azq
   behaviours.py: bafybeifraurfnxwmgc73iyrpqhimo3rtmq4adonvs6m4plkq47umapgbpq
-  composition.py: bafybeib3gj4mj5lkos2ufrb2ub3jw37t4cdetrypqbp6y6wyfp5dcsblwy
+  composition.py: bafybeiaq2wtwslymmjnuyud7l3h6tdp52zikyf7qbg723b45prwolvn22m
   dialogues.py: bafybeiakqfqcpg7yrxt4bsyernhy5p77tci4qhmgqqjqi3ttx7zk6sklca
-  fsm_specification.yaml: bafybeigpikzgxze5dkyyx5xpucfsoh6z6lcgttvcnw7nj7w4pkq5vnjfuy
+  fsm_specification.yaml: bafybeifhyuz6o7cmbv4oiqdjzeli5t6o7ftxhzxuxco5pe2nvojwov3ira
   handlers.py: bafybeiet4vvrjm35rsuqvym52q5bfyglrvffunnxvui2nkjir746ndm2zm
   models.py: bafybeig45bneipco3r23vgqketz4btduhjhh7ohegdirt7u7oprlxijopa
 fingerprint_ignore_patterns: []
@@ -22,7 +22,7 @@ skills:
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
-- jhehemann/scraper_abci:0.1.0:bafybeibgn46xpflypglen6agyngjhriicqaous3duzyjw22lpjvs3jo624
+- jhehemann/scraper_abci:0.1.0:bafybeif4fr2y4bybb2jc3k6vdqzm4xpsywh76v7a7zyoov65caeh6qpmc4
 - jhehemann/documents_manager_abci:0.1.0:bafybeigwscggoaha33kzjv53erat3tsojfyid34n3es6v3behxsxie5qk4
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
 behaviours:

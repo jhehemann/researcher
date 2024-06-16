@@ -7,12 +7,14 @@ default_start_state: SamplingRound
 final_states:
 - FinishedScraperRound
 - FinishedWithoutScraping
+- FinishedWithoutEmbeddingUpdate
 label: ScraperAbciApp
 start_states:
 - SamplingRound
 states:
 - EmbeddingRound
 - FinishedScraperRound
+- FinishedWithoutEmbeddingUpdate
 - FinishedWithoutScraping
 - ProcessHtmlRound
 - PublishRound
@@ -20,6 +22,7 @@ states:
 - WebScrapeRound
 transition_func:
     (EmbeddingRound, DONE): PublishRound
+    (EmbeddingRound, NONE): FinishedWithoutEmbeddingUpdate
     (EmbeddingRound, NO_MAJORITY): EmbeddingRound
     (EmbeddingRound, ROUND_TIMEOUT): EmbeddingRound
     (ProcessHtmlRound, DONE): EmbeddingRound
