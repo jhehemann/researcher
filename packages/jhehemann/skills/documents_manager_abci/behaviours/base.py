@@ -162,7 +162,7 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
             return
 
         try:
-            self.embeddings.to_parquet(self.embeddings_filepath)
+            self.embeddings.to_parquet(self.embeddings_filepath, compression="snappy", index=True)
             return
         except Exception as e:
             err = f"Error writing to file {self.embeddings_filepath!r}: {e}"

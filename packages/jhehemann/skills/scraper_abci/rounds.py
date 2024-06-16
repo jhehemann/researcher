@@ -100,6 +100,11 @@ class SynchronizedData(DocumentsManagerSyncedData):
         return self.db.get("embeddings_ipfs_hash", None)
     
     @property
+    def latest_embeddings_ipfs_hash(self) -> str:
+        """Get the latest embeddings ipfs hash."""
+        return cast(str, self.db.get_strict("latest_embeddings_ipfs_hash"))
+    
+    @property
     def most_voted_tx_hash(self) -> str:
         """Get the most_voted_tx_hash."""
         return cast(str, self.db.get_strict("most_voted_tx_hash"))
@@ -182,8 +187,10 @@ class PublishRound(CollectSameUntilThresholdRound):
     done_event = Event.DONE
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_publish_round)
-    selection_key = get_name(SynchronizedData.most_voted_tx_hash)
-
+    selection_key = (
+        get_name(SynchronizedData.most_voted_tx_hash),
+        get_name(SynchronizedData.latest_embeddings_ipfs_hash),
+    )
 
 class FinishedScraperRound(DegenerateRound):
     """FinishedScraperRound"""

@@ -129,7 +129,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
             contract_address=self.params.hash_checkpoint_address,
             contract_id=str(HashCheckpointContract.contract_id),
             contract_callable="get_latest_hash",
-            sender_address=self.context.agent_address,
+            sender_address=self.synchronized_data.safe_contract_address,
         )
         if contract_api_msg.performative != ContractApiMessage.Performative.STATE:
             self.context.logger.warning(
@@ -137,12 +137,13 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
             )
             return None
         latest_ipfs_hash = cast(str, contract_api_msg.state.body["data"])
-        #self.context.logger.debug(f"Latest IPFS hash: {latest_ipfs_hash}")
+        
     
         if latest_ipfs_hash == ZERO_IPFS_HASH:
             return {}
         # format the hash
         ipfs_hash = str(CID.from_string(latest_ipfs_hash))
+        self.context.logger.debug(f"Got latest IPFS CID hash: {latest_ipfs_hash}")
         return ipfs_hash
 
     def update_embeddings(self) -> None:
@@ -172,9 +173,12 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         
         # Concatenate the new embeddings with the existing ones
         self.embeddings = pd.concat([self.embeddings, embeddings_df], ignore_index=True)
+
+        self.embeddings.drop_duplicates(subset=['text_chunk'], inplace=True)
         self.context.logger.info(
-            f"Total new embeddings: {self.embeddings.shape}"
-        )        
+            f"Total new embeddings dataframe: {self.embeddings.shape}"
+        )
+
 
     def _get_embeddings(self) -> WaitableConditionType:
         """Get the response data from embedding."""
@@ -210,9 +214,6 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
     def load_latest_embeddings(self) -> Generator:
         """Get the latest embeddings from IPFS."""
         ipfs_hash = yield from self._get_latest_hash()
-        self.context.logger.info(f"Latest embeddings hash from contract: {ipfs_hash}")
-        #ipfs_hash = self.params.publish_mutable_params.latest_embeddings_hash
-        self.context.logger.info(f"Latest embeddings hash: {ipfs_hash}")
         if ipfs_hash is None:
             self.context.logger.warning(
                 "No embeddings hash found. Assuming no embeddings are stored on IPFS."
@@ -239,21 +240,27 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             yield from self.load_latest_embeddings()
+            self.embeddings = self.embeddings.sort_index(axis=0).sort_index(axis=1)
             self.store_embeddings()
             embeddings_hash_prev = self.hash_stored_embeddings()
-            self.read_documents()
+            self.context.logger.info(f"Local embeddings hash prev: {embeddings_hash_prev}")
             yield from self.wait_for_condition_with_sleep(self._get_embeddings)
             self.update_embeddings()
+            self.embeddings = self.embeddings.sort_index(axis=0).sort_index(axis=1)
             self.store_embeddings()
             embeddings_hash = self.hash_stored_embeddings()
-            if  embeddings_hash != embeddings_hash_prev:
-                self.context.logger.info(f"Updated local embeddings hash: {embeddings_hash}")
-            else:
-                self.context.logger.info("No new embeddings were added.")
 
             sender = self.context.agent_address
-            payload = EmbeddingPayload(sender=sender, content=embeddings_hash)
 
+            if embeddings_hash != embeddings_hash_prev:
+                self.context.logger.info(f"Updated local embeddings hash: {embeddings_hash}")
+                payload_content = embeddings_hash
+                payload = EmbeddingPayload(sender=sender, content=payload_content)
+            else:
+                self.context.logger.info("No new embeddings were added.")
+                payload_content = None
+                payload = EmbeddingPayload(sender=sender, content=payload_content)
+            
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)
             yield from self.wait_until_round_end()

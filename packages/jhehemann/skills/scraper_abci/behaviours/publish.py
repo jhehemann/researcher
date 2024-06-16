@@ -25,6 +25,8 @@ from typing import Any, Generator, Optional, Type, List, Dict, cast
 from abc import ABC
 
 from aea.helpers.cid import to_v1
+from multibase import multibase
+from multicodec import multicodec
 
 from packages.jhehemann.contracts.hash_checkpoint.contract import HashCheckpointContract
 from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour
@@ -136,17 +138,16 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
         self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
 
-        # v1_file_hash = to_v1(ipfs_hash)
+        v1_file_hash = to_v1(ipfs_hash)
         # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
-        # cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
+        cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
         # self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
-        # multihash_bytes = multicodec.remove_prefix(cid_bytes)
+        multihash_bytes = multicodec.remove_prefix(cid_bytes)
         # self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
-        # v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
+        v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
         # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
-        # ipfs_link = self.params.ipfs_address + v1_file_hash_hex
-        # self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
-
+        ipfs_link = self.params.ipfs_address + v1_file_hash_hex
+        self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
         return to_multihash_to_v1
     
@@ -240,7 +241,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
             safe_tx_gas=SAFE_GAS,
             to_address=hash_checkpoint_address,
             data=tx_data,
-            gas_limit=self.params.manual_gas_limit,
+            #gas_limit=self.params.manual_gas_limit,
         )
         self.context.logger.info(f"Payload data: {payload_data}")
         return payload_data

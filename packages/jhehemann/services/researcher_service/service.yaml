@@ -7,7 +7,7 @@ license: Apache-2.0
 fingerprint:
   README.md: bafybeicxq7czrb2v2mzpvytqc53eawd6kwe7vq2lh5kn63hhxrj3fqodne
 fingerprint_ignore_patterns: []
-agent: jhehemann/researcher_agent:0.1.0:bafybeidk7cg3iuutzfinb2sd2tse5hkwz6lcyr2ejc4hlxv6huvmjp2ghy
+agent: jhehemann/researcher_agent:0.1.0:bafybeid3vfv33kjtwdlmx4cmyscydxvt55scgu43tfncg5n5ndimscvhyq
 number_of_agents: 1
 deployment:
   agent:
@@ -110,12 +110,12 @@ type: connection
   config:
     ledger_apis:
       ethereum:
-        address: ${ETHEREUM_LEDGER_RPC:str:http://host.docker.internal:8545}
+        address: ${ETHEREUM_LEDGER_RPC_TENDERLY:str:http://host.docker.internal:8545}
         chain_id: ${ETHEREUM_LEDGER_CHAIN_ID:int:31337}
         poa_chain: ${ETHEREUM_LEDGER_IS_POA_CHAIN:bool:false}
         default_gas_price_strategy: ${ETHEREUM_LEDGER_PRICING:str:eip1559}
       gnosis:
-        address: ${GNOSIS_LEDGER_RPC:str:http://host.docker.internal:8545}
+        address: ${ETHEREUM_LEDGER_RPC_TENDERLY:str:http://host.docker.internal:8545}
         chain_id: ${GNOSIS_LEDGER_CHAIN_ID:int:42220}
         poa_chain: ${GNOSIS_LEDGER_IS_POA_CHAIN:bool:true}
         default_gas_price_strategy: ${GNOSIS_LEDGER_PRICING:str:eip1559}
