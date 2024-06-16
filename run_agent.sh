@@ -6,6 +6,7 @@ fi
 source .env
 
 export INPUT_QUERY="Who will be the next president of the United States?"
+export SAFE_CONTRACT_ADDRESS="0x0C0b9642Ef7b94Fe20dC4a871fD3E5E661DEb86C"
 
 find . -empty -type d -delete  # remove empty directories to avoid wrong hashes
 autonomy packages lock

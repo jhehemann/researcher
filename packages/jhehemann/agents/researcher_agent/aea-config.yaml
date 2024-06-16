@@ -176,7 +176,7 @@ models:
       polling_interval: ${float:30.0}
       setup:
         all_participants: ${list:["0x0000000000000000000000000000000000000000"]}
-        safe_contract_address: ${SAFE_CONTRACT_ADDRESS:str:0x0000000000000000000000000000000000000000}
+        safe_contract_address: ${str:0x0C0b9642Ef7b94Fe20dC4a871fD3E5E661DEb86C}
         consensus_threshold: ${int:null}
       share_tm_config_on_startup: ${bool:false}
       sleep_time: 1
