@@ -83,7 +83,7 @@ docker container run -it valory/open-autonomy-user:latest
     make tm
     ```
 
-7. Test the service
+7. Test the service (NOT FUNCTIONAL ATM)
     1. Remove upper case env variables from aea-config.yaml that are automatically overridden when service is run.
     ```yaml
     public_id: jhehemann/researcher_abci:0.1.0
