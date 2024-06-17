@@ -54,9 +54,6 @@ class CheckDocumentsBehaviour(DocumentsManagerBaseBehaviour):
                 self.context.agent_address,
                 num_unprocessed=num_unprocessed,
             )
-
-            exit()
-
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)
             yield from self.wait_until_round_end()

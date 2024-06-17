@@ -10,7 +10,7 @@ fingerprint:
   behaviours/base.py: bafybeifws3a76oeidd27rbo3cq3bbwye5fwln76dpx36whxcsocr36ig6e
   behaviours/embedding.py: bafybeifvnm654k65yq2eb6goegzm52d4zqvveg7xtxfpepgudlyngasmie
   behaviours/process_html.py: bafybeigmsarc33tecrfa3svwwvuqtljpogwiayps4mcknqka73qwmqlhs4
-  behaviours/publish.py: bafybeihl5egbqrybvrvqz3m3nuudpnxcxkhsjzmhihhfrfbx75elgqjkpi
+  behaviours/publish.py: bafybeigzho4qaugf5zmr7tqhcxodpaohvvmzh6y5ip7udtt4gazyefx7gi
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeihzevgrb3uizdgx2bd6uqtc2vzrhux4x36lryu4ggzojsuke3dqiy
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
@@ -30,7 +30,7 @@ protocols:
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
-- jhehemann/documents_manager_abci:0.1.0:bafybeicqftln6sk7zq67fk64y5fcqofevkjpcd3g2b6yblocwhj52sjktu
+- jhehemann/documents_manager_abci:0.1.0:bafybeibszh2oym7zr23t4bnijqwbegd6chgipfo22ngfgya3pmok6tbscy
 behaviours:
   main:
     args: {}

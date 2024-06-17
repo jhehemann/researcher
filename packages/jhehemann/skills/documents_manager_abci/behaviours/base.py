@@ -28,7 +28,7 @@ import pandas as pd
 from abc import ABC
 from json import JSONDecodeError
 from datetime import datetime, timedelta
-from typing import Any, Callable, Generator, Iterator, Optional, Set, Tuple, cast, List
+from typing import Any, Callable, Generator, Iterator, Optional, Set, Tuple, cast, List, Dict
 
 from packages.valory.skills.abstract_round_abci.behaviours import (
     AbstractRoundBehaviour,
@@ -47,13 +47,21 @@ from packages.jhehemann.skills.documents_manager_abci.documents import (
     DocumentsDecoder,
     serialize_documents,
 )
+from packages.jhehemann.skills.documents_manager_abci.queries import (
+    Query,
+    QueryStatus,
+    QueriesDecoder,
+    serialize_queries,
+)
 from packages.valory.skills.abstract_round_abci.behaviour_utils import TimeoutException
 
 from aea.helpers.ipfs.base import IPFSHashOnly
 
 UNIX_DAY = 60 * 60 * 24
 DOCUMENTS_FILENAME = "documents.json"
+IPFS_HASHES_FILENAME = "ipfs_hashes.json"
 EMBEDDINGS_FILENAME = "embeddings.parquet"
+QUERIES_FILENAME = "queries.json"
 READ_MODE = "r"
 WRITE_MODE = "w"
 
@@ -66,10 +74,14 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
     def __init__(self, **kwargs: Any) -> None:
         """Initialize behaviour."""
         super().__init__(**kwargs)
+        self.queries: List[Query] = []
         self.documents: List[Document] = []
         self.embeddings: pd.DataFrame = pd.DataFrame()
+        self.ipfs_hashes: Dict[str, str] = {}
+        self.queries_filepath: str = os.path.join(self.context.data_dir, QUERIES_FILENAME)
         self.documents_filepath: str = os.path.join(self.context.data_dir, DOCUMENTS_FILENAME)
         self.embeddings_filepath: str = os.path.join(self.context.data_dir, EMBEDDINGS_FILENAME)
+        self.ipfs_hashes_filepath: str = os.path.join(self.context.data_dir, IPFS_HASHES_FILENAME)
         
     @property
     def synchronized_data(self) -> SynchronizedData:
@@ -95,30 +107,59 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
     def unprocessed_documents(self) -> Iterator[Document]:
         """Get an iterator of the unprocessed documents."""
         self.documents = [document for document in self.documents]
-        return filter(lambda document: document.status == DocumentStatus.UNPROCESSED, self.documents)   
+        return filter(lambda document: document.status == DocumentStatus.UNPROCESSED, self.documents)
+    
+    @property
+    def unprocessed_queries(self) -> Iterator[Query]:
+        """Get an iterator of the unprocessed queries."""
+        self.queries = [query for query in self.queries]
+        return filter(lambda query: query.status == QueryStatus.UNPROCESSED, self.queries)
 
     @property
     def synced_time(self) -> int:
         """Get the synchronized time among agents."""
         synced_time = self.shared_state.round_sequence.last_round_transition_timestamp
         return int(synced_time.timestamp())
+    
+    def read_ipfs_hashes(self) -> None:
+        """Read the IPFS hashes from the agent's data dir."""
+        if not os.path.isfile(self.ipfs_hashes_filepath):
+            self.context.logger.warning(
+                f"No stored IPFS hashes file was detected in {self.ipfs_hashes_filepath}. Assuming local hashes are empty."
+            )
+            return
+        
+        try:
+            with open(self.ipfs_hashes_filepath, READ_MODE) as ipfs_hashes_file:
+                try:
+                    self.ipfs_hashes = json.load(ipfs_hashes_file)
+                    return
+                except (JSONDecodeError, TypeError):
+                    err = f"Error decoding file {self.ipfs_hashes_filepath!r} to a dictionary of IPFS hashes!"
+        except (FileNotFoundError, PermissionError, OSError):
+            err = f"Error opening file {self.ipfs_hashes_filepath!r} in read mode!"
 
-    def store_documents(self) -> None:
-        """Store the documents to the agent's data dir as JSON."""
-        serialized = serialize_documents(self.documents)
-        if serialized is None:
-            self.context.logger.warning("No documents to store locally.")
+        self.context.logger.error(err)
+
+    def read_queries(self) -> None:
+        """Read the queries from the agent's data dir as JSON."""
+        self.queries = []
+
+        if not os.path.isfile(self.queries_filepath):
+            self.context.logger.warning(
+                f"No stored queries file was detected in {self.queries_filepath}. Assuming local queries are empty."
+            )
             return
 
         try:
-            with open(self.documents_filepath, WRITE_MODE) as documents_file:
+            with open(self.queries_filepath, READ_MODE) as queries_file:
                 try:
-                    documents_file.write(serialized)
+                    self.queries = json.load(queries_file, cls=QueriesDecoder)
                     return
-                except (IOError, OSError):
-                    err = f"Error writing to file {self.documents_filepath!r}!"
+                except (JSONDecodeError, TypeError):
+                    err = f"Error decoding file {self.queries_filepath!r} to a list of queries!"
         except (FileNotFoundError, PermissionError, OSError):
-            err = f"Error opening file {self.documents_filepath!r} in write mode!"
+            err = f"Error opening file {self.queries_filepath!r} in read mode!"
 
         self.context.logger.error(err)
 
@@ -146,28 +187,6 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
 
         self.context.logger.error(err)
 
-    def hash_stored_documents(self) -> str:
-        """Get the hash of the stored documents' file."""
-        if not os.path.isfile(self.documents_filepath):
-            self.context.logger.warning(
-                f"No stored documents file was detected in {self.documents_filepath}. Assuming local documents are empty."
-            )
-            return ""
-        return IPFSHashOnly.hash_file(self.documents_filepath)
-    
-    def store_embeddings(self) -> None:
-        """Store the embeddings to the agent's data dir as Parquet."""
-        if self.embeddings.empty:
-            self.context.logger.warning("No embeddings to store locally.")
-            return
-
-        try:
-            self.embeddings.to_parquet(self.embeddings_filepath, compression="snappy", index=True)
-            return
-        except Exception as e:
-            err = f"Error writing to file {self.embeddings_filepath!r}: {e}"
-            self.context.logger.error(err)
-
     def read_embeddings(self) -> None:
         """Read the embeddings from the agent's data dir as Parquet."""
         if not os.path.isfile(self.embeddings_filepath):
@@ -182,7 +201,102 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         except Exception as e:
             err = f"Error reading file {self.embeddings_filepath!r}: {e}"
             self.context.logger.error(err)
+    
+    def store_ipfs_hashes(self) -> None:
+        """Store the IPFS hashes to the agent's data dir as JSON."""
+        if not self.ipfs_hashes:
+            self.context.logger.warning("No IPFS hashes to store locally.")
+            return
 
+        try:
+            with open(self.ipfs_hashes_filepath, WRITE_MODE) as ipfs_hashes_file:
+                try:
+                    json.dump(self.ipfs_hashes, ipfs_hashes_file)
+                    return
+                except (IOError, OSError):
+                    err = f"Error writing to file {self.ipfs_hashes_filepath!r}!"
+        except (FileNotFoundError, PermissionError, OSError):
+            err = f"Error opening file {self.ipfs_hashes_filepath!r} in write mode!"
+
+        self.context.logger.error(err)
+
+    def store_queries(self) -> None:
+        """Store the queries to the agent's data dir as JSON."""
+        serialized = serialize_queries(self.queries)
+        if serialized is None:
+            self.context.logger.warning("No queries to store locally.")
+            return
+
+        try:
+            with open(self.queries_filepath, WRITE_MODE) as queries_file:
+                try:
+                    queries_file.write(serialized)
+                    return
+                except (IOError, OSError):
+                    err = f"Error writing to file {self.queries_filepath!r}!"
+        except (FileNotFoundError, PermissionError, OSError):
+            err = f"Error opening file {self.queries_filepath!r} in write mode!"
+
+        self.context.logger.error(err)
+
+    def store_documents(self) -> None:
+        """Store the documents to the agent's data dir as JSON."""
+        serialized = serialize_documents(self.documents)
+        if serialized is None:
+            self.context.logger.warning("No documents to store locally.")
+            return
+
+        try:
+            with open(self.documents_filepath, WRITE_MODE) as documents_file:
+                try:
+                    documents_file.write(serialized)
+                    return
+                except (IOError, OSError):
+                    err = f"Error writing to file {self.documents_filepath!r}!"
+        except (FileNotFoundError, PermissionError, OSError):
+            err = f"Error opening file {self.documents_filepath!r} in write mode!"
+
+        self.context.logger.error(err)
+
+    def store_embeddings(self) -> None:
+        """Store the embeddings to the agent's data dir as Parquet."""
+        if self.embeddings.empty:
+            self.context.logger.warning("No embeddings to store locally.")
+            return
+
+        try:
+            self.embeddings.to_parquet(self.embeddings_filepath, compression="snappy", index=True)
+            return
+        except Exception as e:
+            err = f"Error writing to file {self.embeddings_filepath!r}: {e}"
+            self.context.logger.error(err)
+
+    def hash_stored_ipfs_hashes(self) -> str:
+        """Get the hash of the stored IPFS hashes' file."""
+        if not os.path.isfile(self.ipfs_hashes_filepath):
+            self.context.logger.warning(
+                f"No stored IPFS hashes file was detected in {self.ipfs_hashes_filepath}. Assuming local hashes are empty."
+            )
+            return ""
+        return IPFSHashOnly.hash_file(self.ipfs_hashes_filepath)
+
+    def hash_stored_queries(self) -> str:
+        """Get the hash of the stored queries' file."""
+        if not os.path.isfile(self.queries_filepath):
+            self.context.logger.warning(
+                f"No stored queries file was detected in {self.queries_filepath}. Assuming local queries are empty."
+            )
+            return ""
+        return IPFSHashOnly.hash_file(self.queries_filepath)
+
+    def hash_stored_documents(self) -> str:
+        """Get the hash of the stored documents' file."""
+        if not os.path.isfile(self.documents_filepath):
+            self.context.logger.warning(
+                f"No stored documents file was detected in {self.documents_filepath}. Assuming local documents are empty."
+            )
+            return ""
+        return IPFSHashOnly.hash_file(self.documents_filepath)
 
     def hash_stored_embeddings(self) -> str:
         """Get the hash of the stored embeddings' file."""

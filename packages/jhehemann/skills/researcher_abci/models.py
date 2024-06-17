@@ -32,7 +32,11 @@ from packages.jhehemann.skills.scraper_abci.models import (
 )
 from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSharedState
 from packages.jhehemann.skills.scraper_abci.rounds import Event as SamplingEvent
-from packages.jhehemann.skills.documents_manager_abci.models import DocumentsManagerParams
+
+from packages.jhehemann.skills.documents_manager_abci.models import (
+    DocumentsManagerParams,
+    OmenSubgraph as DocumentsManagerOmenSubgraph
+)
 from packages.jhehemann.skills.documents_manager_abci.rounds import Event as DocumentsManagerEvent
 from packages.jhehemann.skills.researcher_abci.composition import ResearcherSkillAbciApp
 from packages.valory.skills.abstract_round_abci.models import (
@@ -55,7 +59,7 @@ BenchmarkTool = BaseBenchmarkTool
 SearchEngineResponseSpecs = ScraperSearchEngineResponseSpecs
 WebScrapeResponseSpecs = ScraperWebScrapeResponseSpecs
 EmbeddingResponseSpecs = ScraperEmbeddingResponseSpecs
-
+OmenSubgraph = DocumentsManagerOmenSubgraph
 RandomnessApi = BaseRandomnessApi
 
 MARGIN = 5

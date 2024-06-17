@@ -7,18 +7,27 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeicowkv4xgyilyhwqfqrhfg655fyuz36wmyxfjpcwochgqxottft44
-  behaviours/base.py: bafybeif3eexloezxk3vgrv5ugt6gxvaz7imjls6m6mfmu7kri73lithozi
-  behaviours/check_documents.py: bafybeiaf6fgud4oqryb6ifbcoetoql3qikqhdpyrngqdmm6gz74b4oelku
+  behaviours/base.py: bafybeicbpsot5v6ky52fdnjugulk7zexlxgf5zf3seben4lmmyurtya4du
+  behaviours/check_documents.py: bafybeigj7fnla7hlpidjosbtro5s223sszj5fyj4u75ukkdd6zaujaa6r4
+  behaviours/sample_query.py: bafybeigo7ctua2rcjqkvcigrtb2n5lbwzw77b4xshmeaglaa6loetn2f3i
   behaviours/search_engine.py: bafybeidmqm7ehudlp3kbcqgudqjd4gvjsjwkri54etanjg7quf4fmwia2y
-  behaviours/update_files.py: bafybeiagj2mku3ayc2td6hri4xibwy6yyl4jmqs4kokyugh5vtjky4tgmi
+  behaviours/update_files.py: bafybeia2abnn4aa4fov2m5f4hsmt5nt2p4lc6zq675ff6bqpdn7mkdkivi
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   documents.py: bafybeibpkwt2t7ekjckkp63g5772b7uowschvjncx4gidwttr4wcwo6j4a
-  fsm_specification.yaml: bafybeie6xqckzbm7t24bptmnoazwpyvpgsuclbadjjehvo5rnul6lgjtqq
+  fsm_specification.yaml: bafybeidqiujj6gfrzkdxoy5xk2ddsb7a6b6gqj6y23stxpt2yxiyn4pdze
+  graph_tooling/queries/__init__.py: bafybeihbybnl53i7k57ql5ujt5ru5n2eg324jfndh4lcnm4fk52mwbkjda
+  graph_tooling/queries/conditional_tokens.py: bafybeic6ohkdp4rvkcfglieksv6gbzm4qocpgdjaz4sroutl37sxijthji
+  graph_tooling/queries/network.py: bafybeigeq72ys2nrjqspj2uacaudrgljrne5a3o5jvzsktldxdq6m2xmeu
+  graph_tooling/queries/omen.py: bafybeig25e57wmwa472a6azmpkznipn7j5nc6fpa2wujhljqifxzac6dgm
+  graph_tooling/queries/realitio.py: bafybeiftewjwk5fi6uqrhmalweun47voau2qkxi7hg3faxcmyy3va44zma
+  graph_tooling/queries/trades.py: bafybeigu6c25kf3mrlvmwjeskgagswdjnnxsygpriygmip44us4xvuf7ji
+  graph_tooling/requests.py: bafybeicotb5tf7sdgitbkwrxgmpvkhy7frbmwfa7gzcpfpispdlq6isf5y
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeia4zqvej2hqqozhnnctvikjmseddqgozwquc6zxbvllwx57juykhe
-  payloads.py: bafybeihb42a2wewkpimiqkqhflkoem4yammye77hqy3vo72kk3zrtvszmy
-  round_behaviour.py: bafybeigvlbdwq3fgcorxwfrs7jhes6f47ki2rpl6r5imbsnuz7gfct5gaq
-  rounds.py: bafybeiavxejtdbtxmlmwt46vvt7k6ltgwzaxjdudae4zvc33ntebxjpswy
+  models.py: bafybeifzcy4swgro72uttyqk7cqhxv3vviftfzfek4xvpefsgtzewj7rie
+  payloads.py: bafybeigev7qxa355c4lsn6sgbba4jczrhnstwbme6fqw5vxpfqhinqoeqm
+  queries.py: bafybeihx64zt5hsi5vsshjvtlz5pz5jggjfu3kbnxzp7mgez6uw536h4oi
+  round_behaviour.py: bafybeif2gobjihgubhj6vjdktj3uu3gadfl5cw5c6ixkgh2o427ke3dnfa
+  rounds.py: bafybeia6owtzduycp5wykqss3scc4dcwmepntg7bwoaascslndnudd3toq
 fingerprint_ignore_patterns: []
 connections: []
 contracts:
@@ -145,6 +154,11 @@ models:
       slash_threshold_amount: 10000000000000000
       light_slash_unit_amount: 5000000000000000
       serious_slash_unit_amount: 8000000000000000
+      creator_per_subgraph:
+        omen_subgraph: []
+      opening_margin: 300
+      languages:
+      - en_US
       service_endpoint_base: https://demo.staging.autonolas.tech/
     class_name: DocumentsManagerParams
   search_engine_response:
@@ -159,6 +173,18 @@ models:
       retries: 5
       url: https://www.googleapis.com/customsearch/v1
     class_name: SearchEngineResponseSpecs
+  omen_subgraph:
+    args:
+      api_id: omen
+      headers:
+        Content-Type: application/json
+      method: POST
+      parameters: {}
+      response_key: data:fixedProductMarketMakers
+      response_type: list
+      retries: 5
+      url: https://api.thegraph.com/subgraphs/name/protofire/omen-xdai
+    class_name: OmenSubgraph
   requests:
     args: {}
     class_name: Requests

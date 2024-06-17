@@ -26,6 +26,12 @@ from typing import Optional
 from packages.valory.skills.abstract_round_abci.base import BaseTxPayload
 
 @dataclass(frozen=True)
+class UpdateQueriesPayload(BaseTxPayload, ABC):
+    """Represent a transaction payload for the UpdateQueriesRound."""
+
+    queries_hash: Optional[str]
+
+@dataclass(frozen=True)
 class UpdateFilesPayload(BaseTxPayload, ABC):
     """Represent a transaction payload for the UpdateFilesRound."""
 
@@ -43,6 +49,13 @@ class CheckDocumentsPayload(BaseTxPayload):
     """Represent a transaction payload for the UpdateDocumentsRound."""
 
     num_unprocessed: Optional[int]
+
+@dataclass(frozen=True)
+class SampleQueryPayload(BaseTxPayload):
+    """Represent a transaction payload for the SampleQueryRound."""
+
+    queries_hash: str
+    sampled_query_idx: str
 
 @dataclass(frozen=True)
 class SearchEnginePayload(BaseTxPayload):

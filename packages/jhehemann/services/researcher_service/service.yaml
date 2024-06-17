@@ -7,7 +7,7 @@ license: Apache-2.0
 fingerprint:
   README.md: bafybeicxq7czrb2v2mzpvytqc53eawd6kwe7vq2lh5kn63hhxrj3fqodne
 fingerprint_ignore_patterns: []
-agent: jhehemann/researcher_agent:0.1.0:bafybeidaws3xmevghj4xjevckqd33aymdt4ki6ib6iyfkaxttxdx5odrfq
+agent: jhehemann/researcher_agent:0.1.0:bafybeif7oighxqmzsfuyzk6lvrry6gduidjbpkxygxxnzkbjitrdpkkdwa
 number_of_agents: 1
 deployment:
   agent:
@@ -83,6 +83,10 @@ extra:
         tx_timeout: 10.0
         use_termination: ${USE_TERMINATION:bool:true}
         validate_timeout: 1205
+        creator_per_subgraph:
+          omen_subgraph: ${OMEN_CREATORS:list:["0x89c5cc945dd550BcFfb72Fe42BfF002429F46Fec"]}
+        opening_margin: ${OPENING_MARGIN:int:300}
+        languages: ${LANGUAGES:list:["en_US"]}
         service_endpoint_base: ${SERVICE_ENDPOINT_BASE:str:https://demo.autonolas.tech/}
         use_slashing: ${USE_SLASHING:bool:false}
         manual_gas_limit: ${MANUAL_GAS_LIMIT:int:1000000}

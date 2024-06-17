@@ -33,7 +33,7 @@ from packages.valory.skills.abstract_round_abci.models import (
     SharedState as BaseSharedState,
 )
 from collections import defaultdict
-from typing import Any, Callable, Dict, List, Optional, cast
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, cast
 
 from aea.exceptions import enforce
 from aea.skills.base import Model
@@ -48,6 +48,11 @@ Requests = BaseRequests
 BenchmarkTool = BaseBenchmarkTool
 #Params = BaseParams
 
+
+class OmenSubgraph(ApiSpecs):
+    """A model that wraps ApiSpecs for the OMEN's subgraph specifications."""
+
+
 class DocumentsManagerParams(BaseParams):
     """A model to represent params for multiple abci apps."""
 
@@ -57,10 +62,14 @@ class DocumentsManagerParams(BaseParams):
         self.api_keys: Dict = self._nested_list_todict_workaround(
             kwargs, "api_keys_json"
         )
-
+        self.creator_per_market: Dict[str, List[str]] = self._ensure(
+            "creator_per_subgraph", kwargs, Dict[str, List[str]]
+        )
         self.input_query: str = self._ensure("input_query", kwargs, str)
+        self.opening_margin: int = self._ensure("opening_margin", kwargs, int)
+        self.languages: List[str] = self._ensure("languages", kwargs, List[str])
         super().__init__(*args, **kwargs)
-
+        
     def _nested_list_todict_workaround(
         self,
         kwargs: Dict,
@@ -71,9 +80,16 @@ class DocumentsManagerParams(BaseParams):
         if len(values) == 0:
             raise ValueError(f"No {key} specified!")
         return {value[0]: value[1] for value in values}
+    
+    @property
+    def creators_iterator(self) -> Iterator[Tuple[str, List[str]]]:
+        """Return an iterator of market per creators."""
+        return iter(self.creator_per_market.items())
+
 
 class SearchEngineResponseSpecs(ApiSpecs):
     """A model that wraps ApiSpecs for the search engines's response specifications."""
+
 
 @dataclass(init=False)
 class SearchEngineInteractionResponse:

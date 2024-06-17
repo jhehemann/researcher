@@ -41,6 +41,7 @@ states:
 - RegistrationStartupRound
 - ResetRound
 - ResetAndPauseRound
+- SampleQueryRound
 - SamplingRound
 - SearchEngineRound
 - SelectKeeperTransactionSubmissionARound
@@ -48,6 +49,7 @@ states:
 - SelectKeeperTransactionSubmissionBRound
 - SynchronizeLateMessagesRound
 - UpdateFilesRound
+- UpdateQueriesRound
 - WebScrapeRound
 - ValidateEmbeddingsHashRound
 - ValidateTransactionRound
@@ -59,7 +61,7 @@ transition_func:
     (CheckLateTxHashesRound, NEGATIVE): ResetAndPauseRound
     (CheckLateTxHashesRound, NONE): ResetAndPauseRound
     (CheckLateTxHashesRound, NO_MAJORITY): ResetAndPauseRound
-    (CheckDocumentsRound, DONE): CheckDocumentsRound
+    (CheckDocumentsRound, DONE): SampleQueryRound
     (CheckDocumentsRound, NO_UPDATES): SamplingRound
     (CheckDocumentsRound, TO_UPDATE): SearchEngineRound
     (CheckDocumentsRound, NO_MAJORITY): CheckDocumentsRound
@@ -95,12 +97,16 @@ transition_func:
     (RegistrationRound, DONE): CheckDocumentsRound
     (RegistrationRound, NO_MAJORITY): RegistrationRound
     (RegistrationStartupRound, DONE): CheckDocumentsRound
-    (ResetAndPauseRound, DONE): CheckDocumentsRound
+    (ResetAndPauseRound, DONE): UpdateQueriesRound
     (ResetAndPauseRound, NO_MAJORITY): ResetAndPauseRound
     (ResetAndPauseRound, RESET_AND_PAUSE_TIMEOUT): ResetAndPauseRound
     (ResetRound, DONE): RandomnessTransactionSubmissionRound
     (ResetRound, NO_MAJORITY): ResetAndPauseRound
     (ResetRound, RESET_TIMEOUT): ResetAndPauseRound
+    (SampleQueryRound, DONE): SearchEngineRound
+    (SampleQueryRound, NONE): FailedDocumentsManagerRound
+    (SampleQueryRound, NO_MAJORITY): SampleQueryRound
+    (SampleQueryRound, ROUND_TIMEOUT): SampleQueryRound
     (SamplingRound, DONE): WebScrapeRound
     (SamplingRound, NONE): ResetAndPauseRound
     (SamplingRound, NO_MAJORITY): SamplingRound
@@ -131,6 +137,10 @@ transition_func:
     (UpdateFilesRound, UPDATE_FAILED): FailedDocumentsManagerRound
     (UpdateFilesRound, UPDATE_FAILED): FinishedDocumentsManagerRound
     (UpdateFilesRound, NO_MAJORITY): UpdateFilesRound
+    (UpdateQueriesRound, DONE): UpdateFilesRound
+    (UpdateQueriesRound, FETCH_ERROR): FailedMarketManagerRound
+    (UpdateQueriesRound, NO_MAJORITY): UpdateQueriesRound
+    (UpdateQueriesRound, ROUND_TIMEOUT): UpdateQueriesRound
     (ValidateTransactionRound, DONE): ResetAndPauseRound
     (ValidateTransactionRound, NEGATIVE): CheckTransactionHistoryRound
     (ValidateTransactionRound, NONE): SelectKeeperTransactionSubmissionBRound
