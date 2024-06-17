@@ -143,6 +143,7 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
             return
 
         self.ipfs_hashes = ipfs_files_hashes
+        self.store_ipfs_hashes()
         self.context.logger.info(f"Downloaded IPFS hashes: {ipfs_files_hashes}")
         yield from self.load_embeddings_file()
         yield from self.load_documents_file()

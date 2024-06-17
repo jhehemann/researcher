@@ -239,6 +239,9 @@ class FinishedDocumentsManagerRound(DegenerateRound):
 class FailedDocumentsManagerRound(DegenerateRound):
     """FailedDocumentsManagerRound"""
 
+class FinishedDocumentsManagerWithSearchEngineRound(DegenerateRound):
+    """FinishedSearchEngineRound"""
+
 
 class DocumentsManagerAbciApp(AbciApp[Event]):
     """DocumentsManagerAbciApp"""
@@ -277,14 +280,16 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
             Event.NO_MAJORITY: SearchEngineRound,
             Event.ROUND_TIMEOUT: SearchEngineRound,
             Event.UPDATE_FAILED: FailedDocumentsManagerRound,
-            Event.DONE: CheckDocumentsRound,
+            Event.DONE: FinishedDocumentsManagerWithSearchEngineRound,
         },
         FinishedDocumentsManagerRound: {},
         FailedDocumentsManagerRound: {},
+        FinishedDocumentsManagerWithSearchEngineRound: {},
     }
     final_states: Set[AppState] = {
         FinishedDocumentsManagerRound,
         FailedDocumentsManagerRound,
+        FinishedDocumentsManagerWithSearchEngineRound,
     }
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
@@ -295,4 +300,5 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
     db_post_conditions: Dict[AppState, Set[str]] = {
         FinishedDocumentsManagerRound: {get_name(SynchronizedData.documents_hash)},
         FailedDocumentsManagerRound: set(),
+        FinishedDocumentsManagerWithSearchEngineRound: set(),
     }

@@ -231,6 +231,7 @@ class ScraperAbciApp(AbciApp[Event]):
     initial_round_cls: AppState = SamplingRound
     initial_states: Set[AppState] = {
         SamplingRound,
+        PublishRound,
     }
     transition_function: AbciAppTransitionFunction = {
         SamplingRound: {
@@ -276,6 +277,7 @@ class ScraperAbciApp(AbciApp[Event]):
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
     db_pre_conditions: Dict[AppState, Set[str]] = {
         SamplingRound: set(),
+        PublishRound: set(),
     }
     db_post_conditions: Dict[AppState, Set[str]] = {
         FinishedScraperRound: {"most_voted_tx_hash"},

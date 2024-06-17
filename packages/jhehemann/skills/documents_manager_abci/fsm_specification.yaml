@@ -8,6 +8,7 @@ alphabet_in:
 default_start_state: CheckDocumentsRound
 final_states:
 - FinishedDocumentsManagerRound
+- FinishedDocumentsManagerWithSearchEngineRound
 - FailedDocumentsManagerRound
 label: ScraperAbciApp
 start_states:
@@ -17,6 +18,7 @@ states:
 - CheckDocumentsRound
 - FailedDocumentsManagerRound
 - FinishedDocumentsManagerRound
+- FinishedDocumentsManagerWithSearchEngineRound
 - SearchEngineRound
 - UpdateQueriesRound
 - UpdateFilesRound
@@ -29,7 +31,7 @@ transition_func:
     (SampleQueryRound, NONE): FailedDocumentsManagerRound
     (SampleQueryRound, NO_MAJORITY): SampleQueryRound
     (SampleQueryRound, ROUND_TIMEOUT): SampleQueryRound
-    (SearchEngineRound, DONE): CheckDocumentsRound
+    (SearchEngineRound, DONE): FinishedDocumentsManagerWithSearchEngineRound
     (SearchEngineRound, UPDATE_FAILED): FailedDocumentsManagerRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound

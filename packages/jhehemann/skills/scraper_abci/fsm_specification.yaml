@@ -11,6 +11,7 @@ final_states:
 label: ScraperAbciApp
 start_states:
 - SamplingRound
+- PublishRound
 states:
 - EmbeddingRound
 - FinishedScraperRound

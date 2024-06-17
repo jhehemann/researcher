@@ -112,7 +112,7 @@ transition_func:
     (SamplingRound, NONE): ResetAndPauseRound
     (SamplingRound, NO_MAJORITY): SamplingRound
     (SamplingRound, ROUND_TIMEOUT): SamplingRound
-    (SearchEngineRound, DONE): CheckDocumentsRound
+    (SearchEngineRound, DONE): PublishRound
     (SearchEngineRound, UPDATE_FAILED): ResetAndPauseRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
