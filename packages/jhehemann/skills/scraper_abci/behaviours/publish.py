@@ -21,28 +21,35 @@
 
 
 
-from typing import Any, Generator, Optional, Type, cast
+from typing import Any, Generator, Optional, Type, List, Dict, cast
 from abc import ABC
 
 from aea.helpers.cid import to_v1
+from multibase import multibase
+from multicodec import multicodec
 
-import multibase
-import multicodec
-
-# from packages.jhehemann.skills.scraper_abci.models import PublishResponseSpecs
-from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour, WaitableConditionType
-# from packages.jhehemann.skills.scraper_abci.models import PublishInteractionResponse
+from packages.jhehemann.contracts.hash_checkpoint.contract import HashCheckpointContract
+from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour
 from packages.jhehemann.skills.scraper_abci.payloads import PublishPayload
 from packages.jhehemann.skills.scraper_abci.rounds import PublishRound
-from packages.jhehemann.skills.scraper_abci.rounds import ValidateEmbeddingsHashRound
-from packages.jhehemann.skills.scraper_abci.payloads import ValidateEmbeddingsHashPayload
+from packages.valory.contracts.gnosis_safe.contract import GnosisSafeContract
+from packages.valory.protocols.contract_api.message import ContractApiMessage
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.valory.skills.abstract_round_abci.io_.store import SupportedFiletype
+
+from packages.valory.skills.transaction_settlement_abci.payload_tools import (
+    hash_payload_to_hex,
+)
 
 
 V1_HEX_PREFIX = "f01"
 Ox = "0x"
 EMBEDDINGS_FILENAME = "embeddings.json"
+ZERO_ETHER_VALUE = 0
+ZERO_IPFS_HASH = (
+    "f017012200000000000000000000000000000000000000000000000000000000000000000"
+)
+SAFE_GAS = 0
 
 class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
     """Behaviour to get content from web pages"""
@@ -118,9 +125,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         return res
     
 
-    def _send_embeddings_to_ipfs(
-        self,
-    ) -> WaitableConditionType:
+    def _send_embeddings_to_ipfs(self) -> Generator[None, None, Optional[str]]:
         """Send Embeddings to IPFS."""
         embeddings = self.embeddings
         json_data = embeddings.to_dict(orient='records')
@@ -129,27 +134,118 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         )
         if ipfs_hash is None:
             return None        
+        
+        to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
+        self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
 
         v1_file_hash = to_v1(ipfs_hash)
+        # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
+        # self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
+        # self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
-        self.context.logger.info(f"V1 hash hex: {v1_file_hash_hex}")
+        # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
-        self.context.logger.info(f"IPFS link: {ipfs_link}")
-        return v1_file_hash_hex
+        self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
+        return to_multihash_to_v1
+    
+        
+    def _get_checkpoint_tx(
+        self,
+        hashcheckpoint_address: str,
+        ipfs_hash: str,
+    ) -> Generator[None, None, Optional[Dict[str, Any]]]:
+        """Get the transfer tx."""
+        contract_api_msg = yield from self.get_contract_api_response(
+            performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
+            contract_address=hashcheckpoint_address,
+            contract_id=str(HashCheckpointContract.contract_id),
+            contract_callable="get_checkpoint_data",
+            #data=bytes.fromhex("f02d773780ee38a64657f824472c7328ff389e845ff0f9d5c4585f955c8b2c4e"),
+            data=bytes.fromhex(ipfs_hash),
+        )
+        if (
+            contract_api_msg.performative != ContractApiMessage.Performative.STATE
+        ):  # pragma: nocover
+            self.context.logger.warning(
+                f"get_checkpoint_data unsuccessful!: {contract_api_msg}"
+            )
+            return None
+
+        self.context.logger.info(f"Retrieved the checkpoint data: {contract_api_msg}")
+
+        data = cast(bytes, contract_api_msg.state.body["data"])
+        return {
+            "to": hashcheckpoint_address,
+            "value": ZERO_ETHER_VALUE,
+            "data": data,
+        }
+    
+    def _get_safe_tx_hash(self, data: bytes) -> Generator[None, None, Optional[str]]:
+        """
+        Prepares and returns the safe tx hash.
+
+        This hash will be signed later by the agents, and submitted to the safe contract.
+        Note that this is the transaction that the safe will execute, with the provided data.
+
+        :param data: the safe tx data.
+        :return: the tx hash
+        """
+        response = yield from self.get_contract_api_response(
+            performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
+            contract_address=self.synchronized_data.safe_contract_address,
+            contract_id=str(GnosisSafeContract.contract_id),
+            contract_callable="get_raw_safe_transaction_hash",
+            to_address=self.params.hash_checkpoint_address,
+            value=ZERO_ETHER_VALUE,
+            data=data,
+            safe_tx_gas=SAFE_GAS,
+        )
+
+        if response.performative != ContractApiMessage.Performative.STATE:
+            self.context.logger.error(
+                f"Couldn't get safe hash. "
+                f"Expected response performative {ContractApiMessage.Performative.STATE.value}, "  # type: ignore
+                f"received {response.performative.value}."
+            )
+            return None
+
+        # strip "0x" from the response hash
+        tx_hash = cast(str, response.state.body["tx_hash"])[2:]
+        return tx_hash
+
+    
     def get_payload_content(self) -> Generator:
-        """Extract html text from website"""
         self.read_embeddings()
         should_update_hash = self._should_update_hash()
         if not should_update_hash:
             return None
         
-        embeddings_ipfs_hash = yield from self._send_embeddings_to_ipfs()
+        hash_checkpoint_address = self.params.hash_checkpoint_address
+        ipfs_hash = yield from self._send_embeddings_to_ipfs()
+        update_checkpoint_tx = yield from self._get_checkpoint_tx(hash_checkpoint_address, ipfs_hash)
+        self.context.logger.info(f"Update checkpoint tx: {update_checkpoint_tx}")
+        tx_data_str = (cast(str, update_checkpoint_tx)["data"])[2:]
+        self.context.logger.info(f"Tx data str: {tx_data_str}")
+        tx_data = bytes.fromhex(cast(str, tx_data_str))
+        tx_hash = yield from self._get_safe_tx_hash(tx_data)
+        if tx_hash is None:
+            # something went wrong
+            return None
         
-        return embeddings_ipfs_hash
-
+        payload_data = hash_payload_to_hex(
+            safe_tx_hash=tx_hash,
+            ether_value=ZERO_ETHER_VALUE,
+            safe_tx_gas=SAFE_GAS,
+            to_address=hash_checkpoint_address,
+            data=tx_data,
+            #gas_limit=self.params.manual_gas_limit,
+        )
+        self.context.logger.info(f"Payload data: {payload_data}")
+        return payload_data
+      
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
@@ -157,32 +253,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
             sender = self.context.agent_address
             payload_content = yield from self.get_payload_content()
             payload = PublishPayload(sender=sender, content=payload_content)
-
-        with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
-            yield from self.send_a2a_transaction(payload)
-            yield from self.wait_until_round_end()
-
-        self.set_done()
-
-
-class ValidateEmbeddingsHashBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
-    """Behaviour to request URLs from embedding"""
-
-    matching_round: Type[AbstractRound] = ValidateEmbeddingsHashRound   
-
-    def __init__(self, **kwargs: Any) -> None:
-        """Initialize behaviour."""
-        super().__init__(**kwargs)
-
-    def async_act(self) -> Generator:
-        """Do the act, supporting asynchronous execution."""
-
-        with self.context.benchmark_tool.measure(self.behaviour_id).local():
-            payload_content = self.synchronized_data.embeddings_ipfs_hash
-            self.context.logger.info(f"Updated latest IPFS embeddings hash: {payload_content}")
-            self.params.publish_mutable_params.latest_embeddings_hash = payload_content
-            sender = self.context.agent_address
-            payload = ValidateEmbeddingsHashPayload(sender=sender, content=payload_content)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

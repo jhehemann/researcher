@@ -64,10 +64,4 @@ class PublishPayload(BaseTxPayload):
     """Represent a transaction payload for the EmbeddingRound."""
 
     content: str
-
-@dataclass(frozen=True)
-class ValidateEmbeddingsHashPayload(BaseTxPayload):
-    """Represent a transaction payload for the ValidateEmbeddingsHashRound."""
-
-    content: str
-
+    

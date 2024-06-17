@@ -34,6 +34,7 @@ from packages.valory.skills.abstract_round_abci.models import (
     SharedState as BaseSharedState,
 )
 from packages.valory.skills.abstract_round_abci.models import TypeCheckMixin
+from packages.valory.skills.abstract_round_abci.utils import check_type
 from collections import defaultdict
 from typing import Any, Callable, Dict, List, Optional, cast
 
@@ -64,6 +65,8 @@ class ScraperParams(DocumentsManagerParams):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the parameters object."""
         self._ipfs_address: str = self._ensure("ipfs_address", kwargs, str)
+        self.hash_checkpoint_address: str = self._ensure("hash_checkpoint_address", kwargs, str)
+        # self.manual_gas_limit = self._ensure_get("manual_gas_limit", kwargs, int)
 
         self.publish_mutable_params = MutableParams()
         super().__init__(*args, **kwargs)

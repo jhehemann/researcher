@@ -8,11 +8,11 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeiabpuj3ksuzmro5bnzgavcwnode34wfrkvf3apvgd6bzvs2j47azq
   behaviours.py: bafybeifraurfnxwmgc73iyrpqhimo3rtmq4adonvs6m4plkq47umapgbpq
-  composition.py: bafybeiant76do2qvllpaqyuugyk3aqsxjivfn7jjujwjybgqdmocgflkj4
+  composition.py: bafybeiaq2wtwslymmjnuyud7l3h6tdp52zikyf7qbg723b45prwolvn22m
   dialogues.py: bafybeiakqfqcpg7yrxt4bsyernhy5p77tci4qhmgqqjqi3ttx7zk6sklca
-  fsm_specification.yaml: bafybeicirctig6waann2kfyftpffojjzu42zuhleoi55enmzh3goij5zyu
+  fsm_specification.yaml: bafybeifhyuz6o7cmbv4oiqdjzeli5t6o7ftxhzxuxco5pe2nvojwov3ira
   handlers.py: bafybeiet4vvrjm35rsuqvym52q5bfyglrvffunnxvui2nkjir746ndm2zm
-  models.py: bafybeifago7xkezfsip32k7lahlcscqm6cn2e6pbrxdpvdsio274cjzbdy
+  models.py: bafybeig45bneipco3r23vgqketz4btduhjhh7ohegdirt7u7oprlxijopa
 fingerprint_ignore_patterns: []
 connections: []
 contracts: []
@@ -22,8 +22,8 @@ skills:
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
-- jhehemann/scraper_abci:0.1.0:bafybeielnlwsxezrw4iispcou7br55xapfzhhqszjrnuxlyxo7q5hvw2za
-- jhehemann/documents_manager_abci:0.1.0:bafybeihvw4gybcjqhjug3khkzwys7rkvgfp4d73ajpbpakde4o6yhtj7wa
+- jhehemann/scraper_abci:0.1.0:bafybeiavvivxr5bzjcgtndwywpljc7qzclcan64pnf5cn5cmpyocns2psm
+- jhehemann/documents_manager_abci:0.1.0:bafybeibrdgidden55tt2cfh5itjix3ahq7rnate7fzalu4fvmcf3z2eyve
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
 behaviours:
   main:
@@ -57,7 +57,7 @@ models:
     class_name: AbciDialogues
   benchmark_tool:
     args:
-      log_dir: /logs
+      log_dir: /tmp
     class_name: BenchmarkTool
   contract_api_dialogues:
     args: {}
@@ -74,7 +74,11 @@ models:
   params:
     args:
       input_query: Search for relevant information about current topics of interest.
-      api_keys_json: []
+      api_keys_json:
+      - - openai
+        - dummy_api_key
+      - - stabilityai
+        - dummy_api_key
       cleanup_history_depth: 1
       cleanup_history_depth_current: null
       drand_public_key: 868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31
@@ -113,6 +117,7 @@ models:
       round_timeout_seconds: 30.0
       service_id: researcher
       service_registry_address: null
+      hash_checkpoint_address: '0x0000000000000000000000000000000000000000'
       setup:
         all_participants:
         - '0x0000000000000000000000000000000000000000'
@@ -137,6 +142,7 @@ models:
       finalize_timeout: 60.0
       history_check_timeout: 1205
       use_slashing: false
+      manual_gas_limit: 1000000
       slash_cooldown_hours: 3
       slash_threshold_amount: 10000000000000000
       light_slash_unit_amount: 5000000000000000

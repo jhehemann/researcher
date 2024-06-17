@@ -8,25 +8,29 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
   behaviours/base.py: bafybeifws3a76oeidd27rbo3cq3bbwye5fwln76dpx36whxcsocr36ig6e
-  behaviours/embedding.py: bafybeihfmhu5debsqcss32ktobawcweoehb7sm6qvhevggiitm6cncoi7q
+  behaviours/embedding.py: bafybeifvnm654k65yq2eb6goegzm52d4zqvveg7xtxfpepgudlyngasmie
   behaviours/process_html.py: bafybeigmsarc33tecrfa3svwwvuqtljpogwiayps4mcknqka73qwmqlhs4
-  behaviours/publish.py: bafybeiaimukmhlzjxnednmkhqelzczsfxh6nxvarg6ail26mybndf7jyyi
+  behaviours/publish.py: bafybeihl5egbqrybvrvqz3m3nuudpnxcxkhsjzmhihhfrfbx75elgqjkpi
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeihzevgrb3uizdgx2bd6uqtc2vzrhux4x36lryu4ggzojsuke3dqiy
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  fsm_specification.yaml: bafybeicutfuhzffjx5co474qng3ajxrj7x2l54sprtuzbzvzkzg6kacsvm
+  fsm_specification.yaml: bafybeifa64uuk6csovwxprdiyrwxfl6jfykcdwzfx3h5d7u3zfowybeyoy
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeigxxz3aps7cip26x3wx7mn5ikauk3umirh6axzv76thvhlebdefry
-  payloads.py: bafybeigbg34qxk2ay3ld3g5gecwfcfxbj6kaf3gibrh7pebpeff3hj25yy
-  round_behaviour.py: bafybeieew3jbw3l4h3gdq6e7egbyzrgxpjphla5f7szcebc5dpihpilcla
-  rounds.py: bafybeif6ylowqfho66ivzyqti3pblqp44at4xihtte35tc3urjjxmu6n6u
+  models.py: bafybeig6svwxvou6mbontvf3a6f6reejjkvu2sfp5y36oluyzmbyrhxp4u
+  payloads.py: bafybeicey2ny6cuhebnuwl6auw5byllbvruiu5gewawwzkpqcoy5qubeo4
+  round_behaviour.py: bafybeidjdnmf6fs7jy3mlykhas4y7m5y26w2csldmva5zj5veqsj73acie
+  rounds.py: bafybeigx2mkzmxeob4gom2xfsh3za24nxbsvydbk6n63fzxaa2i262y6zi
 fingerprint_ignore_patterns: []
 connections: []
-contracts: []
-protocols: []
+contracts:
+- jhehemann/hash_checkpoint:0.1.0:bafybeicuhncglpgvsdyblheoafsuzejuxwerqn2f3y7vpedunazad3xvxq
+- valory/gnosis_safe:0.1.0:bafybeibq77mgzhyb23blf2eqmia3kc6io5karedfzhntvpcebeqdzrgyqa
+protocols:
+- valory/contract_api:1.0.0:bafybeidgu7o5llh26xp3u3ebq3yluull5lupiyeu6iooi2xyymdrgnzq5i
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeihvw4gybcjqhjug3khkzwys7rkvgfp4d73ajpbpakde4o6yhtj7wa
+- valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
+- jhehemann/documents_manager_abci:0.1.0:bafybeibrdgidden55tt2cfh5itjix3ahq7rnate7fzalu4fvmcf3z2eyve
 behaviours:
   main:
     args: {}
@@ -59,7 +63,7 @@ models:
     class_name: AbciDialogues
   benchmark_tool:
     args:
-      log_dir: /logs
+      log_dir: /tmp
     class_name: BenchmarkTool
   contract_api_dialogues:
     args: {}
@@ -76,7 +80,11 @@ models:
   params:
     args:
       input_query: Search for relevant information about current topics of interest.
-      api_keys_json: []
+      api_keys_json:
+      - - openai
+        - dummy_api_key
+      - - stabilityai
+        - dummy_api_key
       cleanup_history_depth: 1
       cleanup_history_depth_current: null
       drand_public_key: 868f005eb8e6e4ca0a47c8a77ceaa5309a47978a7c71bc5cce96366b5d7a569937c529eeda66c7293784a9402801af31
@@ -114,6 +122,7 @@ models:
       round_timeout_seconds: 30.0
       service_id: researcher
       service_registry_address: null
+      hash_checkpoint_address: '0x0000000000000000000000000000000000000000'
       setup:
         all_participants:
         - '0x0000000000000000000000000000000000000000'
@@ -137,6 +146,7 @@ models:
       timeout_limit: 3
       max_block_window: 500
       use_slashing: false
+      manual_gas_limit: 1000000
       slash_cooldown_hours: 3
       slash_threshold_amount: 10000000000000000
       light_slash_unit_amount: 5000000000000000

@@ -69,12 +69,12 @@ security:
 .PHONY: generators
 generators:
 	tox -e abci-docstrings
-	tomte format-copyright --author author_name
+	tomte format-copyright --author jhehemann
 	autonomy packages lock
 
 .PHONY: common-checks-1
 common-checks-1:
-	tomte check-copyright --author author_name
+	tomte check-copyright --author jhehemann
 	tomte check-doc-links
 	tox -p -e check-hash -e check-packages -e check-doc-hashes
 
@@ -98,8 +98,10 @@ all-linters:
 .PHONY: fix-abci-app-specs
 fix-abci-app-specs:
 	export PYTHONPATH=${PYTHONPATH}:${PWD}
-	autonomy analyse fsm-specs --update --app-class DemoAbciApp --package packages/author/skills/demo_abci/ || (echo "Failed to check demo_abci abci consistency" && exit 1)
-	autonomy analyse fsm-specs --update --app-class DemoChainedSkillAbciApp --package packages/author/skills/demo_chained_abci/ || (echo "Failed to check demo_chained_abci abci consistency" && exit 1)
+	autonomy analyse fsm-specs --update --app-class DocumentsManagerAbciApp --package packages/jhehemann/skills/documents_manager_abci/ || (echo "Failed to check documents_manager_abci abci consistency" && exit 1)
+	autonomy analyse fsm-specs --update --app-class ResearcherSkillAbciApp --package packages/jhehemann/skills/researcher_abci/ || (echo "Failed to check researcher_abci abci consistency" && exit 1)
+	autonomy analyse fsm-specs --update --app-class ScraperAbciApp --package packages/jhehemann/skills/scraper_abci/ || (echo "Failed to check scraper_abci abci consistency" && exit 1)
+
 
 
 .PHONY: tm

@@ -21,6 +21,7 @@
 
 import packages.jhehemann.skills.scraper_abci.rounds as ScraperAbciApp
 import packages.jhehemann.skills.documents_manager_abci.rounds as DocumentsManagerAbciApp
+import packages.valory.skills.transaction_settlement_abci.rounds as TransactionSubmissionAbciApp
 import packages.valory.skills.registration_abci.rounds as RegistrationAbci
 import packages.valory.skills.reset_pause_abci.rounds as ResetAndPauseAbci
 from packages.valory.skills.abstract_round_abci.abci_app_chain import (
@@ -38,9 +39,11 @@ from packages.valory.skills.termination_abci.rounds import (
 abci_app_transition_mapping: AbciAppTransitionMapping = {
     RegistrationAbci.FinishedRegistrationRound: DocumentsManagerAbciApp.CheckDocumentsRound,
     DocumentsManagerAbciApp.FinishedDocumentsManagerRound: ScraperAbciApp.SamplingRound,
-    DocumentsManagerAbciApp.FailedDocumentsManagerRound: ResetAndPauseAbci.ResetAndPauseRound,
-    ScraperAbciApp.FinishedScraperRound: ResetAndPauseAbci.ResetAndPauseRound,
+    ScraperAbciApp.FinishedScraperRound: TransactionSubmissionAbciApp.RandomnessTransactionSubmissionRound,
     ScraperAbciApp.FinishedWithoutScraping: ResetAndPauseAbci.ResetAndPauseRound,
+    ScraperAbciApp.FinishedWithoutEmbeddingUpdate: ResetAndPauseAbci.ResetAndPauseRound,
+    TransactionSubmissionAbciApp.FinishedTransactionSubmissionRound: ResetAndPauseAbci.ResetAndPauseRound,
+    TransactionSubmissionAbciApp.FailedRound: ResetAndPauseAbci.ResetAndPauseRound,
     ResetAndPauseAbci.FinishedResetAndPauseRound: DocumentsManagerAbciApp.CheckDocumentsRound,
     ResetAndPauseAbci.FinishedResetAndPauseErrorRound: ResetAndPauseAbci.ResetAndPauseRound,
 }
@@ -56,6 +59,7 @@ ResearcherSkillAbciApp = chain(
         RegistrationAbci.AgentRegistrationAbciApp,
         DocumentsManagerAbciApp.DocumentsManagerAbciApp,
         ScraperAbciApp.ScraperAbciApp,
+        TransactionSubmissionAbciApp.TransactionSubmissionAbciApp,
         ResetAndPauseAbci.ResetPauseAbciApp,
     ),
     abci_app_transition_mapping,

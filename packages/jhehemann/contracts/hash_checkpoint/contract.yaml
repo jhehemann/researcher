@@ -1,0 +1,21 @@
+name: hash_checkpoint
+author: jhehemann
+version: 0.1.0
+type: contract
+description: Hash checkpoint contract
+license: Apache-2.0
+aea_version: '>=1.0.0, <2.0.0'
+fingerprint:
+  __init__.py: bafybeiaeg7qg67dxecervk7gks52enz4zuwzh2lh2l2tcl4iui2x6qkhjq
+  build/HashCheckpoint.json: bafybeicdse6k7xbis3mdurqee7a3ghiba4hzfk4llhc3hk6q4qbfjd5rg4
+  contract.py: bafybeiasuqdhtiv57alm77wuy7czynkofxkmykubdmtsokazoopl6g2obq
+fingerprint_ignore_patterns: []
+class_name: HashCheckpointContract
+contract_interface_paths:
+  ethereum: build/HashCheckpoint.json
+dependencies:
+  open-aea-ledger-ethereum:
+    version: ==1.50.0
+  web3:
+    version: <7,>=6.0.0
+contracts: []
