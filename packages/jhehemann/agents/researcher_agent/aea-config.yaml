@@ -32,9 +32,9 @@ protocols:
 skills:
 - valory/abstract_abci:0.1.0:bafybeihat4giyc4bz6zopvahcj4iw53356pbtwfn7p4d5yflwly2qhahum
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
-- jhehemann/documents_manager_abci:0.1.0:bafybeigwscggoaha33kzjv53erat3tsojfyid34n3es6v3behxsxie5qk4
-- jhehemann/scraper_abci:0.1.0:bafybeif4fr2y4bybb2jc3k6vdqzm4xpsywh76v7a7zyoov65caeh6qpmc4
-- jhehemann/researcher_abci:0.1.0:bafybeicoyzo7dzijtj6pws4fzhuetgirz2ukzzvtjl5qlzjt6kduoamu4e
+- jhehemann/documents_manager_abci:0.1.0:bafybeibrdgidden55tt2cfh5itjix3ahq7rnate7fzalu4fvmcf3z2eyve
+- jhehemann/scraper_abci:0.1.0:bafybeiavvivxr5bzjcgtndwywpljc7qzclcan64pnf5cn5cmpyocns2psm
+- jhehemann/researcher_abci:0.1.0:bafybeiaioabejlaibixmvmsqz5c6qgwpjoxrom2fruwmmrn3lfe6dr7cti
 - valory/registration_abci:0.1.0:bafybeiek7zcsxbucjwzgqfftafhfrocvc7q4yxllh2q44jeemsjxg3rcfm
 - valory/reset_pause_abci:0.1.0:bafybeidw4mbx3os3hmv7ley7b3g3gja7ydpitr7mxbjpwzxin2mzyt5yam
 - valory/termination_abci:0.1.0:bafybeihq6qtbwt6i53ayqym63vhjexkcppy26gguzhhjqywfmiuqghvv44
@@ -128,7 +128,7 @@ type: skill
 models:
   benchmark_tool:
     args:
-      log_dir: ${str:/logs}
+      log_dir: ${str:/tmp}
   params:
     args:
       input_query: ${INPUT_QUERY:str:Search for relevant information about current
@@ -165,7 +165,7 @@ models:
       keeper_allowed_retries: 3
       reset_pause_duration: ${int:10}
       on_chain_service_id: ${int:null}
-      reset_tendermint_after: ${int:2}
+      reset_tendermint_after: ${int:5}
       retry_attempts: 400
       retry_timeout: 3
       request_retry_delay: 1.0
@@ -175,8 +175,8 @@ models:
       service_registry_address: ${str:null}
       polling_interval: ${float:30.0}
       setup:
-        all_participants: ${list:["0x0000000000000000000000000000000000000000"]}
-        safe_contract_address: ${str:0x0C0b9642Ef7b94Fe20dC4a871fD3E5E661DEb86C}
+        all_participants: ${list:["0x40b262625f24Bd45e603aE1269A1CdAb051f6354"]}
+        safe_contract_address: ${str:0x0c0b9642ef7b94fe20dc4a871fd3e5e661deb86c}
         consensus_threshold: ${int:null}
       share_tm_config_on_startup: ${bool:false}
       sleep_time: 1
