@@ -114,37 +114,37 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         self.embedding_response_api.reset_retries()
         return res
     
-    def _get_latest_hash(
-        self,
-    ) -> Generator[None, None, Optional[Dict[str, Any]]]:
-        """Get the latest IPFS embeddings hash from contract."""
-        self.context.logger.info(f"Performative: {ContractApiMessage.Performative.GET_STATE}")
-        self.context.logger.info(f"Contract Address: {self.params.hash_checkpoint_address}")
-        self.context.logger.info(f"Contract ID: {str(HashCheckpointContract.contract_id)}")
-        self.context.logger.info(f"Sender Address: {self.context.agent_address}")
-        self.context.logger.info(f"Default ledger id: {self.context.default_ledger_id}")
+    # def _get_latest_hash(
+    #     self,
+    # ) -> Generator[None, None, Optional[Dict[str, Any]]]:
+    #     """Get the latest IPFS embeddings hash from contract."""
+    #     self.context.logger.info(f"Performative: {ContractApiMessage.Performative.GET_STATE}")
+    #     self.context.logger.info(f"Contract Address: {self.params.hash_checkpoint_address}")
+    #     self.context.logger.info(f"Contract ID: {str(HashCheckpointContract.contract_id)}")
+    #     self.context.logger.info(f"Sender Address: {self.context.agent_address}")
+    #     self.context.logger.info(f"Default ledger id: {self.context.default_ledger_id}")
 
-        contract_api_msg = yield from self.get_contract_api_response(
-            performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
-            contract_address=self.params.hash_checkpoint_address,
-            contract_id=str(HashCheckpointContract.contract_id),
-            contract_callable="get_latest_hash",
-            sender_address=self.synchronized_data.safe_contract_address,
-        )
-        if contract_api_msg.performative != ContractApiMessage.Performative.STATE:
-            self.context.logger.warning(
-                f"get_latest_hash unsuccessful!: {contract_api_msg}"
-            )
-            return None
-        latest_ipfs_hash = cast(str, contract_api_msg.state.body["data"])
+    #     contract_api_msg = yield from self.get_contract_api_response(
+    #         performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
+    #         contract_address=self.params.hash_checkpoint_address,
+    #         contract_id=str(HashCheckpointContract.contract_id),
+    #         contract_callable="get_latest_hash",
+    #         sender_address=self.synchronized_data.safe_contract_address,
+    #     )
+    #     if contract_api_msg.performative != ContractApiMessage.Performative.STATE:
+    #         self.context.logger.warning(
+    #             f"get_latest_hash unsuccessful!: {contract_api_msg}"
+    #         )
+    #         return None
+    #     latest_ipfs_hash = cast(str, contract_api_msg.state.body["data"])
         
     
-        if latest_ipfs_hash == ZERO_IPFS_HASH:
-            return {}
-        # format the hash
-        ipfs_hash = str(CID.from_string(latest_ipfs_hash))
-        self.context.logger.debug(f"Got latest IPFS CID hash: {latest_ipfs_hash}")
-        return ipfs_hash
+    #     if latest_ipfs_hash == ZERO_IPFS_HASH:
+    #         return {}
+    #     # format the hash
+    #     ipfs_hash = str(CID.from_string(latest_ipfs_hash))
+    #     self.context.logger.debug(f"Got latest IPFS CID hash: {latest_ipfs_hash}")
+    #     return ipfs_hash
 
     def update_embeddings(self) -> None:
         """Add new embeddings to the existing DataFrame and link them to text chunks in sampled document."""
@@ -211,37 +211,37 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
 
         return True
 
-    def load_latest_embeddings(self) -> Generator:
-        """Get the latest embeddings from IPFS."""
-        ipfs_hash = yield from self._get_latest_hash()
-        if ipfs_hash is None:
-            self.context.logger.warning(
-                "No embeddings hash found. Assuming no embeddings are stored on IPFS."
-            )
-            return
+    # def load_latest_embeddings(self) -> Generator:
+    #     """Get the latest embeddings from IPFS."""
+    #     ipfs_hash = yield from self._get_latest_hash()
+    #     if ipfs_hash is None:
+    #         self.context.logger.warning(
+    #             "No embeddings hash found. Assuming no embeddings are stored on IPFS."
+    #         )
+    #         return
 
-        #ipfs_hash = str(CID.from_string(ipfs_hash))
-        self.context.logger.info(f"Getting embeddings from IPFS with cid hash: {ipfs_hash}")
-        embeddings_json = yield from self.get_from_ipfs(
-            ipfs_hash, filetype=SupportedFiletype.JSON
-        )
-        if embeddings_json is None:
-            self.context.logger.warning(
-                f"Could not get embeddings from IPFS: {ipfs_hash}"
-            )
-            return
+    #     #ipfs_hash = str(CID.from_string(ipfs_hash))
+    #     self.context.logger.info(f"Getting embeddings from IPFS with cid hash: {ipfs_hash}")
+    #     embeddings_json = yield from self.get_from_ipfs(
+    #         ipfs_hash, filetype=SupportedFiletype.JSON
+    #     )
+    #     if embeddings_json is None:
+    #         self.context.logger.warning(
+    #             f"Could not get embeddings from IPFS: {ipfs_hash}"
+    #         )
+    #         return
         
-        embeddings = pd.DataFrame(embeddings_json)
-        self.context.logger.info(f"Downloaded embeddings dataframe: {embeddings.shape}")
-        self.embeddings = embeddings
+    #     embeddings = pd.DataFrame(embeddings_json)
+    #     self.context.logger.info(f"Downloaded embeddings dataframe: {embeddings.shape}")
+    #     self.embeddings = embeddings
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
-            yield from self.load_latest_embeddings()
-            self.embeddings = self.embeddings.sort_index(axis=0).sort_index(axis=1)
-            self.store_embeddings()
+            # yield from self.load_latest_embeddings()
+            # self.embeddings = self.embeddings.sort_index(axis=0).sort_index(axis=1)
+            # self.store_embeddings()
             embeddings_hash_prev = self.hash_stored_embeddings()
             self.context.logger.info(f"Local embeddings hash prev: {embeddings_hash_prev}")
             yield from self.wait_for_condition_with_sleep(self._get_embeddings)

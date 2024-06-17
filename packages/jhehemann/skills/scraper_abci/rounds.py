@@ -53,6 +53,7 @@ class Event(Enum):
 
     DONE = "done"
     NONE = "none"
+    NO_TEXT_CHUNKS = "no_text_chunks"
     NO_MAJORITY = "no_majority"
     ROUND_TIMEOUT = "round_timeout"
 
@@ -83,6 +84,11 @@ class SynchronizedData(DocumentsManagerSyncedData):
     def process_html_data(self) -> Optional[str]:
         """Get the process_html_data."""
         return self.db.get("process_html_data", None)
+    
+    @property
+    def text_chunks(self) -> Optional[bool]:
+        """Get the text_chunks."""
+        return self.db.get("text_chunks", None)
     
     @property
     def embeddings(self) -> Optional[str]:
@@ -163,9 +169,23 @@ class ProcessHtmlRound(CollectSameUntilThresholdRound):
     payload_class = ProcessHtmlPayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
+    no_chunks_event = Event.NO_TEXT_CHUNKS
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_process_html_round)
     selection_key = get_name(SynchronizedData.process_html_data)
+
+    def end_block(self) -> Optional[Tuple[SynchronizedData, Enum]]:
+        """Process the end of the block."""
+        res = super().end_block()
+        if res is None:
+            return None
+
+        synced_data, event = cast(Tuple[SynchronizedData, Enum], res)
+
+        if event == Event.DONE and not synced_data.text_chunks:
+            return synced_data, Event.NO_TEXT_CHUNKS
+
+        return synced_data, event
 
 
 class EmbeddingRound(CollectSameUntilThresholdRound):
@@ -227,6 +247,7 @@ class ScraperAbciApp(AbciApp[Event]):
         ProcessHtmlRound: {
             Event.NO_MAJORITY: ProcessHtmlRound,
             Event.ROUND_TIMEOUT: ProcessHtmlRound,
+            Event.NO_TEXT_CHUNKS: FinishedWithoutEmbeddingUpdate,
             Event.DONE: EmbeddingRound,
         },
         EmbeddingRound: {

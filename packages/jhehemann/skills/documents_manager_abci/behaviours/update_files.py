@@ -21,7 +21,9 @@
 
 from typing import Any, Dict, Generator, Iterator, List, Optional, Set, Tuple, Type, cast
 import pandas as pd
-from aea.helpers.cid import CID
+from aea.helpers.cid import CID, to_v1
+from multibase import multibase
+from multicodec import multicodec
 
 from packages.jhehemann.skills.documents_manager_abci.graph_tooling.requests import (
     FetchStatus,
@@ -40,6 +42,7 @@ from packages.jhehemann.skills.documents_manager_abci.behaviours.base import Doc
 from packages.jhehemann.skills.documents_manager_abci.queries import Query, QueryStatus
 
 ZERO_ETHER_VALUE = 0
+V1_HEX_PREFIX = "f01"
 ZERO_IPFS_HASH = (
     "f017012200000000000000000000000000000000000000000000000000000000000000000"
 )
@@ -71,18 +74,17 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
             )
             return None
         latest_ipfs_hash = cast(str, contract_api_msg.state.body["data"])
+        self.context.logger.info(f"Got latest IPFS hash from contract: {latest_ipfs_hash}")
         
         if latest_ipfs_hash == ZERO_IPFS_HASH:
             return {}
         # format the hash
         ipfs_hash = str(CID.from_string(latest_ipfs_hash))
-        self.context.logger.debug(f"Got latest IPFS CID hash: {latest_ipfs_hash}")
+        self.context.logger.info(f"Got latest IPFS CID hash: {latest_ipfs_hash}")
         return ipfs_hash
 
     def load_file_from_ipfs(self, ipfs_hash: str) -> Generator[None, None, Optional[Dict[str, str]]]:
         """Get the file from IPFS."""
-        
-        self.context.logger.info(f"Loading file from IPFS with cid hash: {ipfs_hash}")
         json_data = yield from self.get_from_ipfs(ipfs_hash, filetype=SupportedFiletype.JSON)
         
         if json_data is None:
@@ -100,8 +102,8 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
                 f"Embeddings file is not a dict. Type: {type(self.ipfs_hashes)}"
             )
             return
-        
         embeddings_hash = self.ipfs_hashes.get("embeddings_json")
+        embeddings_hash = str(CID.from_string(embeddings_hash))
         embeddings = yield from self.load_file_from_ipfs(embeddings_hash)
         embeddings = pd.DataFrame(embeddings)
         self.context.logger.info(f"Downloaded embeddings dataframe: {embeddings.shape}")
@@ -111,8 +113,9 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
     def load_documents_file(self) -> Generator:
         """Load documents file from IPFS."""
         documents_hash = self.ipfs_hashes.get("documents_json")
+        documents_hash = str(CID.from_string(documents_hash))
         documents = yield from self.load_file_from_ipfs(documents_hash)
-        self.context.logger.info(f"Downloaded documents: {documents}")
+        self.context.logger.info(f"Downloaded documents: {len(documents)}")
         self.documents = documents
         self.store_documents()
 
@@ -121,6 +124,7 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
         # Get the latest IPFS hash from the contract
         # This IPFS hash points to a file containing the hashes of the other files
         ipfs_files_hashes_hash = yield from self._get_latest_hash()
+        self.context.logger.info(f"Got latest IPFS hashes hash: {ipfs_files_hashes_hash}")
         
         if ipfs_files_hashes_hash is None:
             self.context.logger.warning(

@@ -51,6 +51,8 @@ class WebScrapePayload(BaseTxPayload):
 class ProcessHtmlPayload(UpdateDocumentsPayload):
     """Represent a transaction payload for the ProcessHtmlRound."""
 
+    text_chunks: bool
+
 
 @dataclass(frozen=True)
 class EmbeddingPayload(BaseTxPayload):

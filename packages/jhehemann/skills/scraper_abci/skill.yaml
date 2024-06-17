@@ -8,18 +8,18 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
   behaviours/base.py: bafybeifws3a76oeidd27rbo3cq3bbwye5fwln76dpx36whxcsocr36ig6e
-  behaviours/embedding.py: bafybeifvnm654k65yq2eb6goegzm52d4zqvveg7xtxfpepgudlyngasmie
-  behaviours/process_html.py: bafybeigmsarc33tecrfa3svwwvuqtljpogwiayps4mcknqka73qwmqlhs4
-  behaviours/publish.py: bafybeigzho4qaugf5zmr7tqhcxodpaohvvmzh6y5ip7udtt4gazyefx7gi
+  behaviours/embedding.py: bafybeibwfvhyr2u3xrufief5uwcpa3aobjvcvgnjwfwonyky5mpwymdydi
+  behaviours/process_html.py: bafybeih7d6fuqbh4cudmwpgu5cosdxxjfpm2tpwo3454ynkyq3b36bf54a
+  behaviours/publish.py: bafybeig5pb6yvyt3sa2g2ubq65khmwrkrqstx4lsktulvhlo55z65ft3ke
   behaviours/sampling.py: bafybeiewobvbyckq7azcr4s6wrzatvl5zsbblvrmrm5swr5cem4yqfweq4
   behaviours/web_scrape.py: bafybeia34bm3rysppmu3zs7ce4zd4wwrfzmvljc4hywvyeoottlssivdwa
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  fsm_specification.yaml: bafybeifa64uuk6csovwxprdiyrwxfl6jfykcdwzfx3h5d7u3zfowybeyoy
+  fsm_specification.yaml: bafybeigqp2aym6aqn4uk42akocusf7l6hgu2gjop2zpmsz5uzax3opbcxy
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
   models.py: bafybeibwh5umiy7k3cy63nzfwki7jifxity6o3js6zytns6yaypazr4sta
-  payloads.py: bafybeicey2ny6cuhebnuwl6auw5byllbvruiu5gewawwzkpqcoy5qubeo4
+  payloads.py: bafybeigz6krppc23xn5m5snatt7s3jdjxfkerkwcksvp7w7wkra7b6j3uy
   round_behaviour.py: bafybeidjdnmf6fs7jy3mlykhas4y7m5y26w2csldmva5zj5veqsj73acie
-  rounds.py: bafybeigx2mkzmxeob4gom2xfsh3za24nxbsvydbk6n63fzxaa2i262y6zi
+  rounds.py: bafybeifjad342jw7hdu5fzy4fpop6opa2tjpxp7gtlbcfagda7bn2nby2m
 fingerprint_ignore_patterns: []
 connections: []
 contracts:
@@ -30,7 +30,7 @@ protocols:
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
 - valory/transaction_settlement_abci:0.1.0:bafybeigtzlk4uakmd54rxnznorcrstsr52kta474lgrnvx5ovr546vj7sq
-- jhehemann/documents_manager_abci:0.1.0:bafybeifat7fytrhwllxhhrp6hl7ppqp63ffwu5aridkcbyh3pzlh5agqwe
+- jhehemann/documents_manager_abci:0.1.0:bafybeiagfzbi67luchqnu3xrhpqecvfywgdbrcpcysoimrv6b3l246fxfq
 behaviours:
   main:
     args: {}

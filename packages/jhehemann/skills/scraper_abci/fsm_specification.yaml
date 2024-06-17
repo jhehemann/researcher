@@ -28,6 +28,7 @@ transition_func:
     (ProcessHtmlRound, DONE): EmbeddingRound
     (ProcessHtmlRound, NO_MAJORITY): ProcessHtmlRound
     (ProcessHtmlRound, ROUND_TIMEOUT): ProcessHtmlRound
+    (ProcessHtmlRound, NO_TEXT_CHUNKS): FinishedWithoutEmbeddingUpdate
     (PublishRound, DONE): FinishedScraperRound
     (PublishRound, NO_MAJORITY): PublishRound
     (PublishRound, ROUND_TIMEOUT): PublishRound

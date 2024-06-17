@@ -114,6 +114,10 @@ class Document:
                 # if getattr(self, date_attribute) is None:
                 #     self.context.logger.warning(f"Cannot convert {date} to datetime object.")
 
+    # def to_dict(self) -> Dict[str, Any]:
+    #     """Convert the Document to a dictionary."""
+    #     return dataclasses.asdict(self)
+
 
 class DocumentsEncoder(json.JSONEncoder):
     """JSON encoder for documents."""
@@ -144,6 +148,11 @@ class DocumentsDecoder(json.JSONDecoder):
 
         return data
 
+def convert_documents_to_dict(documents: List[Document]) -> Union[Dict[str, Any]]:
+    """Convert a list of Document objects to a dictionary format."""
+    if not documents:
+        return {}
+    return {"documents": documents}
 
 def serialize_documents(documents: List[Document]) -> Optional[str]:
     """Get the documents serialized."""

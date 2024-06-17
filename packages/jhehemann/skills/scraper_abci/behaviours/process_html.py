@@ -50,7 +50,7 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         else:
             return [text[i:i+MAX_TOKENS] for i in range(0, len(text), MAX_TOKENS - OVERLAP)]
 
-    def _process_html(self) -> str:
+    def _process_html(self) -> bool:
         """Process the html text."""
         html = self.synchronized_data.web_scrape_data
 
@@ -65,6 +65,9 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
 
         # split text into chunks and join with separator for 
         text_chunks = self.recursive_character_text_splitter(text)
+        if not any(entry for entry in text_chunks):
+            self.context.logger.error("No text chunks generated.")
+            return False
         len_text_chunks = len(text_chunks)
         self.context.logger.info(f"Generated {len_text_chunks} text chunks.")
 
@@ -76,14 +79,13 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         sampled_doc.content = text
         sampled_doc.text_chunks = text_chunks
         self.context.logger.info(f"Text chunks: {sampled_doc.text_chunks}")
+        return True
  
     
-    def get_payload_content(self) -> str:
+    def check_text_chunks(self) -> bool:
         """Process html text."""
-        text_chunks_str = self._process_html()
-        #text_chunks = self._process_html_response
-    
-        return text_chunks_str
+        text_chunks = self._process_html()
+        return text_chunks
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
@@ -91,11 +93,11 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
             self.read_documents()
-            payload_content = self.get_payload_content()
+            text_chunks = self.check_text_chunks()
             self.store_documents()
             documents_hash = self.hash_stored_documents()
 
-            payload = ProcessHtmlPayload(sender=sender, documents_hash=documents_hash)
+            payload = ProcessHtmlPayload(sender=sender, documents_hash=documents_hash, text_chunks=text_chunks)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

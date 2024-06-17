@@ -45,7 +45,7 @@ abci_app_transition_mapping: AbciAppTransitionMapping = {
     ScraperAbciApp.FinishedWithoutEmbeddingUpdate: ResetAndPauseAbci.ResetAndPauseRound,
     TransactionSubmissionAbciApp.FinishedTransactionSubmissionRound: ResetAndPauseAbci.ResetAndPauseRound,
     TransactionSubmissionAbciApp.FailedRound: ResetAndPauseAbci.ResetAndPauseRound,
-    ResetAndPauseAbci.FinishedResetAndPauseRound: DocumentsManagerAbciApp.CheckDocumentsRound,
+    ResetAndPauseAbci.FinishedResetAndPauseRound: DocumentsManagerAbciApp.UpdateQueriesRound,
     ResetAndPauseAbci.FinishedResetAndPauseErrorRound: ResetAndPauseAbci.ResetAndPauseRound,
 }
 

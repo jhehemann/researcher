@@ -21,6 +21,7 @@
 
 
 
+import json
 from typing import Any, Generator, Optional, Type, List, Dict, cast
 from abc import ABC
 
@@ -29,13 +30,24 @@ from multibase import multibase
 from multicodec import multicodec
 
 from packages.jhehemann.contracts.hash_checkpoint.contract import HashCheckpointContract
+from packages.jhehemann.skills.documents_manager_abci.behaviours.base import (
+    DOCUMENTS_FILENAME,
+    EMBEDDINGS_FILENAME,
+    IPFS_HASHES_FILENAME,
+    QUERIES_FILENAME,
+)
 from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour
 from packages.jhehemann.skills.scraper_abci.payloads import PublishPayload
 from packages.jhehemann.skills.scraper_abci.rounds import PublishRound
+from packages.jhehemann.skills.documents_manager_abci.documents import (
+    convert_documents_to_dict,
+    serialize_documents,
+)
 from packages.valory.contracts.gnosis_safe.contract import GnosisSafeContract
 from packages.valory.protocols.contract_api.message import ContractApiMessage
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.valory.skills.abstract_round_abci.io_.store import SupportedFiletype
+
 
 from packages.valory.skills.transaction_settlement_abci.payload_tools import (
     hash_payload_to_hex,
@@ -44,7 +56,6 @@ from packages.valory.skills.transaction_settlement_abci.payload_tools import (
 
 V1_HEX_PREFIX = "f01"
 Ox = "0x"
-EMBEDDINGS_FILENAME = "embeddings.json"
 ZERO_ETHER_VALUE = 0
 ZERO_IPFS_HASH = (
     "f017012200000000000000000000000000000000000000000000000000000000000000000"
@@ -104,25 +115,25 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
         return new_hash != latest_hash
 
-    def _handle_response(
-        self,
-        res: Optional[str],
-    ) -> Optional[Any]:
-        """Handle the response from the web page.
+    # def _handle_response(
+    #     self,
+    #     res: Optional[str],
+    # ) -> Optional[Any]:
+    #     """Handle the response from the web page.
 
-        :param res: the response to handle.
-        :return: the response's result, using the given keys. `None` if response is `None` (has failed).
-        """
-        if res is None:
-            msg = f"Could not get the web page's response from {self.web_scrape_response_api.api_id}"
-            self.context.logger.error(msg)
-            self.web_scrape_response_api.increment_retries()
-            return None
+    #     :param res: the response to handle.
+    #     :return: the response's result, using the given keys. `None` if response is `None` (has failed).
+    #     """
+    #     if res is None:
+    #         msg = f"Could not get the web page's response from {self.web_scrape_response_api.api_id}"
+    #         self.context.logger.error(msg)
+    #         self.web_scrape_response_api.increment_retries()
+    #         return None
 
-        self.context.logger.info(f"Retrieved the web page's response. Number of characters: {len(res)}")
-        # self.context.logger.info(f"Response: {res}")
-        self.web_scrape_response_api.reset_retries()
-        return res
+    #     self.context.logger.info(f"Retrieved the web page's response. Number of characters: {len(res)}")
+    #     # self.context.logger.info(f"Response: {res}")
+    #     self.web_scrape_response_api.reset_retries()
+    #     return res
     
 
     def _send_embeddings_to_ipfs(self) -> Generator[None, None, Optional[str]]:
@@ -137,34 +148,38 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
         self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
-        self.ipfs_hashes['embeddings_json'] = to_multihash_to_v1
+        
 
         v1_file_hash = to_v1(ipfs_hash)
-        # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
+        self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
-        # self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
+        self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
-        # self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
+        self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
+
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
-        # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
+        self.ipfs_hashes['embeddings_json'] = v1_file_hash_hex
+
+        self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
-        return to_multihash_to_v1
+        return ipfs_link
 
     def _send_documents_to_ipfs(self) -> Generator[None, None, Optional[str]]:
         """Send Embeddings to IPFS."""
-        embeddings = self.embeddings
-        json_data = embeddings.to_dict(orient='records')
+        #json_data = self.documents
+        documents = serialize_documents(self.documents)
+        json_data = json.loads(documents)
         ipfs_hash = yield from self.send_to_ipfs(
-            EMBEDDINGS_FILENAME, json_data, filetype=SupportedFiletype.JSON
+            DOCUMENTS_FILENAME, json_data, filetype=SupportedFiletype.JSON
         )
         if ipfs_hash is None:
             return None
         
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
-        self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
-        self.ipfs_hashes['documents_json'] = to_multihash_to_v1
+        self.context.logger.info(f"Documents uploaded to_multihash_to_v1: {to_multihash_to_v1}")
+        
 
         v1_file_hash = to_v1(ipfs_hash)
         # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
@@ -173,23 +188,25 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
         # self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
+        self.ipfs_hashes['documents_json'] = v1_file_hash_hex
+
         # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
-        return to_multihash_to_v1
+        return ipfs_link
     
     def _send_hashes_to_ipfs(self) -> Generator[None, None, Optional[str]]:
-        """Send Embeddings to IPFS."""
+        """Send hashes to IPFS."""
         json_data = self.ipfs_hashes
         ipfs_hash = yield from self.send_to_ipfs(
-            EMBEDDINGS_FILENAME, json_data, filetype=SupportedFiletype.JSON
+            IPFS_HASHES_FILENAME, json_data, filetype=SupportedFiletype.JSON
         )
         if ipfs_hash is None:
             return None
         
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
-        self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
+        self.context.logger.info(f"Files hashes uploaded to_multihash_to_v1: {to_multihash_to_v1}")
 
         v1_file_hash = to_v1(ipfs_hash)
         # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
@@ -203,7 +220,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
         return to_multihash_to_v1
-        
         
     def _get_checkpoint_tx(
         self,
@@ -211,6 +227,8 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         ipfs_hash: str,
     ) -> Generator[None, None, Optional[Dict[str, Any]]]:
         """Get the transfer tx."""
+        self.context.logger.info(f"IPFS hash in _get_checkpoint_tx: {ipfs_hash}")
+        self.context.logger.info(f"Bytes from hex: {bytes.fromhex(ipfs_hash)}")
         contract_api_msg = yield from self.get_contract_api_response(
             performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
             contract_address=hashcheckpoint_address,
@@ -282,12 +300,11 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
             return None
         
         hash_checkpoint_address = self.params.hash_checkpoint_address
-        for step in (
-            self._send_embeddings_to_ipfs,
-            self._send_documents_to_ipfs,
-        ): yield from self.wait_for_condition_with_sleep(step)
-
+        yield from self._send_embeddings_to_ipfs()
+        yield from self._send_documents_to_ipfs()
+        self.store_ipfs_hashes()
         ipfs_hash = yield from self._send_hashes_to_ipfs()
+        self.context.logger.info(f"IPFS hash to lock in contract: {ipfs_hash}")
         update_checkpoint_tx = yield from self._get_checkpoint_tx(hash_checkpoint_address, ipfs_hash)
         self.context.logger.info(f"Update checkpoint tx: {update_checkpoint_tx}")
         tx_data_str = (cast(str, update_checkpoint_tx)["data"])[2:]
