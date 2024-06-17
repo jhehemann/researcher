@@ -21,6 +21,7 @@
 
 from typing import Set, Type
 
+from packages.jhehemann.skills.documents_manager_abci.behaviours.update_files import UpdateFilesBehaviour
 from packages.jhehemann.skills.documents_manager_abci.behaviours.check_documents import CheckDocumentsBehaviour
 from packages.jhehemann.skills.documents_manager_abci.behaviours.search_engine import SearchEngineBehaviour
 from packages.valory.skills.abstract_round_abci.behaviours import (
@@ -36,6 +37,7 @@ class DocumentsManagerRoundBehaviour(AbstractRoundBehaviour):
     initial_behaviour_cls = CheckDocumentsBehaviour
     abci_app_cls = DocumentsManagerAbciApp  # type: ignore
     behaviours: Set[Type[BaseBehaviour]] = [  # type: ignore
+        UpdateFilesBehaviour,
         CheckDocumentsBehaviour,
         SearchEngineBehaviour,
     ]

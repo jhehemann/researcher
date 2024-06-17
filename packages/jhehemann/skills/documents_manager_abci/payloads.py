@@ -26,6 +26,13 @@ from typing import Optional
 from packages.valory.skills.abstract_round_abci.base import BaseTxPayload
 
 @dataclass(frozen=True)
+class UpdateFilesPayload(BaseTxPayload, ABC):
+    """Represent a transaction payload for the UpdateFilesRound."""
+
+    documents_hash: Optional[str]
+    embeddings_hash: Optional[str]
+
+@dataclass(frozen=True)
 class UpdateDocumentsPayload(BaseTxPayload, ABC):
     """Represent a transaction payload for the UpdateDocumentsRound."""
 

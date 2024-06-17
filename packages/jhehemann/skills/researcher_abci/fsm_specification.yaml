@@ -47,6 +47,7 @@ states:
 - SelectKeeperTransactionSubmissionBAfterTimeoutRound
 - SelectKeeperTransactionSubmissionBRound
 - SynchronizeLateMessagesRound
+- UpdateFilesRound
 - WebScrapeRound
 - ValidateEmbeddingsHashRound
 - ValidateTransactionRound
@@ -126,6 +127,10 @@ transition_func:
     (SynchronizeLateMessagesRound, NONE): SelectKeeperTransactionSubmissionBRound
     (SynchronizeLateMessagesRound, ROUND_TIMEOUT): SynchronizeLateMessagesRound
     (SynchronizeLateMessagesRound, SUSPICIOUS_ACTIVITY): ResetAndPauseRound
+    (UpdateFilesRound, DONE): CheckDocumentsRound
+    (UpdateFilesRound, UPDATE_FAILED): FailedDocumentsManagerRound
+    (UpdateFilesRound, UPDATE_FAILED): FinishedDocumentsManagerRound
+    (UpdateFilesRound, NO_MAJORITY): UpdateFilesRound
     (ValidateTransactionRound, DONE): ResetAndPauseRound
     (ValidateTransactionRound, NEGATIVE): CheckTransactionHistoryRound
     (ValidateTransactionRound, NONE): SelectKeeperTransactionSubmissionBRound

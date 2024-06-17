@@ -23,6 +23,7 @@ from enum import Enum
 from typing import Dict, FrozenSet, Optional, Set, Tuple, cast
 
 from packages.jhehemann.skills.documents_manager_abci.payloads import (
+    UpdateFilesPayload,
     UpdateDocumentsPayload,
     CheckDocumentsPayload,
     SearchEnginePayload,
@@ -75,6 +76,11 @@ class SynchronizedData(BaseSynchronizedData):
         """Get the document's hash."""
         return self.db.get("documents_hash", None)
     
+    @property
+    def embeddings_hash(self) -> Optional[str]:
+        """Get the embeddings' hash."""
+        return self.db.get("embeddings_hash", None)
+    
     # @property
     # def participant_to_unprocessed_documents(self) -> DeserializedCollection:
     #     """Get the participants to the unprocessed documents."""
@@ -85,6 +91,20 @@ class SynchronizedData(BaseSynchronizedData):
         """Get the participants to the documents' hash."""
         return self._get_deserialized("participant_to_documents_hash")
   
+
+class UpdateFilesRound(CollectSameUntilThresholdRound):
+    """UpdateFilesRound"""
+
+    payload_class = UpdateFilesPayload
+    synchronized_data_class = SynchronizedData
+    done_event = Event.DONE
+    none_event = Event.UPDATE_FAILED
+    no_majority_event = Event.NO_MAJORITY
+    collection_key = get_name(SynchronizedData.participant_to_documents_hash)
+    selection_key = (
+        get_name(SynchronizedData.documents_hash),
+        get_name(SynchronizedData.embeddings_hash),
+    )
 
 class UpdateDocumentsRound(CollectSameUntilThresholdRound):
     """CheckDocumentsRound"""
@@ -152,11 +172,18 @@ class FailedDocumentsManagerRound(DegenerateRound):
 class DocumentsManagerAbciApp(AbciApp[Event]):
     """DocumentsManagerAbciApp"""
 
-    initial_round_cls: AppState = CheckDocumentsRound
+    initial_round_cls: AppState = UpdateFilesRound
     initial_states: Set[AppState] = {
+        UpdateFilesRound,
         CheckDocumentsRound,
     }
     transition_function: AbciAppTransitionFunction = {
+        UpdateFilesRound: {
+            Event.NO_MAJORITY: UpdateFilesRound,
+            Event.ROUND_TIMEOUT: UpdateFilesRound,
+            Event.UPDATE_FAILED: FailedDocumentsManagerRound,
+            Event.DONE: CheckDocumentsRound,
+        },
         CheckDocumentsRound: {
             Event.NO_MAJORITY: CheckDocumentsRound,
             Event.ROUND_TIMEOUT: CheckDocumentsRound,
@@ -179,6 +206,7 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
     event_to_timeout: EventToTimeout = {}
     cross_period_persisted_keys: FrozenSet[str] = frozenset()
     db_pre_conditions: Dict[AppState, Set[str]] = {
+        UpdateFilesRound: set(),
         CheckDocumentsRound: set(),
     }
     db_post_conditions: Dict[AppState, Set[str]] = {

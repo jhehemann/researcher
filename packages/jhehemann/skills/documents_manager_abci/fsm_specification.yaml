@@ -11,12 +11,13 @@ final_states:
 - FailedDocumentsManagerRound
 label: ScraperAbciApp
 start_states:
-- CheckDocumentsRound
+- UpdateFilesRound
 states:
 - CheckDocumentsRound
-- SearchEngineRound
-- FinishedDocumentsManagerRound
 - FailedDocumentsManagerRound
+- FinishedDocumentsManagerRound
+- SearchEngineRound
+- UpdateFilesRound
 transition_func:
     (CheckDocumentsRound, TO_UPDATE): SearchEngineRound
     (CheckDocumentsRound, NO_UPDATES): FinishedDocumentsManagerRound
@@ -26,3 +27,7 @@ transition_func:
     (SearchEngineRound, UPDATE_FAILED): FailedDocumentsManagerRound
     (SearchEngineRound, NO_MAJORITY): SearchEngineRound
     (SearchEngineRound, ROUND_TIMEOUT): SearchEngineRound
+    (UpdateFilesRound, DONE): CheckDocumentsRound
+    (UpdateFilesRound, UPDATE_FAILED): FailedDocumentsManagerRound
+    (UpdateFilesRound, UPDATE_FAILED): FinishedDocumentsManagerRound
+    (UpdateFilesRound, NO_MAJORITY): UpdateFilesRound

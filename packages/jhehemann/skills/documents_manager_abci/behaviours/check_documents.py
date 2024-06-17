@@ -49,16 +49,13 @@ class CheckDocumentsBehaviour(DocumentsManagerBaseBehaviour):
             num_unprocessed = len(unprocessed_docs)
             self.context
             self.context.logger.info(f"Number of unprocessed documents: {num_unprocessed}")
-            
-            # if not self.documents:
-            #     documents_hash = None
-            # else:
-            #     documents_hash = self.hash_stored_documents()
 
             payload = CheckDocumentsPayload(
                 self.context.agent_address,
                 num_unprocessed=num_unprocessed,
             )
+
+            exit()
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

@@ -8,20 +8,23 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeicowkv4xgyilyhwqfqrhfg655fyuz36wmyxfjpcwochgqxottft44
   behaviours/base.py: bafybeif3eexloezxk3vgrv5ugt6gxvaz7imjls6m6mfmu7kri73lithozi
-  behaviours/check_documents.py: bafybeidjr7rrhibuobsxvw2qhqvrabccekwreyrrde5qsnsx2b5u6xxoc4
+  behaviours/check_documents.py: bafybeiaf6fgud4oqryb6ifbcoetoql3qikqhdpyrngqdmm6gz74b4oelku
   behaviours/search_engine.py: bafybeidmqm7ehudlp3kbcqgudqjd4gvjsjwkri54etanjg7quf4fmwia2y
+  behaviours/update_files.py: bafybeiagj2mku3ayc2td6hri4xibwy6yyl4jmqs4kokyugh5vtjky4tgmi
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   documents.py: bafybeibpkwt2t7ekjckkp63g5772b7uowschvjncx4gidwttr4wcwo6j4a
-  fsm_specification.yaml: bafybeia2qzf4wuycmvnn5n52whwhggtqhvtryulx5hr4opf23vx4ccbtcu
+  fsm_specification.yaml: bafybeie6xqckzbm7t24bptmnoazwpyvpgsuclbadjjehvo5rnul6lgjtqq
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
   models.py: bafybeia4zqvej2hqqozhnnctvikjmseddqgozwquc6zxbvllwx57juykhe
-  payloads.py: bafybeih3c4b7u6fjeji4tzkn5nfprvx2dpae73qkx52prx3zsautkrtj7m
-  round_behaviour.py: bafybeifc4cbu7vmypneca5a5t4ujob5twdrr5o5xpqenittxxsahar24q4
-  rounds.py: bafybeiah5ssgqpb3jnw7lh4zbi6fsksaad5lgnct4usknunycyziyoqj5e
+  payloads.py: bafybeihb42a2wewkpimiqkqhflkoem4yammye77hqy3vo72kk3zrtvszmy
+  round_behaviour.py: bafybeigvlbdwq3fgcorxwfrs7jhes6f47ki2rpl6r5imbsnuz7gfct5gaq
+  rounds.py: bafybeiavxejtdbtxmlmwt46vvt7k6ltgwzaxjdudae4zvc33ntebxjpswy
 fingerprint_ignore_patterns: []
 connections: []
-contracts: []
-protocols: []
+contracts:
+- jhehemann/hash_checkpoint:0.1.0:bafybeicuhncglpgvsdyblheoafsuzejuxwerqn2f3y7vpedunazad3xvxq
+protocols:
+- valory/contract_api:1.0.0:bafybeidgu7o5llh26xp3u3ebq3yluull5lupiyeu6iooi2xyymdrgnzq5i
 skills:
 - valory/abstract_round_abci:0.1.0:bafybeih3enhagoql7kzpeyzzu2scpkif6y3ubakpralfnwxcvxexdyvy5i
 behaviours:
