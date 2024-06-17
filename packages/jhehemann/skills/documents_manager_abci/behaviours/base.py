@@ -121,6 +121,12 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         synced_time = self.shared_state.round_sequence.last_round_transition_timestamp
         return int(synced_time.timestamp())
     
+    @property
+    def sampled_query(self) -> Document:
+        """Get the sampled query."""
+        self.read_queries()
+        return self.queries[self.synchronized_data.sampled_query_idx]
+    
     def read_ipfs_hashes(self) -> None:
         """Read the IPFS hashes from the agent's data dir."""
         if not os.path.isfile(self.ipfs_hashes_filepath):

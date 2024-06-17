@@ -108,8 +108,7 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         """Extract html text from website"""
         yield from self.wait_for_condition_with_sleep(self._get_response)
         html = self._web_scrape_response.html
-
-    
+        
         return html
 
 

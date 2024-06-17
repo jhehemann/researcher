@@ -270,7 +270,7 @@ class DocumentsManagerAbciApp(AbciApp[Event]):
         SampleQueryRound: {
             Event.NO_MAJORITY: SampleQueryRound,
             Event.ROUND_TIMEOUT: SampleQueryRound,
-            Event.DONE: UpdateQueriesRound,
+            Event.DONE: SearchEngineRound,
             Event.NONE: FailedDocumentsManagerRound,
         },
         SearchEngineRound: {

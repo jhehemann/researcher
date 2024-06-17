@@ -55,7 +55,7 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
         api_keys = self.params.api_keys
         google_api_key = api_keys["google_api_key"]
         google_engine_id = api_keys["google_engine_id"]
-        query = self.params.input_query
+        query = self.sampled_query.title
         self.context.logger.info(f"Search query: {query}")
 
         num = 3
