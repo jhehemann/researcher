@@ -8,8 +8,8 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
   behaviours/base.py: bafybeib5o4i5lxjjtenx452cts4pxvakzw3f76ne3ix7lpecfxnggtb64q
-  behaviours/embedding.py: bafybeigia3wwoaoboow7izfwaqr4i4rhi5janyb7jkayaywbrhv74vzb2e
-  behaviours/process_html.py: bafybeicfxnmu2czfryhzpi3sylqfvfuxzgehxj23yy23ooobasj3c3puom
+  behaviours/embedding.py: bafybeihrlvexdeoi6ene6qrdj66jj5vtig7e2bv4swgb6loao4acyqb3qy
+  behaviours/process_html.py: bafybeibas2gr4n7iphsvckg6mp7ds2p2rjlbr3z33r2iaaq7no6y2a5ria
   behaviours/publish.py: bafybeihfk4xq26bw75zot54jtxh4p4w3vt227qxcqitojdafas45twc5ri
   behaviours/sampling.py: bafybeidjtaqvgoxtxaqrqesvi7tvi5las7ko6pgqn4nwi4jgzca4drm7ym
   behaviours/web_scrape.py: bafybeia34bm3rysppmu3zs7ce4zd4wwrfzmvljc4hywvyeoottlssivdwa
@@ -19,7 +19,7 @@ fingerprint:
   models.py: bafybeifbkdtrjjp674idpxxmp5jpbmrg4bpxpmn7nrhwhgg5eijday44sy
   payloads.py: bafybeigz6krppc23xn5m5snatt7s3jdjxfkerkwcksvp7w7wkra7b6j3uy
   round_behaviour.py: bafybeidjdnmf6fs7jy3mlykhas4y7m5y26w2csldmva5zj5veqsj73acie
-  rounds.py: bafybeiakadks7g6l46wox6p4ak5shbp7rqbfem7rkqiewmecic3erzni2m
+  rounds.py: bafybeiax2orfwlu3j2fty2lgik4odilazvxnbpkqpt236fxlwcht4sa5ku
 fingerprint_ignore_patterns: []
 connections: []
 contracts:

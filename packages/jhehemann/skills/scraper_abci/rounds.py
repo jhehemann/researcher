@@ -263,14 +263,14 @@ class ScraperAbciApp(AbciApp[Event]):
             Event.NO_MAJORITY: ProcessHtmlRound,
             Event.ROUND_TIMEOUT: ProcessHtmlRound,
             Event.EMPTY_TEXT_CHUNKS: PublishRound,
-            Event.NONE: FinishedWithoutEmbeddingUpdate,
+            Event.NONE: PublishRound,
             Event.DONE: EmbeddingRound,
         },
         EmbeddingRound: {
             Event.NO_MAJORITY: EmbeddingRound,
             Event.ROUND_TIMEOUT: EmbeddingRound,
             Event.DONE: PublishRound,
-            Event.NONE: FinishedWithoutEmbeddingUpdate,
+            Event.NONE: PublishRound,
 
         },
         PublishRound: {

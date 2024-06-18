@@ -236,6 +236,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
             # self.store_embeddings()
             embeddings_hash_prev = self.hash_stored_embeddings()
             self.context.logger.info(f"Local embeddings hash prev: {embeddings_hash_prev}")
+            self.read_embeddings()
             yield from self.wait_for_condition_with_sleep(self._get_embeddings)
             self.update_embeddings()
             self.embeddings = self.embeddings.sort_index(axis=0).sort_index(axis=1)
