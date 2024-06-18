@@ -52,9 +52,8 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
 
     def _process_html(self) -> Optional[bool]:
         """Process the html text."""
-        sampled_doc_index = self.synchronized_data.sampled_doc_index
-        sampled_doc = self.documents[sampled_doc_index]
-        html = self.synchronized_data.web_scrape_data
+        sampled_doc = self.sampled_doc
+        html = sampled_doc.html
 
         # create readability document and extract main content
         doc_html2str = Document(html)
@@ -87,12 +86,13 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
-            self.read_documents()
+            self.read_sampled_doc()
+            self.context.logger.info(f"Sampled document: {self.sampled_doc.url}")
             text_chunks = self._process_html()
-            self.store_documents()
-            documents_hash = self.hash_stored_documents()
+            self.store_sampled_doc()
+            sampled_doc_hash = self.hash_stored_sampled_doc()
 
-            payload = ProcessHtmlPayload(sender=sender, documents_hash=documents_hash, text_chunks=text_chunks)
+            payload = ProcessHtmlPayload(sender=sender, sampled_doc_hash=sampled_doc_hash, text_chunks=text_chunks)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

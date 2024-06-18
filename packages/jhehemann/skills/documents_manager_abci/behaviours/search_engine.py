@@ -30,7 +30,7 @@ from packages.jhehemann.skills.documents_manager_abci.payloads import SearchEngi
 from packages.jhehemann.skills.documents_manager_abci.rounds import SearchEngineRound
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.jhehemann.skills.documents_manager_abci.documents import (
-    Document,
+    DocumentMapping,
 )
 
 
@@ -89,7 +89,7 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
         return res
 
 
-    def _fetch_documents(self) -> WaitableConditionType:
+    def _fetch_urls_to_doc(self) -> WaitableConditionType:
         """Get the response data from search engine."""
         self.set_search_engine_response_specs()
         specs = self.search_engine_response_api.get_spec()
@@ -113,48 +113,48 @@ class SearchEngineBehaviour(UpdateDocumentsBehaviour):  # pylint: disable=too-ma
 
         return True
 
-    def _update_documents(self) -> Generator:
+    def _update_urls_to_doc(self) -> Generator:
         """Search Google using a custom search engine."""
         
         # # Temporarily used for testing purposes. Remove both lines when done.
         # self.documents = [Document(url="www.google.com", title="Hi", status=DocumentStatus.PROCESSED)]
         # return
         
-        self.documents, existing_urls = self.frozen_documents_and_urls
+        self.urls_to_doc, existing_urls = self.frozen_urls_to_doc_and_urls
 
-        yield from self.wait_for_condition_with_sleep(self._fetch_documents)
+        yield from self.wait_for_condition_with_sleep(self._fetch_urls_to_doc)
 
         search_response_items = self._search_engine_response.items
         # print the search response items in pretty format
         # self.context.logger.info(f"Search response items: {json.dumps(search_response_items, indent=4)}")
 
         if search_response_items is not None:
-            initial_docs_count = len(self.documents)
-            documents_updates = (
-                Document(url=doc['link'], title=doc['title'])
-                for doc in search_response_items
-                if doc.get("link", "") not in existing_urls
+            initial_urls_to_doc_count = len(self.urls_to_doc)
+            urls_to_doc_updates = (
+                DocumentMapping(url=url_to_doc['link'])
+                for url_to_doc in search_response_items
+                if url_to_doc.get("link", "") not in existing_urls
             )
-            self.documents.extend(documents_updates)
+            self.urls_to_doc.extend(urls_to_doc_updates)
             
-            docs_updated = len(self.documents) > initial_docs_count
+            docs_updated = len(self.urls_to_doc) > initial_urls_to_doc_count
             if not docs_updated:
-                self.context.logger.warning(f"No new documents were added to the list.")
+                self.context.logger.warning(f"No new urls_to_doc were added to the list.")
                 return False
             
-        self.context.logger.info(f"Updated documents: {self.documents}")
+        self.context.logger.info(f"Updated urls_to_doc: {self.urls_to_doc}")
         return True
 
     def get_payload_content(self) -> Generator:
         """Get the payload content."""
-        self.read_documents()
-        documents_updated = yield from self._update_documents()
-        if not documents_updated:
+        self.read_urls_to_doc()
+        urls_to_doc_updated = yield from self._update_urls_to_doc()
+        if not urls_to_doc_updated:
             return None
-        self.store_documents()
-        documents_hash = self.hash_stored_documents()
-        self.context.logger.info(f"Local documents hash: {documents_hash}")
-        return documents_hash
+        self.store_urls_to_doc()
+        urls_to_doc_hash = self.hash_stored_urls_to_doc()
+        self.context.logger.info(f"Local urls_to_doc hash: {urls_to_doc_hash}")
+        return urls_to_doc_hash
 
 
     def async_act(self) -> Generator:

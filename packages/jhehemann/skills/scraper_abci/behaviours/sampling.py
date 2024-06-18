@@ -19,6 +19,7 @@
 
 """Behaviour in which the agents sample a document."""
 
+import random
 from typing import Any, Generator, List, Type, Optional
 
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
@@ -32,17 +33,18 @@ class SamplingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ances
 
     matching_round: Type[AbstractRound] = SamplingRound
 
-    def _sampled_doc_idx(self, documents: List[Document]) -> int:
+    def _sampled_doc_idx(self, urls_to_doc: List[Document]) -> int:
         """
         Sample a document and return its id.
 
         The sampling logic is relatively simple at the moment.
-        It simply selects the unprocessed document with the newest date.
+        It simply selects randomly an unprocessed document.
 
         :param documents: the documents' values to compare for the sampling.
         :return: the id of the sampled document, out of all the available documents, not only the given ones.
         """
-        return self.documents.index(max(documents))
+        # return a random index of the unprocessed documents
+        return self.urls_to_doc.index(random.choice(urls_to_doc))
 
     def _sample(self) -> Optional[int]:
         """Sample a document, mark it as processed, and return its index."""
@@ -61,8 +63,9 @@ class SamplingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ances
         #     return None
 
         # update the document's status for the given id to `PROCESSED`
-        self.documents[idx].status = DocumentStatus.PROCESSED
-        msg = f"Sampled document: {self.documents[idx]}"
+        self.urls_to_doc[idx].status = DocumentStatus.PROCESSED
+        #self.urls_to_doc[idx].status = DocumentStatus.PROCESSED
+        msg = f"Sampled document: {self.urls_to_doc[idx]}"
         self.context.logger.info(msg)
         return idx
 
@@ -71,15 +74,16 @@ class SamplingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ances
 
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
-            self.read_documents()
+            self.read_urls_to_doc()
             idx = self._sample()
-            self.store_documents()
+            # self.store_sampled_doc()
+            self.store_urls_to_doc()
             if idx is None:
-                documents_hash = None
+                urls_to_doc_hash = None
             else:
-                documents_hash = self.hash_stored_documents()
+                urls_to_doc_hash = self.hash_stored_urls_to_doc()
 
-            payload = SamplingPayload(sender=sender, documents_hash=documents_hash, sampled_doc_index=idx)
+            payload = SamplingPayload(sender=sender, urls_to_doc_hash=urls_to_doc_hash, sampled_doc_index=idx)
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

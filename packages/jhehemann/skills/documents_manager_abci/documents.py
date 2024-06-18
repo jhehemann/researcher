@@ -53,12 +53,45 @@ class DocumentStatus(Enum):
 
 
 @dataclasses.dataclass
+class DocumentMapping:
+    """A document's mapping from url to IPFS hash."""
+    
+    url: str
+    ipfs_hash: Optional[str] = None
+    status: DocumentStatus = DocumentStatus.UNPROCESSED
+
+    def __post_init__(self) -> None:
+        """Post initialization to adjust the values."""
+        self._cast()
+
+    def _cast(self) -> None:
+        """Cast the values of the instance."""
+        if isinstance(self.status, int):
+            self.status = DocumentStatus(self.status)
+
+        types_to_cast = ("int", "float", "str")
+        str_to_type = {getattr(builtins, type_): type_ for type_ in types_to_cast}
+        for field, hinted_type in self.__annotations__.items():
+            uncasted = getattr(self, field)
+            if uncasted is None:
+                continue
+
+            for type_to_cast, type_name in str_to_type.items():
+                if hinted_type == type_to_cast:
+                    setattr(self, field, hinted_type(uncasted))
+                if f"{str(List)}[{type_name}]" == str(hinted_type):
+                    setattr(self, field, list(type_to_cast(val) for val in uncasted))
+
+
+
+@dataclasses.dataclass
 class Document:
     """A document's structure."""
 
     url: str
     title: Optional[str] = None
     description: Optional[str] = None
+    html: Optional[str] = None
     content: Optional[str] = None
     text_chunks: Optional[List[str]] = None
     publisher: Optional[str] = None
@@ -66,7 +99,7 @@ class Document:
     publication_date: Optional[datetime] = None
     modification_date: Optional[datetime] = None
     type: Optional[str] = None
-    status: DocumentStatus = DocumentStatus.UNPROCESSED
+    # status: DocumentStatus = DocumentStatus.UNPROCESSED
     blacklist_expiration: float = -1
     error: Optional[str] = None
 
@@ -89,8 +122,8 @@ class Document:
 
     def _cast(self) -> None:
         """Cast the values of the instance."""
-        if isinstance(self.status, int):
-            self.status = DocumentStatus(self.status)
+        # if isinstance(self.status, int):
+        #     self.status = DocumentStatus(self.status)
 
         types_to_cast = ("int", "float", "str")
         str_to_type = {getattr(builtins, type_): type_ for type_ in types_to_cast}
@@ -160,7 +193,47 @@ def convert_documents_to_dict(documents: List[Document]) -> Union[Dict[str, Any]
         return {}
     return {"documents": documents}
 
-def serialize_documents(documents: List[Document]) -> Optional[str]:
+def serialize_documents(document: Document) -> Optional[str]:
+    """Get the documents serialized."""
+    if document is None:
+        return None
+    return json.dumps(document, cls=DocumentsEncoder)
+
+
+class DocumentsMappingDecoder(json.JSONDecoder):
+    """JSON decoder for documents."""
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize the Documents JSON decoder."""
+        super().__init__(object_hook=self.hook, *args, **kwargs)
+
+    @staticmethod
+    def hook(data: Dict[str, Any]) -> Union[DocumentMapping, Dict[str, DocumentMapping]]:
+        """Perform the custom decoding."""
+        # if this is a `Document`
+        status_attributes = DocumentMapping.__annotations__.keys()
+        missing_keys = set(status_attributes) - set(data.keys())
+        extra_keys = set(data.keys()) - set(status_attributes)
+
+        # remove extra keys from data
+        for key in extra_keys:
+            del data[key]
+
+        for key in missing_keys:
+            data[key] = None
+
+        if sorted(status_attributes) == sorted(data.keys()):
+            return DocumentMapping(**data)
+
+        return data
+    
+def convert_documents_mapping_to_dict(documents: List[DocumentMapping]) -> Union[Dict[str, Any]]:
+    """Convert a list of Document objects to a dictionary format."""
+    if not documents:
+        return {}
+    return {"documents": documents}
+
+def serialize_document_mappings(documents: List[DocumentMapping]) -> Optional[str]:
     """Get the documents serialized."""
     if len(documents) == 0:
         return None

@@ -39,6 +39,9 @@ from packages.jhehemann.skills.documents_manager_abci.documents import (
     DocumentStatus,
     DocumentsDecoder,
     serialize_documents,
+    DocumentMapping,
+    DocumentsMappingDecoder,
+    serialize_document_mappings,
 )
 from packages.jhehemann.skills.documents_manager_abci.queries import (
     Query,
@@ -51,7 +54,8 @@ from packages.valory.skills.abstract_round_abci.behaviour_utils import TimeoutEx
 from aea.helpers.ipfs.base import IPFSHashOnly
 
 UNIX_DAY = 60 * 60 * 24
-DOCUMENTS_FILENAME = "documents.json"
+SAMPLED_DOCUMENT_FILENAME = "sampled_doc.json"
+URLS_TO_DOC_FILENAME = "urls_to_doc.json"
 IPFS_HASHES_FILENAME = "ipfs_hashes.json"
 EMBEDDINGS_FILENAME = "embeddings.parquet"
 QUERIES_FILENAME = "queries.json"
@@ -68,11 +72,13 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
         """Initialize behaviour."""
         super().__init__(**kwargs)
         self.queries: List[Query] = []
-        self.documents: List[Document] = []
+        self.sampled_doc: Document = Document(url="")
+        self.urls_to_doc: List[DocumentMapping] = []
         self.embeddings: pd.DataFrame = pd.DataFrame()
         self.ipfs_hashes: Dict[str, str] = {}
         self.queries_filepath: str = os.path.join(self.context.data_dir, QUERIES_FILENAME)
-        self.documents_filepath: str = os.path.join(self.context.data_dir, DOCUMENTS_FILENAME)
+        self.sampled_doc_filepath: str = os.path.join(self.context.data_dir, SAMPLED_DOCUMENT_FILENAME)
+        self.urls_to_doc_filepath: str = os.path.join(self.context.data_dir, URLS_TO_DOC_FILENAME)
         self.embeddings_filepath: str = os.path.join(self.context.data_dir, EMBEDDINGS_FILENAME)
         self.ipfs_hashes_filepath: str = os.path.join(self.context.data_dir, IPFS_HASHES_FILENAME)
         
@@ -97,10 +103,10 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
     #     return str(Path(mkdtemp()) / EMBEDDINGS_FILENAME)
     
     @property
-    def unprocessed_documents(self) -> Iterator[Document]:
+    def unprocessed_documents(self) -> Iterator[DocumentMapping]:
         """Get an iterator of the unprocessed documents."""
-        self.documents = [document for document in self.documents]
-        return filter(lambda document: document.status == DocumentStatus.UNPROCESSED, self.documents)
+        self.urls_to_doc = [doc_map for doc_map in self.urls_to_doc]
+        return filter(lambda doc_map: doc_map.status == DocumentStatus.UNPROCESSED, self.urls_to_doc)
     
     @property
     def unprocessed_queries(self) -> Iterator[Query]:
@@ -162,27 +168,52 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
 
         self.context.logger.error(err)
 
-    def read_documents(self) -> None:
-        """Read the documents from the agent's data dir as JSON."""
-        self.documents = []
+    def read_urls_to_doc(self) -> None:
+        """Read the urls_to_doc from the agent's data dir as JSON."""
+        self.urls_to_doc = []
 
-        if not os.path.isfile(self.documents_filepath):
+        if not os.path.isfile(self.urls_to_doc_filepath):
             self.context.logger.warning(
-                f"No stored documents file was detected in {self.documents_filepath}. Assuming local documents are empty."
+                f"No stored urls_to_doc file was detected in {self.urls_to_doc_filepath}. Assuming local urls_to_doc are empty."
             )
             return
 
         try:
-            with open(self.documents_filepath, READ_MODE) as documents_file:
+            with open(self.urls_to_doc_filepath, READ_MODE) as urls_to_doc_file:
                 try:
-                    self.documents = json.load(documents_file, cls=DocumentsDecoder)
+                    self.urls_to_doc = json.load(urls_to_doc_file, cls=DocumentsMappingDecoder)
                     return
                 except (JSONDecodeError, TypeError):
                     err = (
-                        f"Error decoding file {self.documents_filepath!r} to a list of documents!"
+                        f"Error decoding file {self.urls_to_doc_filepath!r} to a list of urls_to_doc!"
                     )
         except (FileNotFoundError, PermissionError, OSError):
-            err = f"Error opening file {self.documents_filepath!r} in read mode!"
+            err = f"Error opening file {self.urls_to_doc_filepath!r} in read mode!"
+
+        self.context.logger.error(err)
+
+
+    def read_sampled_doc(self) -> None:
+        """Read the sampled_doc from the agent's data dir as JSON."""
+        self.sampled_doc = []
+
+        if not os.path.isfile(self.sampled_doc_filepath):
+            self.context.logger.warning(
+                f"No stored sampled_doc file was detected in {self.sampled_doc_filepath}. Assuming local sampled_doc is empty."
+            )
+            return
+
+        try:
+            with open(self.sampled_doc_filepath, READ_MODE) as sampled_doc_file:
+                try:
+                    self.sampled_doc = json.load(sampled_doc_file, cls=DocumentsDecoder)
+                    return
+                except (JSONDecodeError, TypeError):
+                    err = (
+                        f"Error decoding file {self.sampled_doc_filepath!r} to a document!"
+                    )
+        except (FileNotFoundError, PermissionError, OSError):
+            err = f"Error opening file {self.sampled_doc_filepath!r} in read mode!"
 
         self.context.logger.error(err)
 
@@ -238,22 +269,42 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
 
         self.context.logger.error(err)
 
-    def store_documents(self) -> None:
-        """Store the documents to the agent's data dir as JSON."""
-        serialized = serialize_documents(self.documents)
+    def store_urls_to_doc(self) -> None:
+        """Store the urls_to_doc to the agent's data dir as JSON."""
+        serialized = serialize_document_mappings(self.urls_to_doc)
         if serialized is None:
-            self.context.logger.warning("No documents to store locally.")
+            self.context.logger.warning("No urls_to_doc to store locally.")
             return
 
         try:
-            with open(self.documents_filepath, WRITE_MODE) as documents_file:
+            with open(self.urls_to_doc_filepath, WRITE_MODE) as urls_to_doc_file:
                 try:
-                    documents_file.write(serialized)
+                    urls_to_doc_file.write(serialized)
                     return
                 except (IOError, OSError):
-                    err = f"Error writing to file {self.documents_filepath!r}!"
+                    err = f"Error writing to file {self.urls_to_doc_filepath!r}!"
         except (FileNotFoundError, PermissionError, OSError):
-            err = f"Error opening file {self.documents_filepath!r} in write mode!"
+            err = f"Error opening file {self.urls_to_doc_filepath!r} in write mode!"
+
+        self.context.logger.error(err)
+        
+
+    def store_sampled_doc(self) -> None:
+        """Store the sampled_doc to the agent's data dir as JSON."""
+        serialized = serialize_documents(self.sampled_doc)
+        if serialized is None:
+            self.context.logger.warning("No sampled_doc to store locally.")
+            return
+
+        try:
+            with open(self.sampled_doc_filepath, WRITE_MODE) as sampled_doc_file:
+                try:
+                    sampled_doc_file.write(serialized)
+                    return
+                except (IOError, OSError):
+                    err = f"Error writing to file {self.sampled_doc_filepath!r}!"
+        except (FileNotFoundError, PermissionError, OSError):
+            err = f"Error opening file {self.sampled_doc_filepath!r} in write mode!"
 
         self.context.logger.error(err)
 
@@ -287,15 +338,24 @@ class DocumentsManagerBaseBehaviour(BaseBehaviour, ABC):  # pylint: disable=too-
             )
             return ""
         return IPFSHashOnly.hash_file(self.queries_filepath)
-
-    def hash_stored_documents(self) -> str:
+    
+    def hash_stored_sampled_doc(self) -> str:
         """Get the hash of the stored documents' file."""
-        if not os.path.isfile(self.documents_filepath):
+        if not os.path.isfile(self.sampled_doc_filepath):
             self.context.logger.warning(
-                f"No stored documents file was detected in {self.documents_filepath}. Assuming local documents are empty."
+                f"No stored documents file was detected in {self.sampled_doc_filepath}. Assuming local documents are empty."
             )
             return ""
-        return IPFSHashOnly.hash_file(self.documents_filepath)
+        return IPFSHashOnly.hash_file(self.sampled_doc_filepath)
+
+    def hash_stored_urls_to_doc(self) -> str:
+        """Get the hash of the stored documents' file."""
+        if not os.path.isfile(self.urls_to_doc_filepath):
+            self.context.logger.warning(
+                f"No stored urls_to_doc file was detected in {self.urls_to_doc_filepath}. Assuming local urls_to_doc are empty."
+            )
+            return ""
+        return IPFSHashOnly.hash_file(self.urls_to_doc_filepath)
 
     def hash_stored_embeddings(self) -> str:
         """Get the hash of the stored embeddings' file."""
@@ -317,26 +377,26 @@ class UpdateDocumentsBehaviour(DocumentsManagerBaseBehaviour):
         super().__init__(**kwargs)
 
     @property
-    def frozen_local_documents(self) -> Iterator[Document]:
+    def frozen_local_urls_to_doc(self) -> Iterator[DocumentMapping]:
         """Get the frozen, already existing, documents."""
-        return filter(self.is_frozen_document, self.documents)
+        return filter(self.is_frozen_urls_to_doc, self.urls_to_doc)
 
     @property
-    def frozen_documents_and_urls(self) -> Tuple[List[Document], Set[str]]:
-        """Get the urls of the frozen, already existing, documents."""
-        documents = []
+    def frozen_urls_to_doc_and_urls(self) -> Tuple[List[DocumentMapping], Set[str]]:
+        """Get the urls of the frozen, already existing, urls_to_doc."""
+        urls_to_doc = []
         urls = set()
-        for document in self.frozen_local_documents:
-            documents.append(document)
-            urls.add(document.url)
-        return documents, urls
+        for urls_to_doc in self.frozen_local_urls_to_doc:
+            urls_to_doc.append(urls_to_doc)
+            urls.add(urls_to_doc.url)
+        return urls_to_doc, urls
     
-    def is_frozen_document(self, document: Document) -> bool:
+    def is_frozen_urls_to_doc(self, urls_to_doc: DocumentMapping) -> bool:
         """Return if a document should not be updated."""
         return (
-            document.blacklist_expiration > self.synced_time
-            and document.status == DocumentStatus.BLACKLISTED
-        ) or document.status == DocumentStatus.PROCESSED
+            urls_to_doc.blacklist_expiration > self.synced_time
+            and urls_to_doc.status == DocumentStatus.BLACKLISTED
+        ) or urls_to_doc.status == DocumentStatus.PROCESSED
     
     def wait_for_condition_with_sleep(
         self,

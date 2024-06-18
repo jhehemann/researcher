@@ -99,6 +99,11 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
         #     )
         #     return
         embeddings_hash = self.ipfs_hashes.get("embeddings_json")
+        if embeddings_hash is None:
+            self.context.logger.warning(
+                "No embeddings hash found in IPFS hashes. Assuming no embeddings file is stored on IPFS"
+            )
+            return
         embeddings_hash = str(CID.from_string(embeddings_hash))
         embeddings = yield from self.load_file_from_ipfs(embeddings_hash)
         embeddings = pd.DataFrame(embeddings)
@@ -106,14 +111,28 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
         self.embeddings = embeddings.sort_index(axis=0).sort_index(axis=1)
         self.store_embeddings()
 
-    def load_documents_file(self) -> Generator:
+    # def load_documents_file(self) -> Generator:
+    #     """Load documents file from IPFS."""
+    #     documents_hash = self.ipfs_hashes.get("documents_json")
+    #     documents_hash = str(CID.from_string(documents_hash))
+    #     documents = yield from self.load_file_from_ipfs(documents_hash)
+    #     self.context.logger.info(f"Downloaded documents: {len(documents)}")
+    #     self.documents = documents
+    #     self.store_documents()
+
+    def load_urls_to_doc_file(self) -> Generator:
         """Load documents file from IPFS."""
-        documents_hash = self.ipfs_hashes.get("documents_json")
-        documents_hash = str(CID.from_string(documents_hash))
-        documents = yield from self.load_file_from_ipfs(documents_hash)
-        self.context.logger.info(f"Downloaded documents: {len(documents)}")
-        self.documents = documents
-        self.store_documents()
+        urls_to_doc_hash = self.ipfs_hashes.get("urls_to_doc_json", None)
+        if urls_to_doc_hash is None:
+            self.context.logger.warning(
+                "No urls_to_doc hash found in IPFS hashes. Assuming no urls_to_doc file is stored on IPFS"
+            )
+            return
+        urls_to_doc_hash = str(CID.from_string(urls_to_doc_hash))
+        urls_to_doc = yield from self.load_file_from_ipfs(urls_to_doc_hash)
+        self.context.logger.info(f"Downloaded urls_to_doc: {len(urls_to_doc)}")
+        self.urls_to_doc = urls_to_doc
+        self.store_urls_to_doc()
 
     def load_latest_files(self) -> Generator:
         """Load the latest files from IPFS."""
@@ -140,31 +159,31 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
         self.store_ipfs_hashes()
         self.context.logger.info(f"Downloaded IPFS hashes: {ipfs_files_hashes}")
         yield from self.load_embeddings_file()
-        yield from self.load_documents_file()
+        yield from self.load_urls_to_doc_file()
 
     def get_payload_content(self) -> Generator:
         """Get the payload content."""
-        local_documents_hash = None
+        local_urls_to_doc_hash = None
         local_embeddings_hash = None
         yield from self.load_latest_files()
         if self.ipfs_hashes is None:
             return None, None
         else:
-            local_documents_hash = self.hash_stored_documents()
-            self.context.logger.debug(f"Local documents hash: {local_documents_hash}")
+            local_urls_to_doc_hash = self.hash_stored_urls_to_doc()
+            self.context.logger.debug(f"Local urls_to_doc hash: {local_urls_to_doc_hash}")
             local_embeddings_hash = self.hash_stored_embeddings()
-            self.context.logger.debug(f"Local embeddings hash: {local_embeddings_hash}")
+            self.context.logger.debug(f"Local urls_to_doc hash: {local_embeddings_hash}")
 
-        return local_documents_hash, local_embeddings_hash
+        return local_urls_to_doc_hash, local_embeddings_hash
 
     def async_act(self) -> Generator:
         """Do the action."""
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
-            documents_hash, embeddings_hash = yield from self.get_payload_content()
+            urls_to_doc_hash, embeddings_hash = yield from self.get_payload_content()
             sender = self.context.agent_address
             payload = UpdateFilesPayload(
                 sender=sender,
-                documents_hash=documents_hash,
+                urls_to_doc_hash=urls_to_doc_hash,
                 embeddings_hash=embeddings_hash,
             )
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():

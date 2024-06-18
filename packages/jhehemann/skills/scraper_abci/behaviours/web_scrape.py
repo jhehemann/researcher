@@ -28,6 +28,7 @@ from packages.jhehemann.skills.scraper_abci.models import WebScrapeInteractionRe
 from packages.jhehemann.skills.scraper_abci.payloads import WebScrapePayload
 from packages.jhehemann.skills.scraper_abci.rounds import WebScrapeRound
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
+from packages.jhehemann.skills.documents_manager_abci.documents import Document
 
 
 class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancestors
@@ -74,9 +75,9 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
 
     def _get_response(self) -> WaitableConditionType:
         """Get the response data from web page."""
-        sampled_doc = self.sampled_doc
-        url = sampled_doc.url
-        self.set_web_scrape_response_specs(url)
+        sampled_doc_mapping = self.urls_to_doc[self.synchronized_data.sampled_doc_index]
+        self.sampled_doc.url = sampled_doc_mapping.url
+        self.set_web_scrape_response_specs(self.sampled_doc.url)
         specs = self.web_scrape_response_api.get_spec()
         res_raw = yield from self.get_http_response(**specs)
         
@@ -84,10 +85,10 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         res = res_raw.body.decode()
         res = self._handle_response(res)
         
-        # truncate the response to 100000 characters
-        if len(res) > 300000:
-            res = res[:300000]
-            self.context.logger.warning("Response was truncated to 300000 characters.")
+        # # truncate the response to 100000 characters
+        # if len(res) > 300000:
+        #     res = res[:300000]
+        #     self.context.logger.warning("Response was truncated to 300000 characters.")
 
         if self.web_scrape_response_api.is_retries_exceeded():
             error = "Retries were exceeded while trying to get the web page's response."
@@ -102,23 +103,23 @@ class WebScrapeBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         except (ValueError, TypeError, KeyError):
             self._web_scrape_response = WebScrapeInteractionResponse.incorrect_format(res)
 
-        return True
-
-    def get_payload_content(self) -> Generator:
-        """Extract html text from website"""
-        yield from self.wait_for_condition_with_sleep(self._get_response)
-        html = self._web_scrape_response.html
-        
-        return html
-
+        return True    
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
-
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
-            payload_content = yield from self.get_payload_content()
-            payload = WebScrapePayload(sender=sender, content=payload_content)
+            self.read_urls_to_doc()
+            sampled_doc_index = self.synchronized_data.sampled_doc_index
+            self.context.logger.info(f"Sampled doc after consensus: {self.urls_to_doc[sampled_doc_index]}")
+            yield from self.wait_for_condition_with_sleep(self._get_response)
+            self.sampled_doc.html = self._web_scrape_response.html
+            self.store_sampled_doc()
+            sampled_doc_hash = self.hash_stored_sampled_doc()
+            payload = WebScrapePayload(
+                sender=sender,
+                sampled_doc_hash=sampled_doc_hash,
+            )
 
         with self.context.benchmark_tool.measure(self.behaviour_id).consensus():
             yield from self.send_a2a_transaction(payload)

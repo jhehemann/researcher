@@ -39,8 +39,8 @@ class CheckDocumentsBehaviour(DocumentsManagerBaseBehaviour):
     def async_act(self) -> Generator:
         """Do the action."""
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
-            self.read_documents()
-            self.context.logger.info(f"{(self.documents)}")
+            self.read_urls_to_doc()
+            self.context.logger.info(f"{(self.urls_to_doc)}")
             unprocessed_docs = list(self.unprocessed_documents)
             num_unprocessed = len(unprocessed_docs)
             self.context

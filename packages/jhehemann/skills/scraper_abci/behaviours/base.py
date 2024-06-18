@@ -52,12 +52,6 @@ class ScraperBaseBehaviour(DocumentsManagerBaseBehaviour, ABC):  # pylint: disab
         """Return the state."""
         return cast(SharedState, self.context.state)
     
-    @property
-    def sampled_doc(self) -> Document:
-        """Get the sampled document."""
-        self.read_documents()
-        return self.documents[self.synchronized_data.sampled_doc_index]
-    
     @staticmethod
     def to_multihash(hash_string: str) -> str:
         """To multihash string."""

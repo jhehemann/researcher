@@ -44,13 +44,14 @@ class SearchEnginePayload(BaseTxPayload):
 class WebScrapePayload(BaseTxPayload):
     """Represent a transaction payload for the WebScrapeRound."""
 
-    content: str
+    sampled_doc_hash: str
 
 
 @dataclass(frozen=True)
-class ProcessHtmlPayload(UpdateDocumentsPayload):
+class ProcessHtmlPayload(BaseTxPayload):
     """Represent a transaction payload for the ProcessHtmlRound."""
 
+    sampled_doc_hash: str
     text_chunks: bool
 
 

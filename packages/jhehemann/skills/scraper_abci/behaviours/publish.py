@@ -31,7 +31,8 @@ from multicodec import multicodec
 
 from packages.jhehemann.contracts.hash_checkpoint.contract import HashCheckpointContract
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import (
-    DOCUMENTS_FILENAME,
+    SAMPLED_DOCUMENT_FILENAME,
+    URLS_TO_DOC_FILENAME,
     EMBEDDINGS_FILENAME,
     IPFS_HASHES_FILENAME,
     QUERIES_FILENAME,
@@ -165,13 +166,13 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
         return ipfs_link
 
-    def _send_documents_to_ipfs(self) -> Generator[None, None, Optional[str]]:
+    def _send_urls_to_doc_to_ipfs(self) -> Generator[None, None, Optional[str]]:
         """Send Embeddings to IPFS."""
         #json_data = self.documents
-        documents = serialize_documents(self.documents)
-        json_data = json.loads(documents)
+        urls_to_doc = serialize_documents(self.urls_to_doc)
+        json_data = json.loads(urls_to_doc)
         ipfs_hash = yield from self.send_to_ipfs(
-            DOCUMENTS_FILENAME, json_data, filetype=SupportedFiletype.JSON
+            URLS_TO_DOC_FILENAME, json_data, filetype=SupportedFiletype.JSON
         )
         if ipfs_hash is None:
             return None
@@ -187,7 +188,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
         # self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
-        self.ipfs_hashes['documents_json'] = v1_file_hash_hex
+        self.ipfs_hashes['urls_to_doc_json'] = v1_file_hash_hex
 
         # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
@@ -289,7 +290,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
     def read_files(self) -> None:
         """Read local files from the agent's data dir."""
         self.read_ipfs_hashes()
-        self.read_documents()
+        self.read_urls_to_doc()
         self.read_embeddings()
 
     def get_payload_content(self) -> Generator:
@@ -300,7 +301,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         
         hash_checkpoint_address = self.params.hash_checkpoint_address
         yield from self._send_embeddings_to_ipfs()
-        yield from self._send_documents_to_ipfs()
+        yield from self._send_urls_to_doc_to_ipfs()
         self.store_ipfs_hashes()
         ipfs_hash = yield from self._send_hashes_to_ipfs()
         self.context.logger.info(f"IPFS hash to lock in contract: {ipfs_hash}")

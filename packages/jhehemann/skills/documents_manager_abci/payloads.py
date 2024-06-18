@@ -35,14 +35,14 @@ class UpdateQueriesPayload(BaseTxPayload, ABC):
 class UpdateFilesPayload(BaseTxPayload, ABC):
     """Represent a transaction payload for the UpdateFilesRound."""
 
-    documents_hash: Optional[str]
+    urls_to_doc_hash: Optional[str]
     embeddings_hash: Optional[str]
 
 @dataclass(frozen=True)
 class UpdateDocumentsPayload(BaseTxPayload, ABC):
     """Represent a transaction payload for the UpdateDocumentsRound."""
 
-    documents_hash: Optional[str]
+    urls_to_doc_hash: Optional[str]
 
 @dataclass(frozen=True)
 class CheckDocumentsPayload(BaseTxPayload):
