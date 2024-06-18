@@ -20,8 +20,6 @@
 """This module contains the shared state for the abci skill of ResearcherSkillAbciApp."""
 from typing import Any
 
-from packages.valory.skills.abstract_round_abci.models import ApiSpecs
-
 from packages.jhehemann.skills.documents_manager_abci.models import (
     SearchEngineResponseSpecs as ScraperSearchEngineResponseSpecs,
 )
@@ -34,7 +32,6 @@ from packages.jhehemann.skills.scraper_abci.models import SharedState as BaseSha
 from packages.jhehemann.skills.scraper_abci.rounds import Event as SamplingEvent
 
 from packages.jhehemann.skills.documents_manager_abci.models import (
-    DocumentsManagerParams,
     OmenSubgraph as DocumentsManagerOmenSubgraph
 )
 from packages.jhehemann.skills.documents_manager_abci.rounds import Event as DocumentsManagerEvent
@@ -49,9 +46,6 @@ from packages.valory.skills.abstract_round_abci.tests.data.dummy_abci.models imp
 from packages.valory.skills.reset_pause_abci.rounds import Event as ResetPauseEvent
 from packages.valory.skills.termination_abci.models import TerminationParams
 from packages.jhehemann.skills.scraper_abci.models import ScraperParams
-from packages.valory.skills.transaction_settlement_abci.rounds import (
-    Event as TransactionSettlementEvent,
-)
 
 
 Requests = BaseRequests

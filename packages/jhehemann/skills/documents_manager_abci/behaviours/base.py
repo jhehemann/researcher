@@ -21,9 +21,6 @@
 
 import os
 import json
-from pathlib import Path
-from tempfile import mkdtemp
-import numpy as np
 import pandas as pd
 from abc import ABC
 from json import JSONDecodeError
@@ -31,14 +28,10 @@ from datetime import datetime, timedelta
 from typing import Any, Callable, Generator, Iterator, Optional, Set, Tuple, cast, List, Dict
 
 from packages.valory.skills.abstract_round_abci.behaviours import (
-    AbstractRoundBehaviour,
     BaseBehaviour,
 )
-from packages.jhehemann.skills.documents_manager_abci.models import DocumentsManagerParams, SharedState
 from packages.jhehemann.skills.documents_manager_abci.rounds import (
-    DocumentsManagerAbciApp,
     UpdateDocumentsRound,
-    SearchEngineRound,
     SynchronizedData,
 )
 from packages.jhehemann.skills.documents_manager_abci.documents import (

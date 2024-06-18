@@ -34,7 +34,6 @@ from packages.valory.skills.abstract_round_abci.base import (
     AbciApp,
     AbciAppTransitionFunction,
     AppState,
-    BaseSynchronizedData,
     CollectSameUntilThresholdRound,
     CollectionRound,
     DegenerateRound,
@@ -53,7 +52,7 @@ class Event(Enum):
 
     DONE = "done"
     NONE = "none"
-    NO_TEXT_CHUNKS = "no_text_chunks"
+    EMPTY_TEXT_CHUNKS = "empty_text_chunks"
     NO_MAJORITY = "no_majority"
     ROUND_TIMEOUT = "round_timeout"
 
@@ -169,7 +168,8 @@ class ProcessHtmlRound(CollectSameUntilThresholdRound):
     payload_class = ProcessHtmlPayload
     synchronized_data_class = SynchronizedData
     done_event = Event.DONE
-    no_chunks_event = Event.NO_TEXT_CHUNKS
+    none_event = Event.NONE
+    empty_chunks_event = Event.EMPTY_TEXT_CHUNKS
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_process_html_round)
     selection_key = get_name(SynchronizedData.process_html_data)
@@ -181,9 +181,18 @@ class ProcessHtmlRound(CollectSameUntilThresholdRound):
             return None
 
         synced_data, event = cast(Tuple[SynchronizedData, Enum], res)
+        
+        self.context.logger.info(f"Synced data text chunks (bool): {synced_data.text_chunks}")
+
+        if event == Event.DONE and synced_data.text_chunks is None:
+            #dropout_round = ScraperAbciApp.transition_function[self.__class__][event]
+            # self.context.logger.info(f"Dropout transition from {self.__class__} to final state {dropout_round} with event {event}.")
+            self.context.logger.info(f"Synced data text chunks (bool): {synced_data.text_chunks}")
+            self.context.logger.info(f"Dropout transition from {self.__class__} to final state with event {event}.")
+            return synced_data, Event.NONE
 
         if event == Event.DONE and not synced_data.text_chunks:
-            return synced_data, Event.NO_TEXT_CHUNKS
+            return synced_data, Event.EMPTY_TEXT_CHUNKS
 
         return synced_data, event
 
@@ -248,7 +257,8 @@ class ScraperAbciApp(AbciApp[Event]):
         ProcessHtmlRound: {
             Event.NO_MAJORITY: ProcessHtmlRound,
             Event.ROUND_TIMEOUT: ProcessHtmlRound,
-            Event.NO_TEXT_CHUNKS: FinishedWithoutEmbeddingUpdate,
+            Event.EMPTY_TEXT_CHUNKS: FinishedWithoutEmbeddingUpdate,
+            Event.NONE: FinishedWithoutEmbeddingUpdate,
             Event.DONE: EmbeddingRound,
         },
         EmbeddingRound: {

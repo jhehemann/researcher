@@ -22,7 +22,7 @@
 
 
 import json
-from typing import Any, Generator, Optional, Type, List, Dict, cast
+from typing import Any, Generator, Optional, Type, Dict, cast
 from abc import ABC
 
 from aea.helpers.cid import to_v1
@@ -40,7 +40,6 @@ from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBe
 from packages.jhehemann.skills.scraper_abci.payloads import PublishPayload
 from packages.jhehemann.skills.scraper_abci.rounds import PublishRound
 from packages.jhehemann.skills.documents_manager_abci.documents import (
-    convert_documents_to_dict,
     serialize_documents,
 )
 from packages.valory.contracts.gnosis_safe.contract import GnosisSafeContract

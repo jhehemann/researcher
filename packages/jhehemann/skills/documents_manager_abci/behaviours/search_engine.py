@@ -19,8 +19,7 @@
 
 """This module contains the behaviour for getting links from a search engine."""
 
-import os.path
-from typing import Any, Generator, Optional, Type, Iterator, List, Set, Tuple
+from typing import Any, Generator, Optional, Type
 
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import (
     UpdateDocumentsBehaviour,
@@ -32,7 +31,6 @@ from packages.jhehemann.skills.documents_manager_abci.rounds import SearchEngine
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.jhehemann.skills.documents_manager_abci.documents import (
     Document,
-    DocumentStatus,
 )
 
 

@@ -86,9 +86,10 @@ transition_func:
     (FinalizationRound, FINALIZE_TIMEOUT): SelectKeeperTransactionSubmissionBAfterTimeoutRound
     (FinalizationRound, INSUFFICIENT_FUNDS): SelectKeeperTransactionSubmissionBRound
     (ProcessHtmlRound, DONE): EmbeddingRound
-    (ProcessHtmlRound, NO_TEXT_CHUNKS): ResetAndPauseRound
+    (ProcessHtmlRound, NONE): FinishedWithoutEmbeddingUpdate
     (ProcessHtmlRound, NO_MAJORITY): ProcessHtmlRound
     (ProcessHtmlRound, ROUND_TIMEOUT): ProcessHtmlRound
+    (ProcessHtmlRound, EMPTY_TEXT_CHUNKS): PublishRound
     (PublishRound, DONE): RandomnessTransactionSubmissionRound
     (PublishRound, NO_MAJORITY): PublishRound
     (PublishRound, ROUND_TIMEOUT): PublishRound

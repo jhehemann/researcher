@@ -19,10 +19,8 @@
 
 """Behaviour in which the agents sample a query."""
 
-import os.path
-from abc import ABC
-from json import JSONDecodeError
-from typing import Any, Generator, Iterator, List, Set, Tuple, Type, Optional
+
+from typing import Any, Generator, List, Type, Optional
 
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.jhehemann.skills.documents_manager_abci.payloads import SampleQueryPayload

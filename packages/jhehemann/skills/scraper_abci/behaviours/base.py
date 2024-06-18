@@ -21,24 +21,15 @@
 
 from abc import ABC
 from datetime import datetime, timedelta
-from typing import Any, Callable, Generator, Optional, Set, Type, cast
+from typing import Any, Callable, Generator, Optional, cast
 
 import multibase
 import multicodec
 
-from packages.valory.skills.abstract_round_abci.behaviours import (
-    AbstractRoundBehaviour,
-    BaseBehaviour,
-)
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import DocumentsManagerBaseBehaviour
 from packages.jhehemann.skills.documents_manager_abci.documents import Document
 from packages.jhehemann.skills.scraper_abci.models import ScraperParams, SharedState
-from packages.jhehemann.skills.scraper_abci.rounds import (
-    ScraperAbciApp,
-    SamplingRound,
-    WebScrapeRound,
-    SynchronizedData,
-)
+from packages.jhehemann.skills.scraper_abci.rounds import SynchronizedData
 from packages.valory.skills.abstract_round_abci.behaviour_utils import TimeoutException
 
 WaitableConditionType = Generator[None, None, bool]

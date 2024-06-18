@@ -25,7 +25,6 @@ from abc import ABC
 from enum import Enum, auto
 from typing import Any, Dict, Generator, Iterator, List, Optional, Tuple, cast
 
-from web3 import Web3
 
 from packages.valory.skills.abstract_round_abci.behaviour_utils import BaseBehaviour
 from packages.valory.skills.abstract_round_abci.models import ApiSpecs
@@ -37,14 +36,8 @@ from packages.jhehemann.skills.documents_manager_abci.graph_tooling.queries.netw
 )
 from packages.jhehemann.skills.documents_manager_abci.graph_tooling.queries.omen import (
     questions,
-    trades,
 )
-from packages.jhehemann.skills.documents_manager_abci.graph_tooling.queries.realitio import (
-    answers as answers_query,
-)
-from packages.jhehemann.skills.documents_manager_abci.graph_tooling.queries.trades import (
-    trades as trades_query,
-)
+
 from packages.jhehemann.skills.documents_manager_abci.models import (
     DocumentsManagerParams,
     SharedState,

@@ -7,7 +7,7 @@ license: Apache-2.0
 fingerprint:
   README.md: bafybeicxq7czrb2v2mzpvytqc53eawd6kwe7vq2lh5kn63hhxrj3fqodne
 fingerprint_ignore_patterns: []
-agent: jhehemann/researcher_agent:0.1.0:bafybeie7wkj3orojd4topzybga3zo536zpcqobbjglkfbac6dxuzgwxkxi
+agent: jhehemann/researcher_agent:0.1.0:bafybeign5ozct2ew2rdonxib2lqfhwlxksefjnwtdi6krtxf4cphiyzveu
 number_of_agents: 1
 deployment:
   agent:

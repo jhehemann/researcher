@@ -25,7 +25,7 @@ from readability import Document
 from markdownify import markdownify as md
 
 
-from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour, WaitableConditionType
+from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour
 from packages.jhehemann.skills.scraper_abci.payloads import ProcessHtmlPayload
 from packages.jhehemann.skills.scraper_abci.rounds import ProcessHtmlRound
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
@@ -44,14 +44,16 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         super().__init__(**kwargs)
         self._process_html_response: Optional[str] = None
     
-    def recursive_character_text_splitter(self, text):
+    def recursive_character_text_splitter(self, text) -> list[str]:
         if len(text) <= MAX_TOKENS:
             return [text]
         else:
             return [text[i:i+MAX_TOKENS] for i in range(0, len(text), MAX_TOKENS - OVERLAP)]
 
-    def _process_html(self) -> bool:
+    def _process_html(self) -> Optional[bool]:
         """Process the html text."""
+        sampled_doc_index = self.synchronized_data.sampled_doc_index
+        sampled_doc = self.documents[sampled_doc_index]
         html = self.synchronized_data.web_scrape_data
 
         # create readability document and extract main content
@@ -63,29 +65,22 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         text = "  ".join([x.strip() for x in text.split("\n")])
         text = re.sub(r'\s+', ' ', text)
 
+        if text is None:
+            self.context.logger.error("Text could not be extracted from html.")
+            return None
+        sampled_doc.content = text
+
         # split text into chunks and join with separator for 
         text_chunks = self.recursive_character_text_splitter(text)
-        if not any(entry for entry in text_chunks):
-            self.context.logger.error("No text chunks generated.")
+        if not any(entry.strip() for entry in text_chunks):
+            sampled_doc.text_chunks = []
+            self.context.logger.error("Extracted text is empty.")
             return False
         len_text_chunks = len(text_chunks)
         self.context.logger.info(f"Generated {len_text_chunks} text chunks.")
-
-        # chunks_str_with_separator = "\n\n#####\n\n".join(text_chunks)
-        # self._process_html_response = chunks_str_with_separator
-
-        sampled_doc_index = self.synchronized_data.sampled_doc_index
-        sampled_doc = self.documents[sampled_doc_index]
-        sampled_doc.content = text
         sampled_doc.text_chunks = text_chunks
         self.context.logger.info(f"Text chunks: {sampled_doc.text_chunks}")
         return True
- 
-    
-    def check_text_chunks(self) -> bool:
-        """Process html text."""
-        text_chunks = self._process_html()
-        return text_chunks
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
@@ -93,7 +88,7 @@ class ProcessHtmlBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-an
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             sender = self.context.agent_address
             self.read_documents()
-            text_chunks = self.check_text_chunks()
+            text_chunks = self._process_html()
             self.store_documents()
             documents_hash = self.hash_stored_documents()
 

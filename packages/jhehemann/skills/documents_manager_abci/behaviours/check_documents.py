@@ -19,17 +19,12 @@
 
 """This package contains round behaviours of HelloAbciApp."""
 
-import json
-import os.path
-from abc import ABC
-from typing import Any, Generator, Iterator, List, Set, Tuple, Type
+from typing import Any, Generator
 
 from packages.jhehemann.skills.documents_manager_abci.payloads import CheckDocumentsPayload
 from packages.jhehemann.skills.documents_manager_abci.rounds import CheckDocumentsRound
-from packages.jhehemann.skills.documents_manager_abci.behaviours.base import UpdateDocumentsBehaviour
-from packages.valory.skills.abstract_round_abci.base import AbstractRound
+
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import DocumentsManagerBaseBehaviour   
-from packages.jhehemann.skills.documents_manager_abci.documents import Document, DocumentStatus
 
 
 class CheckDocumentsBehaviour(DocumentsManagerBaseBehaviour):
@@ -45,6 +40,7 @@ class CheckDocumentsBehaviour(DocumentsManagerBaseBehaviour):
         """Do the action."""
         with self.context.benchmark_tool.measure(self.behaviour_id).local():
             self.read_documents()
+            self.context.logger.info(f"{(self.documents)}")
             unprocessed_docs = list(self.unprocessed_documents)
             num_unprocessed = len(unprocessed_docs)
             self.context

@@ -19,7 +19,6 @@
 
 """This module contains the shared state for the abci skill of ScraperAbciApp."""
 
-import json
 from dataclasses import dataclass
 
 from packages.jhehemann.skills.documents_manager_abci.rounds import DocumentsManagerAbciApp
@@ -32,11 +31,7 @@ from packages.valory.skills.abstract_round_abci.models import Requests as BaseRe
 from packages.valory.skills.abstract_round_abci.models import (
     SharedState as BaseSharedState,
 )
-from collections import defaultdict
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, cast
-
-from aea.exceptions import enforce
-from aea.skills.base import Model
+from typing import Any, Dict, Iterator, List, Tuple, cast
 
 class SharedState(BaseSharedState):
     """Keep the current shared state of the skill."""

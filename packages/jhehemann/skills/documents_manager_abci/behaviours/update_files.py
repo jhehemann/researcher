@@ -19,11 +19,9 @@
 
 """This package contains round behaviours of HelloAbciApp."""
 
-from typing import Any, Dict, Generator, Iterator, List, Optional, Set, Tuple, Type, cast
+from typing import Any, Dict, Generator, Iterator, List, Optional, Set, Tuple, cast
 import pandas as pd
-from aea.helpers.cid import CID, to_v1
-from multibase import multibase
-from multicodec import multicodec
+from aea.helpers.cid import CID
 
 from packages.jhehemann.skills.documents_manager_abci.graph_tooling.requests import (
     FetchStatus,
@@ -35,9 +33,7 @@ from packages.jhehemann.skills.documents_manager_abci.payloads import UpdateFile
 from packages.jhehemann.skills.documents_manager_abci.payloads import UpdateQueriesPayload
 from packages.jhehemann.skills.documents_manager_abci.rounds import UpdateFilesRound
 from packages.jhehemann.skills.documents_manager_abci.rounds import UpdateQueriesRound
-from packages.jhehemann.skills.documents_manager_abci.behaviours.base import UpdateDocumentsBehaviour
 from packages.valory.protocols.contract_api.message import ContractApiMessage
-from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import DocumentsManagerBaseBehaviour   
 from packages.jhehemann.skills.documents_manager_abci.queries import Query, QueryStatus
 
@@ -60,7 +56,7 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
         self,
     ) -> Generator[None, None, Optional[Dict[str, Any]]]:
         """Get the latest IPFS embeddings hash from contract."""
-
+        self.context.logger.debug("Getting latest hash from contract...")
         contract_api_msg = yield from self.get_contract_api_response(
             performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
             contract_address=self.params.hash_checkpoint_address,
@@ -74,13 +70,13 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
             )
             return None
         latest_ipfs_hash = cast(str, contract_api_msg.state.body["data"])
-        self.context.logger.info(f"Got latest IPFS hash from contract: {latest_ipfs_hash}")
+        self.context.logger.info(f"Got latest hash from contract: {latest_ipfs_hash}")
         
         if latest_ipfs_hash == ZERO_IPFS_HASH:
             return {}
         # format the hash
         ipfs_hash = str(CID.from_string(latest_ipfs_hash))
-        self.context.logger.info(f"Got latest IPFS CID hash: {latest_ipfs_hash}")
+        self.context.logger.info(f"Got latest IPFS CID hash: {ipfs_hash}")
         return ipfs_hash
 
     def load_file_from_ipfs(self, ipfs_hash: str) -> Generator[None, None, Optional[Dict[str, str]]]:
@@ -97,11 +93,11 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
     def load_embeddings_file(self) -> Generator:
         """Load the embeddings file from IPFS."""
         # check if self.ipfs_hashes is a Dict
-        if not isinstance(self.ipfs_hashes, dict):
-            self.context.logger.error(
-                f"Embeddings file is not a dict. Type: {type(self.ipfs_hashes)}"
-            )
-            return
+        # if not isinstance(self.ipfs_hashes, dict):
+        #     self.context.logger.error(
+        #         f"Embeddings file is not a dict. Type: {type(self.ipfs_hashes)}"
+        #     )
+        #     return
         embeddings_hash = self.ipfs_hashes.get("embeddings_json")
         embeddings_hash = str(CID.from_string(embeddings_hash))
         embeddings = yield from self.load_file_from_ipfs(embeddings_hash)
@@ -123,16 +119,14 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
         """Load the latest files from IPFS."""
         # Get the latest IPFS hash from the contract
         # This IPFS hash points to a file containing the hashes of the other files
-        ipfs_files_hashes_hash = yield from self._get_latest_hash()
-        self.context.logger.info(f"Got latest IPFS hashes hash: {ipfs_files_hashes_hash}")
-        
+        ipfs_files_hashes_hash = yield from self._get_latest_hash()       
         if ipfs_files_hashes_hash is None:
             self.context.logger.warning(
-                "No hashes file found in contract. Assuming no files are stored on IPFS."
+                "No hash found in contract. Assuming no files are stored on IPFS."
             )
             return
         
-        # Load the file containing the hashes of the other files
+        # Load the file from IPFS that contains the hashes of the other files
         ipfs_files_hashes = yield from self.load_file_from_ipfs(ipfs_files_hashes_hash)
         if ipfs_files_hashes is None:
             return
@@ -157,9 +151,9 @@ class UpdateFilesBehaviour(DocumentsManagerBaseBehaviour):
             return None, None
         else:
             local_documents_hash = self.hash_stored_documents()
-            self.context.logger.info(f"Local documents hash: {local_documents_hash}")
+            self.context.logger.debug(f"Local documents hash: {local_documents_hash}")
             local_embeddings_hash = self.hash_stored_embeddings()
-            self.context.logger.info(f"Local embeddings hash: {local_embeddings_hash}")
+            self.context.logger.debug(f"Local embeddings hash: {local_embeddings_hash}")
 
         return local_documents_hash, local_embeddings_hash
 

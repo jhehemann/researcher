@@ -19,10 +19,7 @@
 
 """Behaviour in which the agents sample a document."""
 
-import os.path
-from abc import ABC
-from json import JSONDecodeError
-from typing import Any, Generator, Iterator, List, Set, Tuple, Type, Optional
+from typing import Any, Generator, List, Type, Optional
 
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.jhehemann.skills.scraper_abci.payloads import SamplingPayload

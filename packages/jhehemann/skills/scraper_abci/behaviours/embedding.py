@@ -20,18 +20,10 @@
 """This module contains the behaviour for getting links from a embedding."""
 
 import json
-from pathlib import Path
 from tempfile import mkdtemp
 import pandas as pd
-import os.path
-from string import Template
-from typing import Any, Dict, Generator, Optional, Type, Iterator, List, Set, Tuple, cast
+from typing import Any, Dict, Generator, Optional, Type
 
-from aea.helpers.cid import CID, to_v1
-
-from packages.jhehemann.contracts.hash_checkpoint.contract import HashCheckpointContract
-from packages.valory.protocols.contract_api.message import ContractApiMessage
-from packages.valory.skills.abstract_round_abci.io_.store import SupportedFiletype
 from packages.jhehemann.skills.documents_manager_abci.behaviours.base import WaitableConditionType
 from packages.jhehemann.skills.scraper_abci.behaviours.base import ScraperBaseBehaviour
 from packages.jhehemann.skills.scraper_abci.models import EmbeddingInteractionResponse, EmbeddingResponseSpecs

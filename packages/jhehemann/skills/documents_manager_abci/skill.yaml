@@ -8,12 +8,12 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeicowkv4xgyilyhwqfqrhfg655fyuz36wmyxfjpcwochgqxottft44
   behaviours/base.py: bafybeife276x46ngzly5yotjdcbyzwx66ojkvkctfojb26bnqunhd5pg3y
-  behaviours/check_documents.py: bafybeigj7fnla7hlpidjosbtro5s223sszj5fyj4u75ukkdd6zaujaa6r4
+  behaviours/check_documents.py: bafybeierfbnojst5fn34n5fgw2gezexv4ddadcsojez4p2jayihk5uk37m
   behaviours/sample_query.py: bafybeigo7ctua2rcjqkvcigrtb2n5lbwzw77b4xshmeaglaa6loetn2f3i
   behaviours/search_engine.py: bafybeigesagls2gmlmp7cnwiyhjdbfetobabxzulljlnqcgjrbpjbawrvu
-  behaviours/update_files.py: bafybeigake6a2lh7sb4dnpxngb6zn7xnczdahipaoh6rx7bpe43xcra6w4
+  behaviours/update_files.py: bafybeihnpv7po76oq7sgzpwdjidmcjoggjw54e522vqujtf33omfwc4hhe
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
-  documents.py: bafybeih35z2kxrqiizuwxmjkym6rb6godg2hlujsca6ethkt7tauupq7ty
+  documents.py: bafybeifzvkeqgi45yxtmnvksxm5rstl4oupotkhsecm5bj6i4qkdwqtaze
   fsm_specification.yaml: bafybeiemlkm5bd7vdlof4eyijplk3f567fqoipqnwga4knl3vsv6vysrga
   graph_tooling/queries/__init__.py: bafybeihbybnl53i7k57ql5ujt5ru5n2eg324jfndh4lcnm4fk52mwbkjda
   graph_tooling/queries/conditional_tokens.py: bafybeic6ohkdp4rvkcfglieksv6gbzm4qocpgdjaz4sroutl37sxijthji

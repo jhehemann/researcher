@@ -24,7 +24,6 @@ from dataclasses import dataclass
 
 from packages.jhehemann.skills.scraper_abci.rounds import ScraperAbciApp
 from packages.jhehemann.skills.documents_manager_abci.models import DocumentsManagerParams
-from packages.valory.skills.abstract_round_abci.models import BaseParams
 from packages.valory.skills.abstract_round_abci.models import ApiSpecs
 from packages.valory.skills.abstract_round_abci.models import (
     BenchmarkTool as BaseBenchmarkTool,
@@ -34,12 +33,8 @@ from packages.valory.skills.abstract_round_abci.models import (
     SharedState as BaseSharedState,
 )
 from packages.valory.skills.abstract_round_abci.models import TypeCheckMixin
-from packages.valory.skills.abstract_round_abci.utils import check_type
-from collections import defaultdict
-from typing import Any, Callable, Dict, List, Optional, cast
+from typing import Any, Optional
 
-from aea.exceptions import enforce
-from aea.skills.base import Model
 
 
 class SharedState(BaseSharedState):

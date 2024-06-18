@@ -68,6 +68,7 @@ class Document:
     type: Optional[str] = None
     status: DocumentStatus = DocumentStatus.UNPROCESSED
     blacklist_expiration: float = -1
+    error: Optional[str] = None
 
     def __post_init__(self) -> None:
         """Post initialization to adjust the values."""
@@ -143,6 +144,11 @@ class DocumentsDecoder(json.JSONDecoder):
         """Perform the custom decoding."""
         # if this is a `Document`
         status_attributes = Document.__annotations__.keys()
+        missing_keys = set(status_attributes) - set(data.keys())
+
+        for key in missing_keys:
+            data[key] = None
+
         if sorted(status_attributes) == sorted(data.keys()):
             return Document(**data)
 
