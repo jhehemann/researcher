@@ -8,7 +8,7 @@ aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeieuzjfdllnkpuxuktqzikdbq55gqrgsue2h42a66k6a22mp3ec4zy
   behaviours/base.py: bafybeib5o4i5lxjjtenx452cts4pxvakzw3f76ne3ix7lpecfxnggtb64q
-  behaviours/embedding.py: bafybeihrlvexdeoi6ene6qrdj66jj5vtig7e2bv4swgb6loao4acyqb3qy
+  behaviours/embedding.py: bafybeid3s7i3e2dph5fmuxlht2iivgzeyyg6lokqpfcvtbwsjfyoilkh7a
   behaviours/process_html.py: bafybeibas2gr4n7iphsvckg6mp7ds2p2rjlbr3z33r2iaaq7no6y2a5ria
   behaviours/publish.py: bafybeihfk4xq26bw75zot54jtxh4p4w3vt227qxcqitojdafas45twc5ri
   behaviours/sampling.py: bafybeidjtaqvgoxtxaqrqesvi7tvi5las7ko6pgqn4nwi4jgzca4drm7ym

@@ -158,6 +158,7 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
         # Create dictionary combining embeddings and text chunks
         data = {col: [emb[i] for emb in embeddings] for i, col in enumerate(embedding_columns)}
         data['text_chunk'] = text_chunks
+        data['url'] = self.sampled_doc.url
         # Create the DataFrame
         embeddings_df = pd.DataFrame(data)
         self.context.logger.info(f"New Embeddings DF: {embeddings_df.shape}")
@@ -202,30 +203,6 @@ class EmbeddingBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ance
             self._embedding_response = EmbeddingInteractionResponse.incorrect_format(res)
 
         return True
-
-    # def load_latest_embeddings(self) -> Generator:
-    #     """Get the latest embeddings from IPFS."""
-    #     ipfs_hash = yield from self._get_latest_hash()
-    #     if ipfs_hash is None:
-    #         self.context.logger.warning(
-    #             "No embeddings hash found. Assuming no embeddings are stored on IPFS."
-    #         )
-    #         return
-
-    #     #ipfs_hash = str(CID.from_string(ipfs_hash))
-    #     self.context.logger.info(f"Getting embeddings from IPFS with cid hash: {ipfs_hash}")
-    #     embeddings_json = yield from self.get_from_ipfs(
-    #         ipfs_hash, filetype=SupportedFiletype.JSON
-    #     )
-    #     if embeddings_json is None:
-    #         self.context.logger.warning(
-    #             f"Could not get embeddings from IPFS: {ipfs_hash}"
-    #         )
-    #         return
-        
-    #     embeddings = pd.DataFrame(embeddings_json)
-    #     self.context.logger.info(f"Downloaded embeddings dataframe: {embeddings.shape}")
-    #     self.embeddings = embeddings
 
     def async_act(self) -> Generator:
         """Do the act, supporting asynchronous execution."""
