@@ -69,72 +69,7 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize behaviour."""
-        super().__init__(**kwargs)
-        # self._web_scrape_response: Optional[WebScrapeInteractionResponse] = None
-    
-    # @property
-    # def web_scrape_response_api(self) -> WebScrapeResponseSpecs:
-    #     """Get the web page's response api specs."""
-    #     return self.context.web_scrape_response
-    
-    # def set_web_scrape_response_specs(self, url) -> None:
-    #     """Set the web page's response specs."""        
-    #     self.web_scrape_response_api.__dict__["_frozen"] = False
-    #     self.web_scrape_response_api.url = url
-    #     self.web_scrape_response_api.__dict__["_frozen"] = True
-
-    # def _get_latest_hash(self) -> str:
-    #     """Get latest update hash."""
-    #     ## Right now only stored locally by agents - No access across runs
-    #     ## Should be stored in smart contract later and dynamically loaded 
-        
-    #     # contract_api_msg = yield from self.get_contract_api_response(
-    #     #     performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
-    #     #     contract_address=self.params.agent_registry_address,
-    #     #     contract_id=str(AgentRegistryContract.contract_id),
-    #     #     contract_callable="get_token_hash",
-    #     #     token_id=self.params.agent_id,
-    #     # )
-    #     # if (
-    #     #     contract_api_msg.performative != ContractApiMessage.Performative.STATE
-    #     # ):  # pragma: nocover
-    #     #     self.context.logger.warning(
-    #     #         f"get_token_hash unsuccessful!: {contract_api_msg}"
-    #     #     )
-    #     #     return None
-
-    #     # latest_hash = cast(bytes, contract_api_msg.state.body["data"])
-
-
-    #     return self.params.publish_mutable_params.latest_embeddings_hash
-
-    # def _should_update_hash(self) -> Generator:
-    #     """Check if the agent should update the hash."""
-    #     latest_hash = self.params.publish_mutable_params.latest_embeddings_hash
-    #     new_hash = self.synchronized_data.embeddings_hash
-
-    #     return new_hash != latest_hash
-
-    # def _handle_response(
-    #     self,
-    #     res: Optional[str],
-    # ) -> Optional[Any]:
-    #     """Handle the response from the web page.
-
-    #     :param res: the response to handle.
-    #     :return: the response's result, using the given keys. `None` if response is `None` (has failed).
-    #     """
-    #     if res is None:
-    #         msg = f"Could not get the web page's response from {self.web_scrape_response_api.api_id}"
-    #         self.context.logger.error(msg)
-    #         self.web_scrape_response_api.increment_retries()
-    #         return None
-
-    #     self.context.logger.info(f"Retrieved the web page's response. Number of characters: {len(res)}")
-    #     # self.context.logger.info(f"Response: {res}")
-    #     self.web_scrape_response_api.reset_retries()
-    #     return res
-    
+        super().__init__(**kwargs) 
 
     def _send_embeddings_to_ipfs(self) -> Generator[None, None, Optional[str]]:
         """Send Embeddings to IPFS."""
@@ -149,7 +84,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
         self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
         
-
         v1_file_hash = to_v1(ipfs_hash)
         self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
@@ -180,7 +114,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
         self.context.logger.info(f"Documents uploaded to_multihash_to_v1: {to_multihash_to_v1}")
         
-
         v1_file_hash = to_v1(ipfs_hash)
         # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
@@ -211,7 +144,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
         self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
         
-
         v1_file_hash = to_v1(ipfs_hash)
         self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))

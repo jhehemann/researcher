@@ -83,7 +83,6 @@ class DocumentMapping:
                     setattr(self, field, list(type_to_cast(val) for val in uncasted))
 
 
-
 @dataclasses.dataclass
 class Document:
     """A document's structure."""
@@ -210,14 +209,14 @@ class DocumentsMappingDecoder(json.JSONDecoder):
     @staticmethod
     def hook(data: Dict[str, Any]) -> Union[DocumentMapping, Dict[str, DocumentMapping]]:
         """Perform the custom decoding."""
-        # if this is a `Document`
+        # if this is a `DocumentMapping`
         status_attributes = DocumentMapping.__annotations__.keys()
         missing_keys = set(status_attributes) - set(data.keys())
-        extra_keys = set(data.keys()) - set(status_attributes)
+        # extra_keys = set(data.keys()) - set(status_attributes)
 
-        # remove extra keys from data
-        for key in extra_keys:
-            del data[key]
+        # # remove extra keys from data
+        # for key in extra_keys:
+        #     del data[key]
 
         for key in missing_keys:
             data[key] = None
