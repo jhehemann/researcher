@@ -47,8 +47,6 @@ from packages.valory.contracts.gnosis_safe.contract import GnosisSafeContract
 from packages.valory.protocols.contract_api.message import ContractApiMessage
 from packages.valory.skills.abstract_round_abci.base import AbstractRound
 from packages.valory.skills.abstract_round_abci.io_.store import SupportedFiletype
-
-
 from packages.valory.skills.transaction_settlement_abci.payload_tools import (
     hash_payload_to_hex,
 )
@@ -83,18 +81,11 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
         self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
-        
         v1_file_hash = to_v1(ipfs_hash)
-        self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
-        self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
-        self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
-
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
         self.ipfs_hashes['embeddings_json'] = v1_file_hash_hex
-
-        self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
@@ -102,7 +93,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
     def _send_urls_to_doc_to_ipfs(self) -> Generator[None, None, Optional[str]]:
         """Send Embeddings to IPFS."""
-        #json_data = self.documents
         urls_to_doc_str = serialize_documents(self.urls_to_doc)
         json_data = json.loads(urls_to_doc_str)
         ipfs_hash = yield from self.send_to_ipfs(
@@ -113,17 +103,11 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
         self.context.logger.info(f"Documents uploaded to_multihash_to_v1: {to_multihash_to_v1}")
-        
         v1_file_hash = to_v1(ipfs_hash)
-        # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
-        # self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
-        # self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
         self.ipfs_hashes['urls_to_doc_json'] = v1_file_hash_hex
-
-        # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
@@ -142,20 +126,12 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
             return None
         
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
-        self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
-        
+        self.context.logger.info(f"Sampled doc uploaded to_multihash_to_v1: {to_multihash_to_v1}")
         v1_file_hash = to_v1(ipfs_hash)
-        self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
-        self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
-        self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
-
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
         self.urls_to_doc[sampled_doc_index].ipfs_hash = v1_file_hash_hex
-        self.context.logger.info(f"urls to doc ipfs value: {self.urls_to_doc[sampled_doc_index].ipfs_hash}")
-
-        self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
@@ -172,15 +148,10 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         
         to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
         self.context.logger.info(f"Files hashes uploaded to_multihash_to_v1: {to_multihash_to_v1}")
-
         v1_file_hash = to_v1(ipfs_hash)
-        # self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
         cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
-        # self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
         multihash_bytes = multicodec.remove_prefix(cid_bytes)
-        # self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
         v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
-        # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
@@ -192,14 +163,11 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         ipfs_hash: str,
     ) -> Generator[None, None, Optional[Dict[str, Any]]]:
         """Get the transfer tx."""
-        self.context.logger.info(f"IPFS hash in _get_checkpoint_tx: {ipfs_hash}")
-        self.context.logger.info(f"Bytes from hex: {bytes.fromhex(ipfs_hash)}")
         contract_api_msg = yield from self.get_contract_api_response(
             performative=ContractApiMessage.Performative.GET_STATE,  # type: ignore
             contract_address=hashcheckpoint_address,
             contract_id=str(HashCheckpointContract.contract_id),
             contract_callable="get_checkpoint_data",
-            #data=bytes.fromhex("f02d773780ee38a64657f824472c7328ff389e845ff0f9d5c4585f955c8b2c4e"),
             data=bytes.fromhex(ipfs_hash),
         )
         if (
@@ -274,7 +242,6 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         yield from self._send_urls_to_doc_to_ipfs() # Third as it updates its hash in ipfs_hashes
         self.store_ipfs_hashes() # Store the updated hashes locally
         ipfs_hash = yield from self._send_hashes_to_ipfs()
-        self.context.logger.info(f"IPFS hash to lock in contract: {ipfs_hash}")
         hash_checkpoint_address = self.params.hash_checkpoint_address
         update_checkpoint_tx = yield from self._get_checkpoint_tx(hash_checkpoint_address, ipfs_hash)
         self.context.logger.info(f"Update checkpoint tx: {update_checkpoint_tx}")
