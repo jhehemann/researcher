@@ -384,18 +384,18 @@ class UpdateDocumentsBehaviour(DocumentsManagerBaseBehaviour):
     @property
     def frozen_urls_to_doc_and_urls(self) -> Tuple[List[DocumentMapping], Set[str]]:
         """Get the urls of the frozen, already existing, urls_to_doc."""
-        urls_to_doc = []
+        mapping = []
         urls = set()
-        for urls_to_doc in self.frozen_local_urls_to_doc:
-            urls_to_doc.append(urls_to_doc)
-            urls.add(urls_to_doc.url)
-        return urls_to_doc, urls
+        for map in self.frozen_local_urls_to_doc:
+            mapping.append(map)
+            urls.add(map.url)
+        return mapping, urls
     
     def is_frozen_urls_to_doc(self, urls_to_doc: DocumentMapping) -> bool:
         """Return if a document should not be updated."""
         return (
-            urls_to_doc.blacklist_expiration > self.synced_time
-            and urls_to_doc.status == DocumentStatus.BLACKLISTED
+            #urls_to_doc.blacklist_expiration > self.synced_time
+            urls_to_doc.status == DocumentStatus.BLACKLISTED
         ) or urls_to_doc.status == DocumentStatus.PROCESSED
     
     def wait_for_condition_with_sleep(

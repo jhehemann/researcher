@@ -108,12 +108,12 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
     #     return self.params.publish_mutable_params.latest_embeddings_hash
 
-    def _should_update_hash(self) -> Generator:
-        """Check if the agent should update the hash."""
-        latest_hash = self.params.publish_mutable_params.latest_embeddings_hash
-        new_hash = self.synchronized_data.embeddings_hash
+    # def _should_update_hash(self) -> Generator:
+    #     """Check if the agent should update the hash."""
+    #     latest_hash = self.params.publish_mutable_params.latest_embeddings_hash
+    #     new_hash = self.synchronized_data.embeddings_hash
 
-        return new_hash != latest_hash
+    #     return new_hash != latest_hash
 
     # def _handle_response(
     #     self,
@@ -169,8 +169,8 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
     def _send_urls_to_doc_to_ipfs(self) -> Generator[None, None, Optional[str]]:
         """Send Embeddings to IPFS."""
         #json_data = self.documents
-        urls_to_doc = serialize_documents(self.urls_to_doc)
-        json_data = json.loads(urls_to_doc)
+        urls_to_doc_str = serialize_documents(self.urls_to_doc)
+        json_data = json.loads(urls_to_doc_str)
         ipfs_hash = yield from self.send_to_ipfs(
             URLS_TO_DOC_FILENAME, json_data, filetype=SupportedFiletype.JSON
         )
@@ -191,6 +191,39 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
         self.ipfs_hashes['urls_to_doc_json'] = v1_file_hash_hex
 
         # self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
+        ipfs_link = self.params.ipfs_address + v1_file_hash_hex
+        self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
+
+        return ipfs_link
+    
+    def _send_sampled_doc_to_ipfs(self) -> Generator[None, None, Optional[str]]:
+        """Send Embeddings to IPFS."""
+        sampled_doc_index = self.synchronized_data.sampled_doc_index
+        sampled_doc = self.sampled_doc
+        sampled_doc_str = serialize_documents(sampled_doc)
+        json_data = json.loads(sampled_doc_str)
+        ipfs_hash = yield from self.send_to_ipfs(
+            SAMPLED_DOCUMENT_FILENAME, json_data, filetype=SupportedFiletype.JSON
+        )
+        if ipfs_hash is None:
+            return None
+        
+        to_multihash_to_v1 = self.to_multihash(to_v1(ipfs_hash))
+        self.context.logger.info(f"Embeddings uploaded to_multihash_to_v1: {to_multihash_to_v1}")
+        
+
+        v1_file_hash = to_v1(ipfs_hash)
+        self.context.logger.info(f"Embeddings uploaded v1 hash: {v1_file_hash}")
+        cid_bytes = cast(bytes, multibase.decode(v1_file_hash))
+        self.context.logger.info(f"Embeddings uploaded cid bytes: {cid_bytes}")
+        multihash_bytes = multicodec.remove_prefix(cid_bytes)
+        self.context.logger.info(f"Embeddings uploaded multicodec remove prefix hex: {multihash_bytes.hex()}")
+
+        v1_file_hash_hex = V1_HEX_PREFIX + multihash_bytes.hex()
+        self.urls_to_doc[sampled_doc_index].ipfs_hash = v1_file_hash_hex
+        self.context.logger.info(f"urls to doc ipfs value: {self.urls_to_doc[sampled_doc_index].ipfs_hash}")
+
+        self.context.logger.info(f"Embeddings uploaded hex v1 hash: {v1_file_hash_hex}")
         ipfs_link = self.params.ipfs_address + v1_file_hash_hex
         self.context.logger.info(f"IPFS link from v1: {ipfs_link}")
 
@@ -289,22 +322,28 @@ class PublishBehaviour(ScraperBaseBehaviour):  # pylint: disable=too-many-ancest
 
     def read_files(self) -> None:
         """Read local files from the agent's data dir."""
-        self.read_ipfs_hashes()
+        self.read_sampled_doc()
         self.read_urls_to_doc()
         self.read_embeddings()
+        self.read_ipfs_hashes()
 
     def get_payload_content(self) -> Generator:
         self.read_files()
-        should_update_hash = self._should_update_hash()
-        if not should_update_hash:
-            return None
-        
-        hash_checkpoint_address = self.params.hash_checkpoint_address
-        yield from self._send_embeddings_to_ipfs()
-        yield from self._send_urls_to_doc_to_ipfs()
-        self.store_ipfs_hashes()
+        # should_update_hash = self._should_update_hash()
+        # if not should_update_hash:
+        #     return None
+        if self.sampled_doc:
+            yield from self._send_sampled_doc_to_ipfs() # First as it updates its hash in urls_to_doc
+        else:
+            self.context.logger.error(f"Sampled doc: {self.sampled_doc} is None.")
+
+        self.store_urls_to_doc() # Store the updated mapping locally
+        yield from self._send_embeddings_to_ipfs() # Second as it updates its hash in ipfs_hashes
+        yield from self._send_urls_to_doc_to_ipfs() # Third as it updates its hash in ipfs_hashes
+        self.store_ipfs_hashes() # Store the updated hashes locally
         ipfs_hash = yield from self._send_hashes_to_ipfs()
         self.context.logger.info(f"IPFS hash to lock in contract: {ipfs_hash}")
+        hash_checkpoint_address = self.params.hash_checkpoint_address
         update_checkpoint_tx = yield from self._get_checkpoint_tx(hash_checkpoint_address, ipfs_hash)
         self.context.logger.info(f"Update checkpoint tx: {update_checkpoint_tx}")
         tx_data_str = (cast(str, update_checkpoint_tx)["data"])[2:]
