@@ -7,11 +7,11 @@ license: Apache-2.0
 aea_version: '>=1.0.0, <2.0.0'
 fingerprint:
   __init__.py: bafybeicowkv4xgyilyhwqfqrhfg655fyuz36wmyxfjpcwochgqxottft44
-  behaviours/base.py: bafybeife276x46ngzly5yotjdcbyzwx66ojkvkctfojb26bnqunhd5pg3y
-  behaviours/check_documents.py: bafybeierfbnojst5fn34n5fgw2gezexv4ddadcsojez4p2jayihk5uk37m
-  behaviours/sample_query.py: bafybeigo7ctua2rcjqkvcigrtb2n5lbwzw77b4xshmeaglaa6loetn2f3i
-  behaviours/search_engine.py: bafybeigesagls2gmlmp7cnwiyhjdbfetobabxzulljlnqcgjrbpjbawrvu
-  behaviours/update_files.py: bafybeihnpv7po76oq7sgzpwdjidmcjoggjw54e522vqujtf33omfwc4hhe
+  behaviours/base.py: bafybeicmzladwks2bcfcnk2ksmpscexnybinzlqxsylu3tih37gopfc7yu
+  behaviours/check_documents.py: bafybeidbntmq6g6ptkn6yvxrph6a6gd3amqv57vuei77amdopkl2te4l64
+  behaviours/sample_query.py: bafybeieqaaudftiexnwh5lixfontyyel6ujvz2rb6w6uvrofjobp7hogp4
+  behaviours/search_engine.py: bafybeic4jnw4ia3k4rs37wmbkddbdqzg7a7ipxfblr6nogjhirrixtx4uq
+  behaviours/update_files.py: bafybeicmdztl2denlbl5izhfnwjbav66edz6srwyb5nsajcgfvvx6a7tca
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
   documents.py: bafybeifzvkeqgi45yxtmnvksxm5rstl4oupotkhsecm5bj6i4qkdwqtaze
   fsm_specification.yaml: bafybeiemlkm5bd7vdlof4eyijplk3f567fqoipqnwga4knl3vsv6vysrga
@@ -21,9 +21,9 @@ fingerprint:
   graph_tooling/queries/omen.py: bafybeig25e57wmwa472a6azmpkznipn7j5nc6fpa2wujhljqifxzac6dgm
   graph_tooling/queries/realitio.py: bafybeiftewjwk5fi6uqrhmalweun47voau2qkxi7hg3faxcmyy3va44zma
   graph_tooling/queries/trades.py: bafybeigu6c25kf3mrlvmwjeskgagswdjnnxsygpriygmip44us4xvuf7ji
-  graph_tooling/requests.py: bafybeiantbiimwlquahleqv7fqeancso2zxucchh7wbgwgo7326qn5x6jq
+  graph_tooling/requests.py: bafybeicspqwlspysaefpjpfasx2txer32klr2ixvrwoumdfbqspa5eemdq
   handlers.py: bafybeidxljtgllpkpnoq562laznbqxmna7fn4sxrhgycapu3w4giefbdwm
-  models.py: bafybeifzcy4swgro72uttyqk7cqhxv3vviftfzfek4xvpefsgtzewj7rie
+  models.py: bafybeicrdaalw4rnootiu4mgeaduikdptf3yir43bqc6wsbroux5zslzoa
   payloads.py: bafybeigev7qxa355c4lsn6sgbba4jczrhnstwbme6fqw5vxpfqhinqoeqm
   queries.py: bafybeihx64zt5hsi5vsshjvtlz5pz5jggjfu3kbnxzp7mgez6uw536h4oi
   round_behaviour.py: bafybeif2gobjihgubhj6vjdktj3uu3gadfl5cw5c6ixkgh2o427ke3dnfa

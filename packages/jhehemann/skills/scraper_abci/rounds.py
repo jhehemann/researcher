@@ -79,10 +79,10 @@ class SynchronizedData(DocumentsManagerSyncedData):
         """Get the web_scrape_data."""
         return self.db.get("web_scrape_data", None)
 
-    @property
-    def process_html_data(self) -> Optional[str]:
-        """Get the process_html_data."""
-        return self.db.get("process_html_data", None)
+    # @property
+    # def process_html_data(self) -> Optional[str]:
+    #     """Get the process_html_data."""
+    #     return self.db.get("process_html_data", None)
     
     @property
     def text_chunks(self) -> Optional[bool]:
@@ -172,7 +172,10 @@ class ProcessHtmlRound(CollectSameUntilThresholdRound):
     empty_chunks_event = Event.EMPTY_TEXT_CHUNKS
     no_majority_event = Event.NO_MAJORITY
     collection_key = get_name(SynchronizedData.participant_to_process_html_round)
-    selection_key = get_name(SynchronizedData.process_html_data)
+    selection_key = (
+        UpdateDocumentsRound.selection_key,
+        get_name(SynchronizedData.text_chunks),
+    )
 
     def end_block(self) -> Optional[Tuple[SynchronizedData, Enum]]:
         """Process the end of the block."""
@@ -183,6 +186,8 @@ class ProcessHtmlRound(CollectSameUntilThresholdRound):
         synced_data, event = cast(Tuple[SynchronizedData, Enum], res)
         
         self.context.logger.info(f"Synced data text chunks (bool): {synced_data.text_chunks}")
+        self.context.logger.info(f"Synced data text chunks type: {type(synced_data.text_chunks)}")
+
 
         if event == Event.DONE and synced_data.text_chunks is None:
             #dropout_round = ScraperAbciApp.transition_function[self.__class__][event]
@@ -257,7 +262,7 @@ class ScraperAbciApp(AbciApp[Event]):
         ProcessHtmlRound: {
             Event.NO_MAJORITY: ProcessHtmlRound,
             Event.ROUND_TIMEOUT: ProcessHtmlRound,
-            Event.EMPTY_TEXT_CHUNKS: FinishedWithoutEmbeddingUpdate,
+            Event.EMPTY_TEXT_CHUNKS: PublishRound,
             Event.NONE: FinishedWithoutEmbeddingUpdate,
             Event.DONE: EmbeddingRound,
         },
