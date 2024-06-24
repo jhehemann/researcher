@@ -10,7 +10,7 @@ fingerprint:
   behaviours/base.py: bafybeihihdmsn4wppoafgsaevsox4xpoprdsjesnmz32mpbbxqfgp5ebtm
   behaviours/embedding.py: bafybeidnkxuv72yjxxygyzm4sctwjzpu6bm7qipjubwmgo44gksk33ggre
   behaviours/process_html.py: bafybeihruacohtfhh76dezwjnmnqvfxyzitmiaage4l73s77k7t2hbgc64
-  behaviours/publish.py: bafybeic6lk5trey7r5plmlmms5ry67n43gu2ef5ibxget7y6uk2zsgu2de
+  behaviours/publish.py: bafybeibsdexytynlhcgj5t4y46tm5mpmig2sdtcmnbl3qkz2bik2kqrt4m
   behaviours/sampling.py: bafybeibpnfq5anwgdsxhkwll3p6crl3xktqv2tmzix5q7ziw4lz3rqrcw4
   behaviours/web_scrape.py: bafybeigg663h4tqtqa2kitikkuxofdsqtooksvekkucl2s7gkg3lvil6dm
   dialogues.py: bafybeidhxqhvzknq6rd5nan4xe2ff3f3p67uo5422kwrq4cegerynspqpa
