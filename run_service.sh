@@ -12,6 +12,10 @@ REPO_PATH=$PWD
 
 source .env
 
+if [ -n "$SUBGRAPH_API_KEY" ]; then
+    export OMEN_SUBGRAPH_URL="https://gateway-arbitrum.network.thegraph.com/api/$SUBGRAPH_API_KEY/subgraphs/id/9fUVQpFwzpdWS9bq5WkAnmKbNNcoBwatMR4yZq81pbbz"
+fi
+
 export INPUT_QUERY="Who will be the next US President?"
 
 
