@@ -1,15 +1,15 @@
 {
     "agent": {
         "id": null,
-        "image_hash": "QmWJQSN62uophJyCBzoVWjFxFjcxWygvf8FQWFLsEw5x5y"
+        "image_hash": "QmTkMMKNnLhSGFdjymjLqAwgDSHvtQjUCk8xUSUkBLbxUQ"
     },
     "documents_manager": {
         "id": null,
-        "image_hash": "Qmb4rjE6hj5rRAMjWZq8XLWTPysutvWwFwiNWMCiDDiJXp"
+        "image_hash": "QmXrJH3CmQTTqjTT8ZCNxCVvirHbM6Zbr3kvtRfkQowRaK"
     },
     "researcher": {
         "id": null,
-        "image_hash": "QmdZvTT5pgPEWqLXVRohWdVUsRysQ16gy27pHBF7vHH3v5"
+        "image_hash": "QmTP6bsfA1MZ8YHbBwJBT6K3EcVdT2MCtk9qtVPgVda9VG"
     },
     "scraper": {
         "id": null,
@@ -17,6 +17,6 @@
     },
     "service": {
         "id": null,
-        "image_hash": "Qmcjkyh1NSUKZFXcPFvqcaRahqkcaBdr7hWsJGqNLLWoxy"
+        "image_hash": "QmesDLZJpmJUR5WEFGrFanqEnkXLCvcGUHqY4TRYxEc1xj"
     }
 }
