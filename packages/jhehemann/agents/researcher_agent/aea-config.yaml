@@ -98,7 +98,7 @@ type: connection
 config:
   ledger_apis:
     ethereum:
-      address: ${ETHEREUM_LEDGER_RPC_TENDERLY:str:http://localhost:8545}
+      address: ${ETHEREUM_LEDGER_RPC:str:http://localhost:8545}
       chain_id: ${int:31337}
       poa_chain: ${bool:false}
       default_gas_price_strategy: ${str:eip1559}
