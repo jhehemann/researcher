@@ -1,0 +1,22 @@
+{
+    "agent": {
+        "id": null,
+        "image_hash": "QmWJQSN62uophJyCBzoVWjFxFjcxWygvf8FQWFLsEw5x5y"
+    },
+    "documents_manager": {
+        "id": null,
+        "image_hash": "Qmb4rjE6hj5rRAMjWZq8XLWTPysutvWwFwiNWMCiDDiJXp"
+    },
+    "researcher": {
+        "id": null,
+        "image_hash": "QmdZvTT5pgPEWqLXVRohWdVUsRysQ16gy27pHBF7vHH3v5"
+    },
+    "scraper": {
+        "id": null,
+        "image_hash": "QmRF8RDZL2XB8GFYMa4kQCoJQVBZMUGY4sYaivNxhvsxpE"
+    },
+    "service": {
+        "id": null,
+        "image_hash": "Qmcjkyh1NSUKZFXcPFvqcaRahqkcaBdr7hWsJGqNLLWoxy"
+    }
+}
