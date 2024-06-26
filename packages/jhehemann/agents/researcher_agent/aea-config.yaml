@@ -208,6 +208,15 @@ models:
       from_block_range: ${int:50000}
       timeout_limit: ${int:3}
       max_block_window: ${int:500}
+  omen_subgraph:
+    args:
+      headers:
+        Content-Type: ${str:application/json}
+      method: ${str:POST}
+      response_key: ${str:data:fixedProductMarketMakers}
+      response_type: ${str:list}
+      retries: ${int:5}
+      url: ${OMEN_SUBGRAPH_URL:str:https://api.thegraph.com/subgraphs/name/protofire/omen-xdai}
 ---
 public_id: valory/http_server:0.22.0:bafybeicblltx7ha3ulthg7bzfccuqqyjmihhrvfeztlgrlcoxhr7kf6nbq
 type: connection
